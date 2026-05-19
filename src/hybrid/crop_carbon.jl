@@ -8,7 +8,7 @@ function crop_carbon_hybrid!(nn_model,
                              temp::AbstractArray{T},
                              temp_n::AbstractArray{T};
                              hybrid = true,
-                             NODE = false,
+                             node = true,
                              residual = false
 ) where {T <: AbstractFloat}
 
@@ -25,7 +25,7 @@ function crop_carbon_hybrid!(nn_model,
 
         # compute crop storage carbon allocation
         input = vcat(reshape(crop.npp/20, (1, :)), reshape(crop.fphu, (1, :)), reshape(temp_n, (1, :)), reshape(crop.wdf/100, (1, :))) .* reshape(crop.isgrowing, (1, :))
-        if NODE
+        if node
             crop.stoc = neural_stoc(nn_model, reshape(crop.stoc, (1, :)), ps, st, input)
         else
             crop.stoc = neural_stoc(nn_model, ps, st, input) .* crop.biomass
@@ -72,7 +72,7 @@ end
 #                              PFT::PftParameters,
 #                              temp::AbstractArray{T},
 #                              temp_n::AbstractArray{T};
-#                              NODE = false
+#                              node = true
 # ) where {T <: AbstractFloat}
 
 #     # compute crop respiration
@@ -86,7 +86,7 @@ end
 #     end
 
 #     input = vcat(reshape(crop.npp/20, (1, :)), reshape(crop.fphu, (1, :)), reshape(temp_n, (1, :)), reshape(crop.wdf/100, (1, :))) .* reshape(crop.isgrowing, (1, :))
-#     if NODE
+#     if node
 #         crop.stoc = neural_stoc(nn_model, reshape(crop.stoc, (1, :)), ps, st, input)
 #     else
 #         crop.stoc = neural_stoc(nn_model, ps, st, input) .* crop.biomass
