@@ -17,10 +17,10 @@ function daily_crop_C4!(day_start,
                         dailyWeather, 
                         output,
                         device;
-                        maize = false
+                        maize = true
 )
 
-    @unpack latitude, climate, lpjml = data_set
+    @unpack latitude, climate, ModelState = data_set
 
     for day = day_start : day_end
 
@@ -42,7 +42,7 @@ function daily_crop_C4!(day_start,
         # compute phenology variables
         phenology_crop!(crop, climbuf.V_req, pftparameters, dailyWeather.temp, pet.daylength)
         
-        harvest_crop!(crop_cal, crop, soil, output, lpjml.crop.residuefrac, device, cell_size, day_of_year) # crop harvesting
+        harvest_crop!(crop_cal, crop, soil, output, ModelState.crop.residuefrac, device, cell_size, day_of_year) # crop harvesting
         
         if maize
             apar_crop_maize!(pftparameters, crop, pet) # crop absorbed photosynthetic radiation
@@ -97,10 +97,10 @@ function daily_crop_C4!(day_start,
                         dailyWeather,
                         output,
                         device;
-                        maize = false
+                        maize = true
 )
 
-    @unpack latitude, climate, lpjml = data_set
+    @unpack latitude, climate, ModelState = data_set
 
     for day = day_start : day_end
 
@@ -122,7 +122,7 @@ function daily_crop_C4!(day_start,
         # compute phenology variables
         phenology_crop!(crop, climbuf.V_req, pftparameters, dailyWeather.temp, pet.daylength)
         
-        harvest_crop!(crop_cal, crop, soil, output, lpjml.crop.residuefrac, device, cell_size, day_of_year) # crop harvesting
+        harvest_crop!(crop_cal, crop, soil, output, ModelState.crop.residuefrac, device, cell_size, day_of_year) # crop harvesting
         
         if maize
             apar_crop_maize!(pftparameters, crop, pet) # crop absorbed photosynthetic radiation
