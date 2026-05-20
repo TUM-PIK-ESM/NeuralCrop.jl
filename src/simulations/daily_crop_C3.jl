@@ -19,7 +19,7 @@ function daily_crop_C3!(start_day,
                         device;
 )
 
-    @unpack latitude, climate, lpjml = data_set
+    @unpack latitude, climate, ModelState = data_set
 
     for day = start_day : end_day
 
@@ -41,7 +41,7 @@ function daily_crop_C3!(start_day,
         # compute phenology variables
         phenology_crop!(crop, climbuf.V_req, pftparameters, dailyWeather.temp, pet.daylength)
         
-        harvest_crop!(crop_cal, crop, soil, output, lpjml.crop.residuefrac, device, cell_size, day_of_year) # crop harvesting
+        harvest_crop!(crop_cal, crop, soil, output, ModelState.crop.residuefrac, device, cell_size, day_of_year) # crop harvesting
         
         apar_crop!(pftparameters, crop, pet) # crop absorbed photosynthetic radiation
         temp_stress(pftparameters, pet, photos, dailyWeather.temp) # temperature stress function
@@ -94,7 +94,7 @@ function daily_crop_C3!(start_day,
                         device;
 )
 
-    @unpack latitude, climate, lpjml = data_set
+    @unpack latitude, climate, ModelState = data_set
 
     for day = start_day : end_day
 
@@ -116,7 +116,7 @@ function daily_crop_C3!(start_day,
         # compute phenology variables
         phenology_crop!(crop, climbuf.V_req, pftparameters, dailyWeather.temp, pet.daylength)
         
-        harvest_crop!(crop_cal, crop, soil, output, lpjml.crop.residuefrac, device, cell_size, day_of_year) # crop harvesting
+        harvest_crop!(crop_cal, crop, soil, output, ModelState.crop.residuefrac, device, cell_size, day_of_year) # crop harvesting
         
         apar_crop!(pftparameters, crop, pet) # crop absorbed photosynthetic radiation
         temp_stress(pftparameters, pet, photos, dailyWeather.temp) # temperature stress function
