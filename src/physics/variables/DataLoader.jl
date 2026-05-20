@@ -6,7 +6,7 @@ function InitilDataLoader(data::NamedTuple,
 )
 
 
-    @unpack latitude, crop, soilparam, lpjml = data
+    @unpack latitude, crop, soilparam, initialLPJmL = data
     
     latitude_set = latitude[data_index] |> device
     
@@ -30,58 +30,58 @@ function InitilDataLoader(data::NamedTuple,
     ) |> device
       
     u0_set = (
-        swc = lpjml.u0.swc[:, data_index],
-        litc = lpjml.u0.litc[:, data_index],
-        fastc = lpjml.u0.fastc[:, data_index],
-        slowc = lpjml.u0.slowc[:, data_index],
-        litn = lpjml.u0.litn[:, data_index],
-        fastn = lpjml.u0.fastn[:, data_index],
-        slown = lpjml.u0.slown[:, data_index],
-        soil_NH4 = lpjml.u0.soil_NH4[:, data_index],
-        soil_NO3 = lpjml.u0.soil_NO3[:, data_index],
+        swc = initialLPJmL.u0.swc[:, data_index],
+        litc = initialLPJmL.u0.litc[:, data_index],
+        fastc = initialLPJmL.u0.fastc[:, data_index],
+        slowc = initialLPJmL.u0.slowc[:, data_index],
+        litn = initialLPJmL.u0.litn[:, data_index],
+        fastn = initialLPJmL.u0.fastn[:, data_index],
+        slown = initialLPJmL.u0.slown[:, data_index],
+        soil_NH4 = initialLPJmL.u0.soil_NH4[:, data_index],
+        soil_NO3 = initialLPJmL.u0.soil_NO3[:, data_index],
     ) |> device
     
     if training && training_by_yield
-        lpjml = (
+        model_state = (
             crop = crop,
-            c_shift_fast = lpjml.c_shift_fast[:, data_index],
-            c_shift_slow = lpjml.c_shift_slow[:, data_index],
+            c_shift_fast = initialLPJmL.c_shift_fast[:, data_index],
+            c_shift_slow = initialLPJmL.c_shift_slow[:, data_index],
             u0 = u0_set,
-            output = lpjml.output[:, data_index],   
-            output_n = lpjml.output_n[:, data_index],   
-            yield = lpjml.yield[:, data_index],   
-            μ = lpjml.μ[data_index],
-            σ = lpjml.σ[data_index],
-            gdhy_yield = lpjml.gdhy_yield[:, data_index]
+            output = initialLPJmL.output[:, data_index],   
+            output_n = initialLPJmL.output_n[:, data_index],   
+            yield = initialLPJmL.yield[:, data_index],   
+            μ = initialLPJmL.μ[data_index],
+            σ = initialLPJmL.σ[data_index],
+            gdhy_yield = initialLPJmL.gdhy_yield[:, data_index]
         ) |> device
     elseif training
-        lpjml = (
+        model_state = (
             crop = crop,
-            c_shift_fast = lpjml.c_shift_fast[:, data_index],
-            c_shift_slow = lpjml.c_shift_slow[:, data_index],
+            c_shift_fast = initialLPJmL.c_shift_fast[:, data_index],
+            c_shift_slow = initialLPJmL.c_shift_slow[:, data_index],
             u0 = u0_set,
-            output = lpjml.output[:, data_index],   
-            output_n = lpjml.output_n[:, data_index],   
-            yield = lpjml.yield[:, data_index],   
-            μ = lpjml.μ[data_index],
-            σ = lpjml.σ[data_index]
+            output = initialLPJmL.output[:, data_index],   
+            output_n = initialLPJmL.output_n[:, data_index],   
+            yield = initialLPJmL.yield[:, data_index],   
+            μ = initialLPJmL.μ[data_index],
+            σ = initialLPJmL.σ[data_index]
         ) |> device
     else
-        lpjml = (
+        model_state = (
             crop = crop,
-            c_shift_fast = lpjml.c_shift_fast[:, data_index],
-            c_shift_slow = lpjml.c_shift_slow[:, data_index],
+            c_shift_fast = initialLPJmL.c_shift_fast[:, data_index],
+            c_shift_slow = initialLPJmL.c_shift_slow[:, data_index],
             u0 = u0_set,
         ) |> device
     end
 
-    data_set = (
+    InitialData = (
         latitude = latitude_set,
-        lpjml = lpjml,
+        ModelState = model_state,
         soilparams = soilparams
     )
 
-    return data_set
+    return InitialData
 end
 
 
