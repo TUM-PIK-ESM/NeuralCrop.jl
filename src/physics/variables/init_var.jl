@@ -24,16 +24,16 @@ function init_structs!(PFT::PftParameters,
     @unpack residue_frac, fastfrac, atmfrac, k_soil10 = lpjmlparams
     @unpack k_litter10, beta_root = PFT
 
-    @unpack lpjml, soilparams = InitialData
+    @unpack ModelState, soilparams = InitialData
 
-    phu = lpjml.crop.phu
-    sdate = lpjml.crop.sdate
-    manure = lpjml.crop.manure
-    fertilizer = lpjml.crop.fertilizer
-    c_shift_fast = lpjml.c_shift_fast
-    c_shift_slow = lpjml.c_shift_slow
-    u0 = lpjml.u0
-    
+    phu = ModelState.crop.phu
+    sdate = ModelState.crop.sdate
+    manure = ModelState.crop.manure
+    fertilizer = ModelState.crop.fertilizer
+    c_shift_fast = ModelState.c_shift_fast
+    c_shift_slow = ModelState.c_shift_slow
+    u0 = ModelState.u0
+
     dailyWeather = init_weather(cell_size, device)
 
     climbuf = init_climbuf(cell_size, device)
