@@ -18,7 +18,7 @@ function InitilDataLoader(data::NamedTuple,
         residuefrac = crop.residuefrac[data_index]
     ) |> device
 
-    soilparams = (
+    soilparam_set = (
         ph = soilparam.soilph[data_index],
         w_sat = soilparam.w_sat[:, data_index],
         sand = reshape(soilparam.sand[data_index], (1, :)),
@@ -78,7 +78,7 @@ function InitilDataLoader(data::NamedTuple,
     InitialData = (
         latitude = latitude_set,
         ModelState = model_state,
-        soilparams = soilparams
+        soilparams = soilparam_set
     )
 
     return InitialData
