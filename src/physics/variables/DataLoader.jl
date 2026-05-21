@@ -42,29 +42,31 @@ function InitilDataLoader(data::NamedTuple,
     ) |> device
     
     if training && training_by_yield
+        @unpack TrainingData = data
         model_state = (
             crop = crop,
             c_shift_fast = initialLPJmL.c_shift_fast[:, data_index],
             c_shift_slow = initialLPJmL.c_shift_slow[:, data_index],
             u0 = u0_set,
-            output = initialLPJmL.output[:, data_index],   
-            output_n = initialLPJmL.output_n[:, data_index],   
-            yield = initialLPJmL.yield[:, data_index],   
-            μ = initialLPJmL.μ[data_index],
-            σ = initialLPJmL.σ[data_index],
-            gdhy_yield = initialLPJmL.gdhy_yield[:, data_index]
+            output = TrainingData.output[:, data_index],   
+            output_n = TrainingData.output_n[:, data_index],   
+            yield = TrainingData.yield[:, data_index],   
+            μ = TrainingData.μ[data_index],
+            σ = TrainingData.σ[data_index],
+            gdhy_yield = TrainingData.gdhy_yield[:, data_index]
         ) |> device
     elseif training
+        @unpack TrainingData = data
         model_state = (
             crop = crop,
             c_shift_fast = initialLPJmL.c_shift_fast[:, data_index],
             c_shift_slow = initialLPJmL.c_shift_slow[:, data_index],
             u0 = u0_set,
-            output = initialLPJmL.output[:, data_index],   
-            output_n = initialLPJmL.output_n[:, data_index],   
-            yield = initialLPJmL.yield[:, data_index],   
-            μ = initialLPJmL.μ[data_index],
-            σ = initialLPJmL.σ[data_index]
+            output = TrainingData.output[:, data_index],   
+            output_n = TrainingData.output_n[:, data_index],   
+            yield = TrainingData.yield[:, data_index],   
+            μ = TrainingData.μ[data_index],
+            σ = TrainingData.σ[data_index]
         ) |> device
     else
         model_state = (
