@@ -17,6 +17,7 @@ function daily_crop_C3!(start_day,
                         dailyWeather, 
                         output,
                         device;
+                        irrigation = false
 )
 
     @unpack latitude, climate, ModelState = data_set
@@ -69,7 +70,7 @@ function daily_crop_C3!(start_day,
         soil_nitrogen!(model, ps, st, dailyWeather.temp_n, dailyWeather.swr_n, crop_cal, soil)
 
         # soil water cycle
-        soil_water!(model.swc, ps.swc, st.swc, soil, crop, dailyWeather.prec, dailyWeather.swr_n, dailyWeather.lwr_n)
+        soil_water!(model.swc, ps.swc, st.swc, soil, crop, dailyWeather.prec, dailyWeather.swr_n, dailyWeather.lwr_n; irrigation = irrigation)
 
     end
 end
@@ -92,6 +93,7 @@ function daily_crop_C3!(start_day,
                         dailyWeather,
                         output,
                         device;
+                        irrigation = false
 )
 
     @unpack latitude, climate, ModelState = data_set
@@ -143,7 +145,7 @@ function daily_crop_C3!(start_day,
         soil_nitrogen!(crop_cal, soil)
 
         # soil water cycle
-        soil_water!(soil, crop, dailyWeather.prec)
+        soil_water!(soil, crop, dailyWeather.prec; irrigation = irrigation)
 
     end
 end
