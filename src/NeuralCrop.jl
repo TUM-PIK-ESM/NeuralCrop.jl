@@ -58,7 +58,7 @@ export output_training!, output_predict!, output_finetune!
 
 # UNITS
 export deg2rad, ppm2Pa, ppm2bar, hour2day, hour2sec, degCtoK
-export min_max_norm, z_score_norm # OnePoint_one_dimension, OnePoint_dimensions, z_score_one_dimension, min_max_one_dimension, divide_data_one_dimension, divide_data_dimensions
+export min_max_norm, z_score_norm, apply_z_score
 
 # DATA
 export InitilDataLoader, ClimateDataLoader, DataLoader, DataLoader_winter_wheat

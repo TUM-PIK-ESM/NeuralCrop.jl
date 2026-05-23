@@ -28,47 +28,19 @@ function z_score_norm(x::AbstractArray{T}) where {T <: AbstractFloat}
     return x_norm, μ, σ
 end
 
+function apply_z_score(x::AbstractArray{T}, μ, σ) where {T <: AbstractFloat}
+    x_norm = similar(x)
 
-# function z_score_input(x::AbstractArray{T},
-#                        device
-# ) where {T <: AbstractFloat}
-
-#     x = Array(x)
-#     x_norm = similar(x)
-
-#     Zygote.ignore() do
-#         if ndims(x) == 1
-#             if size(x, 1) == 1
-#                 return device(reshape(x, (1, :)))
-#             else
-#                 μ = mean(x; dims = 1)
-#                 σ = std(x; dims = 1)
-#                 if σ == 0
-#                     x_norm .= 0.0f0
-#                 else
-#                     x_norm .= (x .- μ) ./ σ
-#                 end
-#                 return device(reshape(x_norm, (1, :)))
-#             end
-#         else
-#             if size(x, 2) == 1
-#                 x_norm .= x
-#                 return device(mean(x_norm, dims = 1))
-#             else
-#                 μ = mean(x; dims = 2)
-#                 σ = std(x; dims = 2)
-#                 for i in axes(x, 2)
-#                     if σ[i] == 0
-#                         x_norm[i, :] .= 0.0f0
-#                     else
-#                         x_norm[i, :] .= (x[i, :] .- μ[i]) ./ σ[i]
-#                     end
-#                 end
-#                 return device(mean(x_norm, dims = 1))
-#             end
-#         end
-#     end
-# end
+    for i in axes(x, 2)
+        if σ[i] == 0
+            x_norm[:, i] .= 0.0f0
+        else
+            x_norm[:, i] = (x[:, i] .- μ[i]) ./ σ[i]
+        end
+    end
+    
+    return x_norm
+end
 
 
 function min_max_one_dimension(x)
