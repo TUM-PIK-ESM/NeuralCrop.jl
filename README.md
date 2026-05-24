@@ -38,7 +38,7 @@ NeuralCrop is not yet registered as a Julia package. You can install it directly
 pkg> add https://github.com/yunan-l/NeuralCrop.jl.git
 ```
 
-or clone the repository to your machine. 
+or clone the repository to your machine: 
 
 ```bash
 git clone https://github.com/yunan-l/NeuralCrop.jl.git
