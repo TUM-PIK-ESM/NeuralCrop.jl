@@ -32,23 +32,27 @@ NeuralCrop is a differentiable global gridded crop model (GGCM) that combines th
 
 ## Installation
 
-NeuralCrop is not yet registered as a Julia package. To use it, you can still install the package from the repository via the package manager (type `]` in your REPL):
-```
+NeuralCrop is not yet registered as a Julia package. You can install it directly from the repository via the package manager (type `]` in your Julia REPL):
+
+```julia
 pkg> add https://github.com/yunan-l/NeuralCrop.jl.git
 ```
 
 or clone the repository to your machine. 
 
-Then, in the Julia REPL, activate the project and instantiate it to replicate our exact package versions:
+```bash
+git clone https://github.com/yunan-l/NeuralCrop.jl.git
+cd NeuralCrop.jl
+```
+
+Then, in the Julia REPL, activate the project and instantiate the dependencies:
 
 ```julia
 pkg> activate(".")
 pkg> instantiate
 ```
 
-<!-- This approach ensures you use the exact versions of all dependencies as specified in `Manifest.toml`, avoiding potential package version conflicts. -->
-
-We recommend running NeuralCrop on Julia version 1.10.x.
+This will resolve compatible package versions for your Julia installation. We recommend running NeuralCrop on Julia version 1.10.x.
 
 
 ## Example use
