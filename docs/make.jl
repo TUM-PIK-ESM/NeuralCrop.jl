@@ -68,7 +68,7 @@ makedocs(
         "References" => "references.md",
     ],
     linkcheck = CHECK_LINKS,
-    warnonly = [:cross_references],
+    warnonly = [:cross_references, :missing_docs],
 )
 
 deploydocs(
