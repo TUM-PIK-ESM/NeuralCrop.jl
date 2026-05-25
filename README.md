@@ -10,7 +10,7 @@ NeuralCrop.jl
 
 <p align="center">
   <a href="https://yunan-l.github.io/NeuralCrop.jl/">
-    <img src="https://img.shields.io/badge/documentation-coming%20soon-orange" alt="Docs Status">
+    <img src="https://img.shields.io/badge/documentation-latest_release-orange" alt="Docs Status">
   </a>
   <a href="https://github.com/yunan-l/NeuralCrop.jl/actions">
     <img src="https://github.com/yunan-l/NeuralCrop.jl/actions/workflows/CI.yml/badge.svg" alt="Build Status">
