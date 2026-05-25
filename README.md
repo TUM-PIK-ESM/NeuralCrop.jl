@@ -29,7 +29,7 @@ NeuralCrop is a differentiable global gridded crop model (GGCM) that combines th
 >
 > NeuralCrop is under further development! At this stage, NeuralCrop is unable to perform spin-up simulations to establish equilibrium soil states. The initial conditions for soil carbon, nitrogen, and water are currently derived from LPJmL.
 >
-> The [documentation](https://yunan-l.github.io/NeuralCrop.jl/) is generated with assistance from Codex 🤖. Its structure and writing style are informed by mature Julia projects, including [SpeedyWeather.jl](https://github.com/SpeedyWeather/SpeedyWeather.jl) and [Oceananigans.jl](https://github.com/CliMA/Oceananigans.jl).
+> The [documentation](https://yunan-l.github.io/NeuralCrop.jl/) is generated with assistance from Codex 🤖.
 
 
 ## Installation
