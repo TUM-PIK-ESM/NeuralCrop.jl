@@ -1,4 +1,4 @@
-# 🌾 NeuralCrop.jl
+# NeuralCrop.jl
 
 NeuralCrop.jl is a framework for differentiable, global gridded crop modeling that combines process-based crop and soil dynamics with trainable neural components. It is designed for hybrid Earth-system modeling workflows where physical structure and machine-learning flexibility are both required.
 
