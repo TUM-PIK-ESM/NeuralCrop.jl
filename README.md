@@ -68,7 +68,7 @@ We warmly welcome the use of NeuralCrop.jl for academic research and educational
 
 > [!NOTE]
 > **🤖 AI Statement**
-
+>
 > The [documentation](https://yunan-l.github.io/NeuralCrop.jl/) is generated with assistance from Codex. Its structure and writing style are informed by mature Julia projects, including [SpeedyWeather.jl](https://github.com/SpeedyWeather/SpeedyWeather.jl) and [Oceananigans.jl](https://github.com/CliMA/Oceananigans.jl).
 
 However, please note that this project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) [license](LICENSE). Any commercial application or redistribution for profit requires explicit prior authorization.
