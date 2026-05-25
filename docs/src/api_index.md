@@ -51,7 +51,7 @@ Use these helpers for daily simulation entry points, output extraction, normaliz
 - Plot/data helpers: `load_nc_file_one_dimension`, `load_nc_file_dimensions`, `plot_loss_curve`
 - Detailed section: [Neural and simulation drivers](#neural-and-simulation-drivers)
 
-## API by source module
+## API by modules
 
 ### Variables and initialization
 Key symbols:
