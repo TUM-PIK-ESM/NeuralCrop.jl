@@ -1,6 +1,6 @@
 # API index
 
-This page provides a compact, module-oriented API map in the style of modern Julia geoscience model documentation. The goal is to help users locate interfaces quickly without reading a long, function-by-function manual.
+This page provides a compact, module-oriented API map in the style of modern Julia model documentation. The goal is to help users locate interfaces quickly without reading a long, function-by-function manual.
 
 ## Full symbol index
 
@@ -22,7 +22,7 @@ Pages = [
     "physics/variables/output.jl",
     "physics/variables/DataLoader.jl",
 ]
-Order = [:type, :function]
+all     = true
 ```
 
 ### Climate and crop processes
@@ -49,7 +49,7 @@ Pages = [
     "physics/crop/fertilizer.jl",
     "physics/crop/harvesting.jl",
 ]
-Order = [:function]
+all     = true
 ```
 
 ### Soil and hybrid processes
@@ -66,7 +66,7 @@ Pages = [
     "hybrid/soil_nitrogen.jl",
     "hybrid/soil_water.jl",
 ]
-Order = [:function]
+all     = true
 ```
 
 ### Neural and simulation drivers
@@ -83,7 +83,7 @@ Pages = [
     "simulations/daily_crop_C3.jl",
     "simulations/daily_crop_C4.jl",
 ]
-Order = [:type, :function]
+all     = true
 ```
 
 ## Notes
