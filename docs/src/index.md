@@ -5,7 +5,7 @@ NeuralCrop.jl is a framework for differentiable, global gridded crop modeling th
 The package targets daily time-step simulations over many grid cells and supports CPU/GPU workflows through Julia's array and accelerator ecosystem.
 
 !!! warning "Under development"
-    NeuralCrop.jl is under active development. At this stage, spin-up simulations for equilibrium soil carbon, nitrogen, and water states are not yet supported; initial soil states are derived from LPJmL outputs.
+    NeuralCrop.jl is under active development. At this stage, spin-up simulations for equilibrium soil carbon, nitrogen, and water states are not yet supported. These initial soil states are derived from LPJmL outputs.
 
 ## Installation
 
