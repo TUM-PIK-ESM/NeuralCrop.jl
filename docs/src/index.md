@@ -24,7 +24,7 @@ julia --project=. -e "import Pkg; Pkg.instantiate()"
 ```
 
 !!! compat "Julia 1.10 is recommended"
-    NeuralCrop.jl currently targets Julia 1.10.x. The repository provides a `Project.toml`; for exact reproducibility, use a matching `Manifest.toml` with the code version used in your experiment.
+    NeuralCrop.jl currently targets Julia 1.10.x.
 
 ## Quick start
 
