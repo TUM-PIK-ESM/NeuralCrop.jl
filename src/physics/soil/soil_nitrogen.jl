@@ -1,3 +1,8 @@
+"""
+soil_nitrogen!(crop_cal, crop, soil)
+
+Update litter and soil nitrogen pools and crop-available mineral nitrogen.
+"""
 function soil_nitrogen!(crop_cal::Calendar,
                         soil::Soil
 )

@@ -1,3 +1,8 @@
+"""
+soil_water!(soil, crop)
+
+Advance soil water state including infiltration, evaporation, and transpiration effects.
+"""
 function soil_water!(soil::Soil,
                      crop::Crop,
                      prec::AbstractArray{T};

@@ -1,5 +1,12 @@
+# Climate buffer updates: monthly aggregation, rolling means, and vernalization metrics.
 using CUDA
 
+"""
+annual_climbuf!(daily_temp, climbuf, PFT, device; n=5, kk=0.05)
+
+Update annual climate-buffer diagnostics used by phenology, including rolling
+monthly means and vernalization requirements.
+"""
 function annual_climbuf!(daily_temp::AbstractArray{T},
                          climbuf::ClimBuf,
                          PFT::PftParameters,
@@ -15,25 +22,26 @@ function annual_climbuf!(daily_temp::AbstractArray{T},
     
     monthlytemp!(daily_temp, climbuf.mtemp, device)
     
-    backend = KernelAbstractions.get_backend(daily_temp)
-
-    kernel = climbuf_mtemp20_kernel!(backend)
-
-    kernel(climbuf.mtemp20, climbuf.mtemp, kk, ndrange=(size(climbuf.mtemp20, 1), size(climbuf.mtemp20, 2)))
-
-    KernelAbstractions.synchronize(backend)
+    # 20-year moving monthly climatology (month, cell).
+    launch_2d!(
+        climbuf_mtemp20_kernel!,
+        climbuf.mtemp20,
+        climbuf.mtemp,
+        kk,
+    )
     # climbuf.mtemp20 .= ifelse.(climbuf.mtemp20 .< -9998, climbuf.mtemp, (1 - kk) * climbuf.mtemp20 .+ kk * climbuf.mtemp)
     
     # getmintemp20_n!(climbuf, n)
-    climbuf.min_temp .= sort(climbuf.mtemp20, dims=1)[1:n, :] # Array to store n coldest months
+    # Keep n coldest months per grid cell for vernalization requirement diagnostics.
+    climbuf.min_temp .= sort(climbuf.mtemp20, dims=1)[1:n, :]
     
-    backend = KernelAbstractions.get_backend(daily_temp)
-
-    kernel = climbuf_V_req_a_kernel!(backend)
-
-    kernel(climbuf.min_temp, climbuf.V_req_a, PFT, n, ndrange=length(climbuf.V_req_a))
-
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        climbuf_V_req_a_kernel!,
+        climbuf.V_req_a,
+        climbuf.min_temp,
+        PFT,
+        n,
+    )
     
     # for m = 1:n
     #     if climbuf.min_temp[m] <= PFT.tv_opt.low && climbuf.min_temp[m]> -9999
@@ -43,13 +51,12 @@ function annual_climbuf!(daily_temp::AbstractArray{T},
     #     end
     # end
     
-    backend = KernelAbstractions.get_backend(daily_temp)
-
-    kernel = climbuf_V_req_kernel!(backend)
-
-    kernel(climbuf.V_req, climbuf.V_req_a, kk, ndrange=length(climbuf.V_req))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        climbuf_V_req_kernel!,
+        climbuf.V_req,
+        climbuf.V_req_a,
+        kk,
+    )
     # climbuf.V_req .= ifelse.(climbuf.V_req .< -9998, climbuf.V_req_a, (1 - kk) * climbuf.V_req .+ kk .* climbuf.V_req_a)
 
     climbuf.atemp_mean = vec(mean(daily_temp, dims = 1))
@@ -73,8 +80,8 @@ end
 end
 
 
-@kernel function climbuf_V_req_a_kernel!(climbuf_min_temp::AbstractArray{T},
-                                         climbuf_V_req_a::AbstractArray{T},
+@kernel function climbuf_V_req_a_kernel!(climbuf_V_req_a::AbstractArray{T},
+                                         climbuf_min_temp::AbstractArray{T},
                                          PFT::PftParameters,
                                          n
 ) where {T <: AbstractFloat}
@@ -149,8 +156,9 @@ function monthlytemp!(daily_temp::AbstractArray{T},
     Return:
         A vector of length 12 representing the average temperature for each month.
     """
-    ndaymonth = device([31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]) #|> gdev
-    start_indices = device([1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335]) #|> gdev
+    # Month metadata is copied to the active device to avoid host reads inside kernels.
+    ndaymonth = device([31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
+    start_indices = device([1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335])
     
     # start_indices = cumsum(vcat(1, ndaymonth[1:end-1]))
     # mtemp = similar(daily_temp, (12, cell_size))  # Store mean temperatures for each month
@@ -162,23 +170,24 @@ function monthlytemp!(daily_temp::AbstractArray{T},
 #         start_idx = end_idx + 1  # Update start index for the next month
 #     end
     
-    backend = KernelAbstractions.get_backend(daily_temp)
-    
-    kernel = monthlytemp_kernel!(backend)
-    
-    kernel(daily_temp, climbuf_mtemp, ndaymonth, start_indices, ndrange=(size(ndaymonth, 1), size(climbuf_mtemp, 2)))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_2d!(
+        monthlytemp_kernel!,
+        climbuf_mtemp,
+        daily_temp,
+        ndaymonth,
+        start_indices,
+    )
     
 end
 
 
-@kernel function monthlytemp_kernel!(daily_temp::AbstractArray{T},
-                                     climbuf_mtemp::AbstractArray{T}, 
+@kernel function monthlytemp_kernel!(climbuf_mtemp::AbstractArray{T}, 
+                                     daily_temp::AbstractArray{T},
                                      ndaymonth::AbstractArray{S},  
                                      start_indices::AbstractArray{S}
 ) where {T <: AbstractFloat, S <: Integer}
     
+    # Launch layout is (month, cell).
     month, cell = @index(Global, NTuple)
     start_idx = start_indices[month]
     days = ndaymonth[month]
@@ -194,17 +203,20 @@ end
 end
 
 
+"""
+daily_climbuf!(temp, climbuf_temp)
+
+Advance the rolling daily temperature buffer by one day.
+"""
 function daily_climbuf!(temp::AbstractArray{T},
                         climbuf_temp::AbstractArray{T}
 ) where {T <: AbstractFloat}
 
-    backend = KernelAbstractions.get_backend(temp)
-
-    kernel = daily_climbuf_kernel!(backend)
-
-    kernel(temp, climbuf_temp, ndrange=length(temp))
-
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        daily_climbuf_kernel!,
+        temp,
+        climbuf_temp,
+    )
 
 end
 
@@ -216,6 +228,7 @@ end
 
     cell = @index(Global)
 
+    # Shift the rolling daily climate buffer left and append today's temperature.
     for day in 2:NDAYS
         climbuf_temp[day-1, cell] = climbuf_temp[day, cell]
     end

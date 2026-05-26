@@ -1,3 +1,8 @@
+"""
+pedotransfer!(soil; lpjmlparams=lpjmlparams)
+
+Derive soil hydraulic properties from texture and depth parameterizations.
+"""
 function pedotransfer!(soil::Soil;
                        lpjmlparams::LPJmLParams = lpjmlparams
 )

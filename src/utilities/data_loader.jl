@@ -29,6 +29,11 @@ function OnePoint_dimensions(file_path::String,
 end
 
 
+"""
+load_nc_file_one_dimension(file_path, variable)
+
+Load a 1D variable from a NetCDF file.
+"""
 function load_nc_file_one_dimension(file_path::String, 
                                     variable::String,
                                     timerange::UnitRange
@@ -43,6 +48,11 @@ function load_nc_file_one_dimension(file_path::String,
     return dataset
 end
 
+"""
+load_nc_file_dimensions(file_path, variable)
+
+Load a multi-dimensional variable from a NetCDF file.
+"""
 function load_nc_file_dimensions(file_path::String, 
                                  variable::String,
                                  timerange::UnitRange

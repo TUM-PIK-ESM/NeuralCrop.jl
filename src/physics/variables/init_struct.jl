@@ -1,3 +1,9 @@
+"""
+init_crop(cell_size, device; carbon_pools=4, soil_layers=5)
+
+Allocate crop, calendar, managed-land, and photosynthesis state containers
+for a domain with `cell_size` grid cells on `device` (CPU/GPU).
+"""
 function init_crop(cell_size::Int,
                    device; # GPU or CPU
                    carbon_pools = 4,
@@ -84,6 +90,11 @@ function init_crop(cell_size::Int,
 
 end
 
+"""
+init_pet(cell_size, device)
+
+Allocate daily potential evapotranspiration parameter buffers on `device`.
+"""
 function init_pet(cell_size::Int,
                   device
 )
@@ -99,6 +110,11 @@ function init_pet(cell_size::Int,
 
 end
 
+"""
+init_weather(cell_size, device)
+
+Allocate daily weather forcing buffers (temperature, precipitation, radiation, CO2).
+"""
 function init_weather(cell_size::Int,
                       device
 )
@@ -120,6 +136,11 @@ function init_weather(cell_size::Int,
 end
 
 
+"""
+init_climbuf(cell_size, device; NDAYS=31, NMONTH=12, NDAYS_YEAR=365, n=5)
+
+Allocate climate rolling buffers used by phenology and temperature-lag processes.
+"""
 function init_climbuf(cell_size::Int,
                       device;
                       NDAYS = 31,
@@ -143,6 +164,11 @@ function init_climbuf(cell_size::Int,
 
 end
 
+"""
+init_soil(cell_size, soildepth, device; litc_layers=3, soil_layers=5)
+
+Allocate layered soil state arrays for water, carbon, nitrogen, and snow states.
+"""
 function init_soil(cell_size::Int,
                    soildepth::AbstractArray{T},
                    device;
@@ -216,6 +242,11 @@ function init_soil(cell_size::Int,
 
 end
 
+"""
+init_data_norm(cell_size, device; carbon_pools=4, litc_layers=3, soil_layers=5)
+
+Allocate normalization buffers for hybrid/neural training pipelines.
+"""
 function init_data_norm(cell_size::Int,
                         device;
                         carbon_pools = 4,
@@ -240,6 +271,11 @@ function init_data_norm(cell_size::Int,
 
 end
 
+"""
+init_output(cell_size, device; vegc_pools=4, litc_layers=3, soil_layers=5)
+
+Allocate output tensors used by simulation and training diagnostics.
+"""
 function init_output(cell_size::Int,
                      device;
                      vegc_pools = 4,
@@ -281,4 +317,3 @@ function init_output(cell_size::Int,
     return output
 
 end
-

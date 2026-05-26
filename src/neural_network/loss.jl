@@ -1,3 +1,8 @@
+"""
+loss_crop_rollout!(daily_crop, day_start, day_end, nn_model, ps, st, parameters, data_i, batch_size, climbuf, crop, crop_cal, photos, pet, soil, managed_land, output, device)
+
+Compute rollout loss for hybrid training against LPJmL-normalized targets.
+"""
 function loss_crop_rollout!(daily_crop, day_start, day_end, nn_model, ps, st, parameters, data_i, batch_size, climbuf, crop, crop_cal, photos, pet, soil, managed_land, output, device)
     
     @unpack lpjml = data_i

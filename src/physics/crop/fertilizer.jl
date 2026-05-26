@@ -1,3 +1,8 @@
+"""
+fertilizer!(crop_cal, ml, crop, soil, day)
+
+Apply manure/fertilizer inputs and split timing to mineral nitrogen pools.
+"""
 function fertilizer!(crop_cal::Calendar,
                      ml::Managed_land,
                      crop::Crop,
@@ -5,31 +10,27 @@ function fertilizer!(crop_cal::Calendar,
                      day
 )
 
-    backend = KernelAbstractions.get_backend(crop.nfertilizer)
-
-    kernel = fertilizer_kernel!(backend)
-    
-    kernel(crop_cal.sdate,
-           ml.manure,
-           ml.fertilizer,
-           crop.nmanure,
-           crop.nfertilizer,
-           crop.fphu,
-           soil.NO3,
-           soil.NH4,
-           day,
-           ndrange=length(crop.nfertilizer))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        fertilizer_kernel!,
+        crop.nfertilizer,
+        crop_cal.sdate,
+        ml.manure,
+        ml.fertilizer,
+        crop.nmanure,
+        crop.fphu,
+        soil.NO3,
+        soil.NH4,
+        day,
+    )
 
 end
 
 
-@kernel function fertilizer_kernel!(crop_cal_sdate::AbstractArray{S},
+@kernel function fertilizer_kernel!(crop_nfertilizer::AbstractArray{T},
+                                    crop_cal_sdate::AbstractArray{S},
                                     ml_manure::AbstractArray{T},
                                     ml_fertilizer::AbstractArray{T},
                                     crop_nmanure::AbstractArray{T},
-                                    crop_nfertilizer::AbstractArray{T},
                                     crop_fphu::AbstractArray{T},
                                     soil_NO3::AbstractArray{M},
                                     soil_NH4::AbstractArray{M},

@@ -1,3 +1,8 @@
+"""
+harvest_crop!(crop_cal, crop, soil, day)
+
+Handle harvest-day biomass removal, residue transfer, and crop state reset.
+"""
 function harvest_crop!(crop_cal::Calendar,
                        crop::Crop,
                        soil::Soil,

@@ -1,3 +1,8 @@
+"""
+daily_crop_C3_training!(...)
+
+Run daily C3 simulation loop tailored for training data generation/rollout.
+"""
 function daily_crop_C3_training!(day_start,
                                  day_end,
                                  model,

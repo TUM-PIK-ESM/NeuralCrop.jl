@@ -1,6 +1,8 @@
+"""Minimal explicit-Euler solver tag for neural ODE updates."""
 struct SciMLEuler
 end 
 
+"""Solve a DE problem with one explicit-Euler step."""
 function solve(prob::SciMLBase.AbstractDEProblem, solver::SciMLEuler; kwargs...)
 
     u = prob.u0
@@ -16,9 +18,11 @@ function solve(prob::SciMLBase.AbstractDEProblem, solver::SciMLEuler; kwargs...)
 end
 
 
+"""Explicit-Euler solver tag returning updated state and litter decay flux."""
 struct SciMLEuler_litc
 end 
 
+"""Solve with explicit Euler and return `(u_new, respiration_like_flux)`."""
 function solve(prob::SciMLBase.AbstractDEProblem, solver::SciMLEuler_litc; kwargs...)
 
     u = prob.u0
@@ -34,9 +38,11 @@ function solve(prob::SciMLBase.AbstractDEProblem, solver::SciMLEuler_litc; kwarg
 end
 
 
+"""Explicit-Euler solver tag for soil-carbon style transition updates."""
 struct SciMLEuler_soilc
 end 
 
+"""Solve with explicit Euler including transition/input forcing terms."""
 function solve(prob::SciMLBase.AbstractDEProblem, solver::SciMLEuler_soilc; kwargs...)
 
     u = prob.u0

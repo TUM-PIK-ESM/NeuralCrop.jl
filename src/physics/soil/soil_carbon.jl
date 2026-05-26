@@ -1,3 +1,8 @@
+"""
+soil_carbon!(crop_cal, crop, soil)
+
+Update litter and soil carbon pools and heterotrophic respiration terms.
+"""
 function soil_carbon!(crop_cal::Calendar,
                       soil::Soil;
                       lpjmlparams::LPJmLParams = lpjmlparams

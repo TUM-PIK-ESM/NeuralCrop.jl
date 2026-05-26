@@ -12,6 +12,12 @@ function z_score_one_dimension(x::AbstractArray{T}) where {T <: AbstractFloat}
     return x_norm, μ, σ
 end
 
+"""
+z_score_norm(x)
+
+Apply z-score normalization along feature dimensions.
+Returns normalized data, mean, and standard deviation.
+"""
 function z_score_norm(x::AbstractArray{T}) where {T <: AbstractFloat}
     μ = vec(mean(x; dims = 1))
     σ = vec(std(x; dims = 1))
@@ -28,6 +34,11 @@ function z_score_norm(x::AbstractArray{T}) where {T <: AbstractFloat}
     return x_norm, μ, σ
 end
 
+"""
+apply_z_score(x, μ, σ)
+
+Normalize `x` using precomputed mean `μ` and standard deviation `σ`.
+"""
 function apply_z_score(x::AbstractArray{T}, μ, σ) where {T <: AbstractFloat}
     x_norm = similar(x)
 
@@ -56,6 +67,11 @@ function min_max_one_dimension(x)
     return x_norm, x_min, x_max
 end
 
+"""
+min_max_norm(x)
+
+Apply min-max normalization and return normalized data plus min/max statistics.
+"""
 function min_max_norm(x)
     
     x_min = vec(minimum(x; dims=1))

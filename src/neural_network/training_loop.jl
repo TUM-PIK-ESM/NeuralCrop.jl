@@ -1,4 +1,9 @@
 # space validation
+"""
+train_loop_rollout!(...)
+
+Run epoch-wise training for rollout-based objectives and checkpoint outputs.
+"""
 function train_loop_rollout!(daily_crop, rollout, nn_model, ps, st, parameters, data, train_i, valid_i, year, loss_func, opt_state, η_schedule, device, save_path; batch_size=10, N_epochs=1, scheduler_offset::Int=0, save_mode::Symbol=:valid)
     
     @assert save_mode in [:valid, :train] "save_mode has to be :valid or :train"
@@ -113,6 +118,11 @@ function train_loop_rollout!(daily_crop, rollout, nn_model, ps, st, parameters, 
 end
 
 # space validation
+"""
+train_loop_winter_wheat_rollout!(...)
+
+Winter-wheat specific rollout training loop with phenology-aware batching.
+"""
 function train_loop_winter_wheat_rollout!(daily_crop, rollout, nn_model, ps, st, parameters, data, train_i, valid_i, year, loss_func, opt_state, η_schedule, device, save_path; batch_size=10, N_epochs=1, scheduler_offset::Int=0, save_mode::Symbol=:valid)
     
     @assert save_mode in [:valid, :train] "save_mode has to be :valid or :train"

@@ -1,3 +1,8 @@
+"""
+respiration!(crop, PFT, temp, assim; lpjmlparams=lpjmlparams)
+
+Compute maintenance and growth respiration and update `crop.resp`.
+"""
 function respiration!(crop::Crop,
                       PFT::PftParameters,
                       temp::AbstractArray{T},
@@ -10,10 +15,13 @@ function respiration!(crop::Crop,
     
     # kernel based
     gtemp_air = similar(temp)
-    backend = KernelAbstractions.get_backend(temp)
-    kernel = temp_response_kernel!(backend)
-    kernel(temp_response, e0, temp, gtemp_air, ndrange=length(assim))
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        temp_response_kernel!,
+        temp,
+        temp_response,
+        e0,
+        gtemp_air,
+    )
     
     # unlimited nitrogen
     rosoresp = crop.rootc * respcoeff * k * nc_ratio.root .* gtemp_air .+ crop.stoc * respcoeff * k * nc_ratio.sto .* gtemp_air
@@ -35,9 +43,9 @@ function respiration!(crop::Crop,
 end
     
     
-@kernel function temp_response_kernel!(temp_response::T,
+@kernel function temp_response_kernel!(temp::AbstractArray{T},
+                                       temp_response::T,
                                        e0::T,
-                                       temp::AbstractArray{T},
                                        gtemp_response::AbstractArray{T}
                                        
             

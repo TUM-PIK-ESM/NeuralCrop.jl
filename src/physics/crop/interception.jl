@@ -1,26 +1,34 @@
+"""
+interception!(crop, PFT, pet_eeq, rain)
+
+Update canopy wetness and interception evaporation for the current day.
+"""
 function interception!(crop::Crop,
                        PFT::PftParameters,
                        pet_eeq::AbstractArray{T},
                        rain::AbstractArray{T}
 ) where {T <: AbstractFloat}
 
-    backend = KernelAbstractions.get_backend(crop.intercep)
-
-    kernel = interception_kernel!(backend)
-    
-    kernel(PFT, crop.canopy_wet, crop.lai, crop.intercep, crop.isgrowing, pet_eeq, rain, ndrange=length(crop.intercep))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        interception_kernel!,
+        crop.intercep,
+        crop.canopy_wet,
+        crop.lai,
+        crop.isgrowing,
+        pet_eeq,
+        rain,
+        PFT
+    )
   
 end
 
-@kernel function interception_kernel!(PFT::PftParameters,
+@kernel function interception_kernel!(crop_intercep::AbstractArray{T},
                                       crop_canopy_wet::AbstractArray{T},
                                       crop_lai::AbstractArray{T},
-                                      crop_intercep::AbstractArray{T},
                                       crop_isgrowing::AbstractArray{S},
                                       pet_eeq::AbstractArray{T},
-                                      rain::AbstractArray{T};
+                                      rain::AbstractArray{T},
+                                      PFT::PftParameters;
                                       lpjmlparams::LPJmLParams = lpjmlparams
 ) where {T <: AbstractFloat, S <: Integer}
     

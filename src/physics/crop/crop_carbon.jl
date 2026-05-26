@@ -1,3 +1,8 @@
+"""
+crop_carbon!(photos, PFT, crop, pet, soil, temp, co2)
+
+Run the daily crop carbon process chain: respiration, allocation, and phenology coupling.
+"""
 function crop_carbon!(photos::Photos,
                       crop::Crop,
                       PFT::PftParameters,

@@ -1,3 +1,8 @@
+"""
+soiltemp_lag!(soil, climbuf, device; DEPTH=0.25f0, DIFFUS_CONV=0.0864f0, HALF_OMEGA=0.008607f0)
+
+Compute lagged soil temperature profile from climate buffer and soil diffusivity.
+"""
 function soiltemp_lag!(soil::Soil,
                        climbuf::ClimBuf,
                        device;
@@ -10,18 +15,19 @@ function soiltemp_lag!(soil::Soil,
     soil_diffus = (soil.tdiff_15 - soil.tdiff_0) ./ 0.15f0 * 0.03f0 + soil.tdiff_0
     soil_alag = DEPTH ./ sqrt.(soil_diffus * DIFFUS_CONV ./ HALF_OMEGA)
 
-    backend = KernelAbstractions.get_backend(climbuf.atemp_mean)
-
-    kernel = soiltemp_lag_kernel!(backend)
-
-    kernel(climbuf.temp, climbuf.atemp_mean, soil_alag, soil.w, soil.temp, a, b, ndrange=length(climbuf.atemp_mean))
-
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(soiltemp_lag_kernel!,
+               climbuf.atemp_mean,
+               climbuf.temp,
+               soil_alag,
+               soil.w,
+               soil.temp,
+               a,
+               b)
 
 end
 
-@kernel function soiltemp_lag_kernel!(climbuf_temp::AbstractArray{M},
-                                      climbuf_atemp_mean::AbstractArray{T},
+@kernel function soiltemp_lag_kernel!(climbuf_atemp_mean::AbstractArray{T},
+                                      climbuf_temp::AbstractArray{M},
                                       soil_alag::AbstractArray{T},
                                       soil_w::AbstractArray{M},
                                       soil_temp::AbstractArray{M},
@@ -52,7 +58,6 @@ end
 end
 
 
-
 function linreg(climbuf_temp::AbstractArray{M},
                 device
 ) where {M <: AbstractFloat}
@@ -61,22 +66,16 @@ function linreg(climbuf_temp::AbstractArray{M},
     a = device(zeros(Float32, size(climbuf_temp, 2)))
     b = device(zeros(Float32, size(climbuf_temp, 2)))
 
-    backend = KernelAbstractions.get_backend(climbuf_temp)
-
-    kernel = linreg_kernel!(backend)
-    
-    kernel(climbuf_temp, a, b, ndrange=size(climbuf_temp, 2))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(linreg_kernel!, a, b, climbuf_temp)
 
     return a, b
 
 end
 
 
-@kernel function linreg_kernel!(climbuf_temp::AbstractArray{M},
-                                a::AbstractArray{T},
+@kernel function linreg_kernel!(a::AbstractArray{T},
                                 b::AbstractArray{T},
+                                climbuf_temp::AbstractArray{M},
                                 NDAYS = 31 # NDAYS
 ) where {T <: AbstractFloat, M <: AbstractFloat}
     

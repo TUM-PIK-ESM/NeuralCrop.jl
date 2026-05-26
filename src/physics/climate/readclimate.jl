@@ -1,3 +1,8 @@
+"""
+readclimate!(climate, day, dailyWeather)
+
+Read one day of climate forcing into runtime weather buffers.
+"""
 function readclimate!(climate::NamedTuple,
                       dailyWeather::DailyWeather,
                       day::Integer

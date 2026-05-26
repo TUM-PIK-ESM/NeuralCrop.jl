@@ -1,4 +1,9 @@
 ### Hybrid modelling
+"""
+daily_crop_C3!(...)
+
+Execute daily forward simulation for C3 crop configuration.
+"""
 function daily_crop_C3!(start_day,
                         end_day,
                         model,

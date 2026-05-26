@@ -1,3 +1,8 @@
+"""
+crop_nitrogen!(crop, PFT, soil, photos_vmax, pet_daylength, temp)
+
+Allocate acquired crop nitrogen among leaf, root, storage, and pool compartments.
+"""
 function crop_nitrogen!(crop::Crop,
                         PFT::PftParameters,
                         soil::Soil,
@@ -10,31 +15,24 @@ function crop_nitrogen!(crop::Crop,
     ndemand_crop!(crop, PFT, photos_vmax, pet_daylength, temp)
     nuptake_crop!(crop, PFT, soil)
 
-    backend = KernelAbstractions.get_backend(crop.nitrogen)
-
-    kernel = crop_nitrogen_kernel!(backend)
-    
-    kernel(PFT,
-           crop.isgrowing,
-           crop.nitrogen,
-           crop.leafc,
-           crop.rootc,
-           crop.stoc,
-           crop.poolc,
-           crop.leafn,
-           crop.rootn,
-           crop.ston,
-           crop.pooln,
-           ndrange=length(crop.nitrogen))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(crop_nitrogen_kernel!,
+               crop.nitrogen,
+               crop.isgrowing,
+               crop.leafc,
+               crop.rootc,
+               crop.stoc,
+               crop.poolc,
+               crop.leafn,
+               crop.rootn,
+               crop.ston,
+               crop.pooln,
+               PFT)
 
 end
 
 
-@kernel function crop_nitrogen_kernel!(PFT::PftParameters,
+@kernel function crop_nitrogen_kernel!(crop_nitrogen::AbstractArray{T},
                                        crop_isgrowing::AbstractArray{S},
-                                       crop_nitrogen::AbstractArray{T},
                                        crop_leafc::AbstractArray{T},
                                        crop_rootc::AbstractArray{T},
                                        crop_stoc::AbstractArray{T},
@@ -42,7 +40,8 @@ end
                                        crop_leafn::AbstractArray{T},
                                        crop_rootn::AbstractArray{T},
                                        crop_ston::AbstractArray{T},
-                                       crop_pooln::AbstractArray{T}
+                                       crop_pooln::AbstractArray{T},
+                                       PFT::PftParameters
 ) where {T <: AbstractFloat, S <: Integer}
 
      cell = @index(Global)
@@ -99,10 +98,14 @@ end
      end
 end
 
+"""
+crop_nitrogen_old!(crop, PFT, soil, param, photos_vmax, pet_daylength, temp)
+
+Legacy nitrogen allocation variant retained for comparison/compatibility.
+"""
 function crop_nitrogen_old!(crop::Crop,
                             PFT::PftParameters,
                             soil::Soil,
-                            param::LPJmLParams,
                             photos_vmax::AbstractArray{T},
                             pet_daylength::AbstractArray{T},
                             temp::AbstractArray{T}
@@ -112,31 +115,24 @@ function crop_nitrogen_old!(crop::Crop,
     ndemand_crop!(crop, PFT, photos_vmax, pet_daylength, temp)
     nuptake_crop!(crop, PFT, soil)
 
-    backend = KernelAbstractions.get_backend(crop.nitrogen)
-
-    kernel = crop_nitrogen_old_kernel!(backend)
-    
-    kernel(PFT,
-           crop.isgrowing,
-           crop.nitrogen,
-           crop.leafc,
-           crop.rootc,
-           crop.stoc,
-           crop.poolc,
-           crop.leafn,
-           crop.rootn,
-           crop.ston,
-           crop.pooln,
-           ndrange=length(crop.nitrogen))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(crop_nitrogen_old_kernel!,
+               crop.nitrogen,
+               crop.isgrowing,
+               crop.leafc,
+               crop.rootc,
+               crop.stoc,
+               crop.poolc,
+               crop.leafn,
+               crop.rootn,
+               crop.ston,
+               crop.pooln,
+               PFT)
 
 end
 
 
-@kernel function crop_nitrogen_old_kernel!(PFT::PftParameters,
+@kernel function crop_nitrogen_old_kernel!(crop_nitrogen::AbstractArray{T},
                                            crop_isgrowing::AbstractArray{S},
-                                           crop_nitrogen::AbstractArray{T},
                                            crop_leafc::AbstractArray{T},
                                            crop_rootc::AbstractArray{T},
                                            crop_stoc::AbstractArray{T},
@@ -144,7 +140,8 @@ end
                                            crop_leafn::AbstractArray{T},
                                            crop_rootn::AbstractArray{T},
                                            crop_ston::AbstractArray{T},
-                                           crop_pooln::AbstractArray{T}
+                                           crop_pooln::AbstractArray{T},
+                                           PFT::PftParameters
 ) where {T <: AbstractFloat, S <: Integer}
 
      cell = @index(Global)

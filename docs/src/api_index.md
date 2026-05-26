@@ -46,7 +46,7 @@ Use these interfaces to embed neural emulators in process updates and train para
 Use these helpers for daily simulation entry points, output extraction, normalization, and plotting.
 
 - Daily simulation drivers: `daily_crop_C3!`, `daily_crop_C4!`
-- Output aggregation: `output_training!`, `output_predict!`, `output_finetune!`
+- Output aggregation: `output_training!`, `output_finetune!`
 - Units and normalization: `deg2rad`, `ppm2Pa`, `ppm2bar`, `hour2day`, `hour2sec`, `degCtoK`, `min_max_norm`, `z_score_norm`, `apply_z_score`
 - Plot/data helpers: `load_nc_file_one_dimension`, `load_nc_file_dimensions`, `plot_loss_curve`
 - Detailed section: [Neural and simulation drivers](#neural-and-simulation-drivers)

@@ -27,6 +27,11 @@
 
 # end
 
+"""
+update_litc_tillage!(soil, crop_cal)
+
+Apply tillage/harvest callbacks to litter carbon pools.
+"""
 function update_litc_tillage!(soil::Soil,
                               crop_cal::Calendar
 )
@@ -36,6 +41,11 @@ function update_litc_tillage!(soil::Soil,
                 (soil.tillage_frac * (soil.litc .+ soil.c_input)) .* reshape(crop_cal.hcallback, (1, :)) 
 end
 
+"""
+update_litn_tillage!(soil, crop_cal)
+
+Apply tillage/harvest callbacks to litter nitrogen pools.
+"""
 function update_litn_tillage!(soil::Soil,
                               crop_cal::Calendar
 )
@@ -47,6 +57,11 @@ function update_litn_tillage!(soil::Soil,
 end
 
 
+"""
+update_lit_winter_wheat!(soil, litch, litnh, crop_wtype, hdate, crop_cal_hcallback, day)
+
+Apply winter-wheat harvest callback logic for litter pool updates.
+"""
 function update_lit_winter_wheat!(soil::Soil,
                                   litch::AbstractArray{M},
                                   litnh::AbstractArray{M},
@@ -59,15 +74,11 @@ function update_lit_winter_wheat!(soil::Soil,
     hdate_callback = copy(crop_cal_hcallback)
 
     Zygote.ignore() do
-        backend = KernelAbstractions.get_backend(hdate_callback)
-        kernel = update_lit_winter_wheat_kernel!(backend)
-        kernel(crop_wtype,
-               hdate,
-               hdate_callback, 
-               day,
-               ndrange=length(hdate_callback)
-        )
-        KernelAbstractions.synchronize(backend)
+        launch_1d!(update_lit_winter_wheat_kernel!,
+                   hdate_callback,
+                   crop_wtype,
+                   hdate,
+                   day)
     end
 
     soil.litc = soil.litc .* (1 .- reshape(hdate_callback, (1, :))) + litch .* reshape(hdate_callback, (1, :)) 
@@ -76,9 +87,9 @@ function update_lit_winter_wheat!(soil::Soil,
 end
 
 
-@kernel function update_lit_winter_wheat_kernel!(crop_wtype::AbstractArray{B},
+@kernel function update_lit_winter_wheat_kernel!(hdate_callback::AbstractArray{S},
+                                                 crop_wtype::AbstractArray{B},
                                                  hdate::AbstractArray{S},
-                                                 hdate_callback::AbstractArray{S},
                                                  day::Int
 
 ) where {B <: Bool, S <: Integer}

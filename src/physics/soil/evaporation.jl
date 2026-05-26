@@ -1,26 +1,25 @@
+"""
+evaporation!(pet_eeq, crop, soil)
+
+Compute layer-wise bare-soil evaporation constrained by near-surface water.
+"""
 function evaporation!(pet_eeq::AbstractArray{T},
                       crop::Crop,
                       soil::Soil
     
 ) where {T <: AbstractFloat}
 
-    backend = KernelAbstractions.get_backend(pet_eeq)
-
-    kernel = evaporation_kernel!(backend)
-    
-    kernel(pet_eeq, 
-           crop.fpar, 
-           crop.trans_layer,
-           crop.canopy_wet, 
-           soil.swc,
-           soil.wpwps,
-           soil.whcs,
-           soil.evap,
-           soil.agtop_cover,
-           soil.layer_depth,
-           ndrange=length(pet_eeq))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(evaporation_kernel!,
+               pet_eeq,
+               crop.fpar,
+               crop.trans_layer,
+               crop.canopy_wet,
+               soil.swc,
+               soil.wpwps,
+               soil.whcs,
+               soil.evap,
+               soil.agtop_cover,
+               soil.layer_depth)
 
 end
 

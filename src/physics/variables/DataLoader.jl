@@ -1,3 +1,8 @@
+"""
+InitialDataLoader(data, data_index, device)
+
+Build initial model-state inputs from forcing/parameter datasets.
+"""
 function InitialDataLoader(data::NamedTuple, 
                           data_index::Vector{Int},
                           device;
@@ -87,6 +92,11 @@ function InitialDataLoader(data::NamedTuple,
 end
 
 
+"""
+ClimateDataLoader(climate, data_index, device)
+
+Extract climate forcing slices for selected grid points and years.
+"""
 function ClimateDataLoader(climate::NamedTuple, 
                            data_index::Vector{Int},
                            device
@@ -111,6 +121,11 @@ end
 
 
 
+"""
+DataLoader(data, data_index, device)
+
+Load and package training/simulation data for standard crop workflows.
+"""
 function DataLoader(data::NamedTuple, 
                     data_index::Vector{Int},
                     device
@@ -219,6 +234,11 @@ function DataLoader(data::NamedTuple,
 end
 
 
+"""
+DataLoader_winter_wheat(data, data_index, device)
+
+Load and package data for winter-wheat-specific workflows.
+"""
 function DataLoader_winter_wheat(data::NamedTuple, 
                                  data_index::Vector{Int},
                                  device

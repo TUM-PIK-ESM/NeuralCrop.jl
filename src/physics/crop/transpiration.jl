@@ -1,3 +1,8 @@
+"""
+transpiration!(photos_adtmm, PFT, crop, pet, soil, co2; lpjmlparams=lpjmlparams)
+
+Compute water demand/supply balance and layer-resolved transpiration uptake.
+"""
 function transpiration!(photos_adtmm::AbstractArray{T},
                         PFT::PftParameters,
                         crop::Crop,
@@ -9,47 +14,40 @@ function transpiration!(photos_adtmm::AbstractArray{T},
 
     @unpack LAMBDA_OPT = lpjmlparams
 
-    crop.gp = (1.6f0 * photos_adtmm ./ (ppm2bar(co2) * (1 - LAMBDA_OPT) .* hour2sec(pet.daylength))) .+ crop.fpar # potential canopy conductance
+    # Potential canopy conductance from photosynthesis and atmospheric CO2.
+    crop.gp = (1.6f0 * photos_adtmm ./ (ppm2bar(co2) * (1 - LAMBDA_OPT) .* hour2sec(pet.daylength))) .+ crop.fpar
 
+    # Root-zone weighted soil water availability per cell.
     wr = sum(soil.w .* crop.rootdist, dims = 1)
     # supply = emax * wr .* (1 .- exp.(-0.04f0 * crop.rootc))
     # demand = ifelse.(crop.gp .> 0, (1 .- crop.canopy_wet) .* pet.eeq * ALPHAM ./ (1 .+ (GM * ALPHAM) ./ crop.gp), zero(T))
     # transp = ifelse.(wr .> 0, min.(supply, demand) ./ wr .* fpc, zero(T)) # here the crop.fpc = 1, so we just omit it in the kernel fucntion
 
-    backend = KernelAbstractions.get_backend(crop.gp)
-
-    kernel = water_demand_supply_kernel!(backend)
-    
-    kernel(lpjmlparams, 
-           PFT, 
-           crop.trans_layer, 
-           crop.w_demandsum,
-           crop.w_supplysum,
-           crop.wdf,
-           crop.wscal,
-           crop.gp, 
-           crop.rootc, 
-           crop.canopy_wet,
-           crop.isgrowing,
-           pet.eeq, 
-           crop.rootdist, 
-           soil.w, 
-           soil.whcs, 
-           wr, 
-           ndrange=length(crop.gp))
-
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(water_demand_supply_kernel!,
+               crop.gp,
+               crop.trans_layer,
+               crop.w_demandsum,
+               crop.w_supplysum,
+               crop.wdf,
+               crop.wscal,
+               crop.rootc,
+               crop.canopy_wet,
+               crop.isgrowing,
+               pet.eeq,
+               crop.rootdist,
+               soil.w,
+               soil.whcs,
+               wr,
+               PFT)
 
 end
 
-@kernel function water_demand_supply_kernel!(lpjmlparams::LPJmLParams,
-                                             PFT::PftParameters,
+@kernel function water_demand_supply_kernel!(crop_gp::AbstractArray{T},
                                              crop_trans_layer::AbstractArray{T},
                                              crop_w_demandsum::AbstractArray{T},
                                              crop_w_supplysum::AbstractArray{T},
                                              crop_wdf::AbstractArray{T},
                                              crop_wscal::AbstractArray{T},
-                                             crop_gp::AbstractArray{T},
                                              crop_rootc::AbstractArray{T},
                                              crop_canopy_wet::AbstractArray{T},
                                              crop_isgrowing::AbstractArray{S},
@@ -57,7 +55,9 @@ end
                                              crop_rootdist::AbstractArray{T},
                                              soil_w::AbstractArray{M},
                                              soil_whcs::AbstractArray{M},
-                                             wr::AbstractArray{T};
+                                             wr::AbstractArray{T},
+                                             PFT::PftParameters;
+                                             lpjmlparams::LPJmLParams = lpjmlparams,
                                              soil_layers = 5
 ) where {T <: AbstractFloat, M <: AbstractFloat, S <: Integer}
     
@@ -96,6 +96,7 @@ end
             crop_wscal[cell] = one(T)
         end
 
+        # Potential transpiration constrained by demand/supply and canopy fraction.
         if wr[cell] > 0
             transp = min(supply, demand) / wr[cell] * fpc
         else
@@ -104,6 +105,7 @@ end
 
         transp_cor = zero(T)
 
+        # Apply layer-wise extraction cap so uptake does not exceed layer storage.
         if transp > 0
             for l in 1:soil_layers
                 transp_frac = 1
@@ -130,6 +132,7 @@ end
             transp = zero(T)
         end
 
+        # Distribute corrected transpiration back to layers by root distribution.
         for l in 1:soil_layers
             crop_trans_layer[l, cell] = transp * crop_rootdist[l] * soil_w[l, cell]
             if crop_trans_layer[l, cell] > soil_w[l, cell] * soil_whcs[l, cell]

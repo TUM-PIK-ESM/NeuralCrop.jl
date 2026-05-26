@@ -1,9 +1,19 @@
-""" LPJmL Parameters"""
+"""
+K_Soil10{T}
+
+Temperature-scaled decomposition coefficients for fast and slow soil pools.
+"""
 struct K_Soil10{T} # lower and upper coldest monthly mean temperature(deg C)
     fast::T
     slow::T
 end
 
+"""
+LPJmLParams{T}
+
+Global model parameter set controlling photosynthesis, respiration,
+water, nitrogen, and management process coefficients.
+"""
 @kwdef struct LPJmLParams{T}
     ko25::T = 3.0e4
     kc25::T = 30.0
@@ -41,7 +51,11 @@ end
     maxsnowpack::T = 20000.0 # maximum snowpack (mm)
 end
 
-""" Photosynthesis Parameters"""
+"""
+PhotoParams{T}
+
+Photosynthesis-specific constants used by C3/C4 process functions.
+"""
 @kwdef struct PhotoParams{T}
     po2::T = 20.9e3
     p::T = 1.0e5
@@ -58,7 +72,9 @@ end
 end
 
 
-""" Soil Parameters"""
+"""
+Soil texture and hydraulic default lookup vectors used to initialize `SoilParams`.
+"""
 sand = Float32.([0.22, 0.06, 0.52, 0.32, 0.10, 0.58, 0.43, 0.17, 0.58, 0.10, 0.82, 0.92, 0.24, 0.99])
 silt = Float32.([0.20, 0.47, 0.06, 0.34, 0.56, 0.15, 0.39, 0.70, 0.32, 0.60, 0.12, 0.05, 0.28, 0.00])
 clay = Float32.([0.58, 0.47, 0.42, 0.34, 0.34, 0.27, 0.18, 0.13, 0.10, 0.30, 0.06, 0.03, 0.48, 0.01])
@@ -72,6 +88,12 @@ soildepth = Float32.([200.0, 300.0, 500.0, 1000.0, 1000.0]) # five-layer soil de
 layerbound = Float32.([200.0, 500.0, 1000.0, 2000.0, 3000.0])
 # beta_root = Float32.([0.969, 0.969, 0.969, 0.969]) # for crop, wheat, rice, mazie, soybean
 
+"""
+SoilParams{T}
+
+Default soil parameter table for texture, saturation water content, and
+thermal diffusivity references.
+"""
 @kwdef struct SoilParams{T}
     sand::Vector{T} = sand
     silt::Vector{T} = silt
@@ -82,11 +104,33 @@ layerbound = Float32.([200.0, 500.0, 1000.0, 2000.0, 3000.0])
     soildepth::Vector{T} = soildepth
 end
 
+"""
+lpjmlparams
+
+Default `LPJmLParams{Float32}` singleton used across process routines.
+"""
 const lpjmlparams = LPJmLParams{Float32}()
+
+"""
+photoparams
+
+Default `PhotoParams{Float32}` singleton used in photosynthesis kernels.
+"""
 const photoparams = PhotoParams{Float32}()
+
+"""
+soilparams
+
+Default `SoilParams{Float32}` singleton for soil initialization.
+"""
 const soilparams = SoilParams{Float32}()
 
 
+"""
+SnowParams{T}
+
+Physical constants for snow accumulation, insulation, and melt processes.
+"""
 @kwdef struct SnowParams{T}
     tsnow::T = 0.0
     snow_skin_depth::T = 40.0 # snow skin layer depth (mm water equivalent)
@@ -97,4 +141,9 @@ const soilparams = SoilParams{Float32}()
     c_roughness::T = 0.06 # height of vegetation below the canopy
 end
 
+"""
+snowparams
+
+Default `SnowParams{Float32}` singleton used by `snow!`.
+"""
 const snowparams = SnowParams{Float32}()

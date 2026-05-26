@@ -1,3 +1,8 @@
+"""
+ndemand_crop!(crop, PFT, photos_vmax, pet_daylength, temp)
+
+Compute crop nitrogen demand from photosynthetic potential and organ stoichiometry.
+"""
 function ndemand_crop!(crop::Crop,
                        PFT::PftParameters,
                        photos_vmax::AbstractArray{T},
@@ -5,40 +10,36 @@ function ndemand_crop!(crop::Crop,
                        temp::AbstractArray{T}
 ) where {T <: AbstractFloat}
 
-    backend = KernelAbstractions.get_backend(crop.ndemand_tot)
-
-    kernel = ndemand_crop_kernel!(backend)
-    
-    kernel(PFT,
-           crop.lai, 
-           crop.leafc, 
-           crop.rootc, 
-           crop.poolc, 
-           crop.stoc, 
-           crop.ndemand_leaf,
-           crop.ndemand_tot,
-           crop.isgrowing, 
-           pet_daylength, 
-           photos_vmax, 
-           temp, 
-           ndrange=length(crop.ndemand_tot))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        ndemand_crop_kernel!,
+        crop.ndemand_tot,
+        crop.lai, 
+        crop.leafc, 
+        crop.rootc, 
+        crop.poolc, 
+        crop.stoc, 
+        crop.ndemand_leaf,
+        crop.isgrowing, 
+        pet_daylength, 
+        photos_vmax, 
+        temp,
+        PFT
+    )
   
 end
 
-@kernel function ndemand_crop_kernel!(PFT::PftParameters,
+@kernel function ndemand_crop_kernel!(crop_ndemand_tot::AbstractArray{T},
                                       crop_lai::AbstractArray{T},
                                       crop_leafc::AbstractArray{T},
                                       crop_rootc::AbstractArray{T},
                                       crop_poolc::AbstractArray{T},
                                       crop_stoc::AbstractArray{T},
                                       crop_ndemand_leaf::AbstractArray{T},
-                                      crop_ndemand_tot::AbstractArray{T},
                                       crop_isgrowing::AbstractArray{S},
                                       pet_daylength::AbstractArray{T},
                                       photos_vmax::AbstractArray{T},
-                                      temp::AbstractArray{T};
+                                      temp::AbstractArray{T},
+                                      PFT::PftParameters;
                                       lpjmlparams::LPJmLParams = lpjmlparams,
                                       k_l = 0.08f0 # Priestley-Taylor coefficient
 ) where {T <: AbstractFloat, S <: Integer}

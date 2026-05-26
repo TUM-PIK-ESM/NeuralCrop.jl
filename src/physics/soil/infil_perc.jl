@@ -1,35 +1,33 @@
+"""
+infil_perc!(soil; lpjmlparams=lpjmlparams)
+
+Update infiltration, percolation, runoff, and nitrate transport through soil layers.
+"""
 function infil_perc!(soil::Soil;
                     lpjmlparams::LPJmLParams = lpjmlparams
 )
-
-    backend = KernelAbstractions.get_backend(soil.infil)
-
-    kernel = infil_perc_kernel!(backend)
-
-    kernel(soil.infil,           
-           soil.w,       
-           soil.whcs,       
-           soil.w_fw,
-           soil.wsat,
-           soil.wsats,
-           soil.wpwp,
-           soil.wpwps,               
-           soil.w_influx,
-           soil.w_outflux,
-           soil.Ks,
-           soil.srunoff,
-           soil.lrunoff,
-           soil.outflux_f,
-           soil.perc,
-           soil.agtop_cover,
-           soil.beta_soil,
-           soil.NO3,
-           soil.layer_depth,
-           lpjmlparams, 
-           ndrange=length(soil.infil)
-    )
-
-    KernelAbstractions.synchronize(backend)
+    # One-cell kernel launch; each thread updates the full vertical soil column for that cell.
+    launch_1d!(infil_perc_kernel!,
+               soil.infil,
+               soil.w,
+               soil.whcs,
+               soil.w_fw,
+               soil.wsat,
+               soil.wsats,
+               soil.wpwp,
+               soil.wpwps,
+               soil.w_influx,
+               soil.w_outflux,
+               soil.Ks,
+               soil.srunoff,
+               soil.lrunoff,
+               soil.outflux_f,
+               soil.perc,
+               soil.agtop_cover,
+               soil.beta_soil,
+               soil.NO3,
+               soil.layer_depth,
+               lpjmlparams)
 
 end
 
@@ -80,10 +78,12 @@ end
     influx = zero(T)
     
     iter = 0
-    while (infil[cell] > 1.0f-5 || freewater > 1.0f-5) && iter < 500 ## avoid infinite loop
+    # Iterative slug infiltration + redistribution; hard cap prevents non-convergent loops.
+    while (infil[cell] > 1.0f-5 || freewater > 1.0f-5) && iter < 500
         iter += 1
         NO3perc_ly = zero(T)
         freewater = zero(T)
+        # Process infiltration in bounded slugs for numerical stability.
         slug = min(4, infil[cell])
         infil[cell] -= slug
         
@@ -119,7 +119,7 @@ end
                 lrunoff += grunoff
             end
 
-            # percolation
+            # Percolation from layer l to l+1 (or to outflux at bottom layer).
             if (soil_w[l, cell] - percthres) > (1.0f-5 / soil_whcs[l, cell])
                 # Calculate hydraulic conductivity
                 HC = soil_Ks[l, cell] * ((soil_w[l, cell] * soil_whcs[l, cell] + soil_wpwps[l, cell]) / soil_wsats[l, cell])^soil_beta_soil[l, cell]
@@ -170,7 +170,7 @@ end
                     vno3 = soil_NO3[l, cell] * (1 - exp(ww))
                     concNO3_mobile = max(vno3 / w_mobile, zero(0))
                 end
-                # NO3surf = zero(T)
+                # Surface runoff NO3 can be added here if a dedicated pool is introduced.
                 srunoff = zero(T)
                 NO3lat = zero(T)
                 if l == 1

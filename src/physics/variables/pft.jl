@@ -1,4 +1,9 @@
-""" PFT structure"""
+"""
+PftParameters{T,S}
+
+Plant functional type parameter bundle for one crop type.
+Contains phenology, photosynthesis, allocation, and nutrient traits.
+"""
 struct Temp{T} # lower and upper coldest monthly mean temperature(deg C)
     low::T
     high::T
@@ -100,7 +105,11 @@ end
     himin::T
 end
 
-""" temperate cereals (wheat)"""
+"""
+cft1
+
+Default PFT preset for temperate cereals (wheat-like C3 crop).
+"""
 cft1 = PftParameters{Float32, Int32}(
     name = 1,
     plant_type = 1,
@@ -149,7 +158,11 @@ cft1 = PftParameters{Float32, Int32}(
     himin = 0.20
 )
 
-""" rice """
+"""
+cft2
+
+Default PFT preset for rice (C3).
+"""
 cft2 = PftParameters{Float32, Int32}(
     name = 2,
     plant_type = 1,
@@ -198,7 +211,11 @@ cft2 = PftParameters{Float32, Int32}(
     himin = 0.25
 )
 
-""" mazie """
+"""
+cft3
+
+Default PFT preset for maize (C4).
+"""
 cft3 = PftParameters{Float32, Int32}(
     name = 3,
     plant_type = 1,
@@ -247,7 +264,11 @@ cft3 = PftParameters{Float32, Int32}(
     himin = 0.30
 )
 
-""" soybean """
+"""
+cft4
+
+Default PFT preset for soybean (C3).
+"""
 cft4 = PftParameters{Float32, Int32}(
     name = 4,
     plant_type = 1,

@@ -25,3 +25,4 @@ function soil_water!(nn_model,
         # # soil.swc = neural_moisture(nn_model, soil.swc, ps, st, input, soil.layer_depth, soil.perc, crop.trans_layer)
     end
 end
+# Hybrid soil water process integration.

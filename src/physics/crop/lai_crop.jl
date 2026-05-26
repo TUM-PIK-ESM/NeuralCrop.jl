@@ -1,30 +1,30 @@
+"""
+lai_crop!(crop, PFT)
+
+Update leaf-area index from phenology and carbon state.
+"""
 function lai_crop!(crop::Crop,
                    PFT::PftParameters
 )
 
-    backend = KernelAbstractions.get_backend(crop.lai)
-    
-    kernel = lai_crop_kernel!(backend)
-    
-    kernel(crop.senescence, 
-           crop.senescence0, 
-           crop.lai, 
-           crop.wscal, 
-           crop.vscal, 
-           crop.flaimax, 
-           crop.laimax_adjusted, 
-           crop.isgrowing, 
-           PFT, 
-           ndrange=length(crop.lai)
-           )
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        lai_crop_kernel!,
+        crop.lai,
+        crop.senescence, 
+        crop.senescence0, 
+        crop.wscal, 
+        crop.vscal, 
+        crop.flaimax, 
+        crop.laimax_adjusted, 
+        crop.isgrowing, 
+        PFT,
+    )
   
 end
 
-@kernel function lai_crop_kernel!(crop_senescence::AbstractArray{B}, 
+@kernel function lai_crop_kernel!(crop_lai::AbstractArray{T},
+                                  crop_senescence::AbstractArray{B}, 
                                   crop_senescence0::AbstractArray{B},           
-                                  crop_lai::AbstractArray{T},
                                   crop_wscal::AbstractArray{T},
                                   crop_vscal::AbstractArray{T},
                                   crop_flaimax::AbstractArray{T},
@@ -62,25 +62,34 @@ end
 end
 
 
+"""
+lai_deficit!(crop, PFT)
+
+Apply LAI deficit correction under senescence or carbon-limited states.
+"""
 function lai_deficit!(crop::Crop,
                       PFT::PftParameters
 )
 
-    backend = KernelAbstractions.get_backend(crop.lai)
-    
-    kernel = lai_deficit_kernel!(backend)
-    
-    kernel(crop.senescence, crop.biomass, crop.rootc, crop.leafc, crop.lai, crop.lai_nppdeficit, crop.isgrowing, PFT, ndrange=length(crop.lai))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        lai_deficit_kernel!,
+        crop.lai,
+        crop.senescence,
+        crop.biomass,
+        crop.rootc,
+        crop.leafc,
+        crop.lai_nppdeficit,
+        crop.isgrowing,
+        PFT,
+    )
   
 end
 
-@kernel function lai_deficit_kernel!(crop_senescence::AbstractArray{B},           
+@kernel function lai_deficit_kernel!(crop_lai::AbstractArray{T},           
+                                     crop_senescence::AbstractArray{B},           
                                      crop_biomass::AbstractArray{T},           
                                      crop_rootc::AbstractArray{T}, 
-                                     crop_leafc::AbstractArray{T},   
-                                     crop_lai::AbstractArray{T},           
+                                     crop_leafc::AbstractArray{T},
                                      crop_lai_nppdeficit::AbstractArray{T},
                                      crop_isgrowing::AbstractArray{S},       
                                      PFT::PftParameters

@@ -1,13 +1,20 @@
+"""
+snow!(soil, dailyWeather)
+
+Update snowpack, snow height, and snow cover fraction from daily temperature
+and precipitation forcing.
+"""
 function snow!(soil::Soil,
                dailyWeather::DailyWeather
 )
-    backend = KernelAbstractions.get_backend(dailyWeather.temp)
-    
-    kernel = snow_kernel!(backend)
-    
-    kernel(dailyWeather.temp, dailyWeather.prec, soil.snowpack, soil.snowheight, soil.snowfraction, ndrange=length(dailyWeather.temp))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        snow_kernel!,
+        dailyWeather.temp,
+        dailyWeather.prec,
+        soil.snowpack,
+        soil.snowheight,
+        soil.snowfraction,
+    )
 
 end
 

@@ -1,3 +1,8 @@
+"""
+hybrid_photos_C3!(nn_model, ps, st, PFT, photos, crop, pet, co2, temp)
+
+Run C3 photosynthesis with selected neural-emulator substitutions.
+"""
 function hybrid_photos_C3!(nn_model,
                            ps,
                            st,
@@ -27,6 +32,11 @@ function hybrid_photos_C3!(nn_model,
 end
 
 
+"""
+hybrid_photos_C4!(nn_model, ps, st, PFT, photos, crop, pet, co2, temp)
+
+Run C4 photosynthesis with selected neural-emulator substitutions.
+"""
 function hybrid_photos_C4!(nn_model,
                            ps,
                            st,
@@ -54,3 +64,4 @@ function hybrid_photos_C4!(nn_model,
     # photos.adtmm = photos.adtmm .* crop.isgrowing
     # photos.rd = photos.rd .* crop.isgrowing
 end
+# Hybrid photosynthesis routines coupling process equations and neural surrogates.

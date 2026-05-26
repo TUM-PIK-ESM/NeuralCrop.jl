@@ -1,4 +1,8 @@
-# lambda
+"""
+neural_lambda(n, ps, st, input)
+
+Predict stomatal-regulation `lambda` from neural emulator.
+"""
 function neural_lambda(n::MLP, ps, st, input)
     
     st_model = Lux.StatefulLuxLayer{true}(n.model, ps, st)
@@ -8,7 +12,11 @@ function neural_lambda(n::MLP, ps, st, input)
 end
 
 
-# vmax
+"""
+neural_vmax(n, ps, st, input)
+
+Predict photosynthetic capacity `vmax` from neural emulator.
+"""
 function neural_vmax(n::MLP, ps, st, input)
     
     st_model = Lux.StatefulLuxLayer{true}(n.model, ps, st)
@@ -18,7 +26,11 @@ function neural_vmax(n::MLP, ps, st, input)
 end
 
 
-# storage carbon
+"""
+neural_stoc(n, u0, ps, st, input; dt=1.0f0)
+
+Predict storage-carbon state trajectory using NODE/MLP emulators.
+"""
 function neural_stoc(n::NODE, u0, ps, st, input; dt = 1.0f0)
     
     st_model = Lux.StatefulLuxLayer{true}(n.model, ps, st)
@@ -39,7 +51,11 @@ function neural_stoc(n::MLP, ps, st, input)
 end
 
 
-# vegetation carbon pools
+"""
+neural_allocation(n, u0, ps, st, input; dt=1.0f0)
+
+Predict multi-pool vegetation carbon allocation with a NODE emulator.
+"""
 function neural_allocation(n::NODE, u0, ps, st, input; dt = 1.0f0)
     
     st_model = Lux.StatefulLuxLayer{true}(n.model, ps, st)
@@ -52,7 +68,11 @@ function neural_allocation(n::NODE, u0, ps, st, input; dt = 1.0f0)
 end
 
 
-# litter carbon pools
+"""
+hybrid_litc(n, u0, ps, st, input, response; dt=1.0f0)
+
+Hybrid litter-carbon update where decay rates are modulated by neural outputs.
+"""
 function hybrid_litc(n::NODE, u0, ps, st, input, response; dt = 1.0f0)
     
     st_model = Lux.StatefulLuxLayer{true}(n.model, ps, st)
@@ -65,7 +85,11 @@ function hybrid_litc(n::NODE, u0, ps, st, input, response; dt = 1.0f0)
 end
 
 
-# litter nitrogen pools
+"""
+hybrid_litn(n, u0, ps, st, input, response; dt=1.0f0)
+
+Hybrid litter-nitrogen update where decay rates are modulated by neural outputs.
+"""
 function hybrid_litn(n::NODE, u0, ps, st, input, response; dt = 1.0f0)
     
     st_model = Lux.StatefulLuxLayer{true}(n.model, ps, st)
@@ -78,7 +102,11 @@ function hybrid_litn(n::NODE, u0, ps, st, input, response; dt = 1.0f0)
 end
 
 
-# soil carbon pools
+"""
+hybrid_soilc(n, u0, ps, st, input, response, A_trans, c_input; dt=1.0f0)
+
+Hybrid soil-carbon update including transition matrix and external inputs.
+"""
 function hybrid_soilc(n::NODE, u0, ps, st, input, response, A_trans, c_input; dt = 1.0f0)
 
     st_model = Lux.StatefulLuxLayer{true}(n.model, ps, st)
@@ -91,7 +119,11 @@ function hybrid_soilc(n::NODE, u0, ps, st, input, response, A_trans, c_input; dt
 end
 
 
-# soil nitrogen pools
+"""
+hybrid_soiln(n, u0, ps, st, input, response, A_trans, c_input; dt=1.0f0)
+
+Hybrid soil-nitrogen update including transition matrix and external inputs.
+"""
 function hybrid_soiln(n::NODE, u0, ps, st, input, response, A_trans, c_input; dt = 1.0f0)
 
     st_model = Lux.StatefulLuxLayer{true}(n.model, ps, st)
@@ -104,7 +136,11 @@ function hybrid_soiln(n::NODE, u0, ps, st, input, response, A_trans, c_input; dt
 end
 
 
-# soil water pools
+"""
+neural_moisture(n, u0, ps, st, input, soildepth, perc, transp; dt=1.0f0)
+
+Hybrid soil-moisture update combining water balance terms with neural correction.
+"""
 function neural_moisture(n::NODE, u0, ps, st, input, soildepth, perc, transp, evapor; dt = 1.0f0)
     
     st_model = Lux.StatefulLuxLayer{true}(n.model, ps, st)

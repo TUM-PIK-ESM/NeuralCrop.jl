@@ -1,3 +1,4 @@
+# NeuralCrop module entry: includes process modules, utilities, and exports.
 module NeuralCrop
 
 # Write your package code here.
@@ -54,7 +55,7 @@ export evaporation!, soil_water!
 export nitrogen_transform!, soil_nitrogen!, update_litc_tillage!, update_litn_tillage!
 
 # OUTPUT
-export output_training!, output_predict!, output_finetune!
+export output_training!, output_finetune!
 
 # UNITS
 export deg2rad, ppm2Pa, ppm2bar, hour2day, hour2sec, degCtoK
@@ -142,6 +143,7 @@ include("neural_network/training_loop.jl")
 include("training/daily_crop_C3_training.jl")
 
 ### Utilities
+include("utilities/kernel_launch.jl")
 include("utilities/data_loader.jl")
 include("utilities/data_norm.jl")
 include("utilities/utils.jl")

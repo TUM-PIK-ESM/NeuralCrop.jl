@@ -1,3 +1,8 @@
+"""
+spin_up_climbuf!(PFT, climate, climbuf, day, lat, temp, lwnet, swdown, output)
+
+Run climate-buffer spin-up for one step before full crop process integration.
+"""
 function spin_up_climbuf!(PFT::PftParameters, 
                           temp_spinup::AbstractArray{T}, 
                           climbuf::ClimBuf,
@@ -15,6 +20,11 @@ function spin_up_climbuf!(PFT::PftParameters,
 
 end
 
+"""
+update_climbuf!(PFT, climbuf, day, lat, temp, lwnet, swdown)
+
+Update climate-buffer and PET diagnostics during daily simulation.
+"""
 function update_climbuf!(PFT::PftParameters, 
                          temp::AbstractArray{T},
                          climbuf::ClimBuf,

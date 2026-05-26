@@ -1,4 +1,9 @@
 ### Hybrid modelling
+"""
+daily_crop_C4!(...)
+
+Execute daily forward simulation for C4 crop configuration.
+"""
 function daily_crop_C4!(day_start,
                         day_end,
                         model,

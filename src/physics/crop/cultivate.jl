@@ -1,4 +1,9 @@
 # ifelse is more friendly to GPU parallel computing than idx and @kernel
+"""
+cultivate!(crop, crop_cal, day)
+
+Handle sowing-day state transitions and activate crop growth state.
+"""
 function cultivate!(crop::Crop,
                     crop_cal::Calendar,
                     ml::Managed_land,

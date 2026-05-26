@@ -1,23 +1,28 @@
+"""
+temp_stress(PFT, pet, photos, temp)
+
+Compute temperature stress scalar used by photosynthesis routines.
+"""
 function temp_stress(PFT::PftParameters,
                      pet::PetPar,
                      photos::Photos,
                      temp::AbstractArray{T}
 ) where {T <: AbstractFloat}
 
-    backend = KernelAbstractions.get_backend(temp)
-    
-    kernel = temp_stress_kernel!(backend)
-    
-    kernel(pet.daylength, temp, photos.tstress, PFT, ndrange=length(photos.tstress))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        temp_stress_kernel!,
+        photos.tstress,
+        pet.daylength,
+        temp,
+        PFT,
+    )
   
 end
 
 
-@kernel function temp_stress_kernel!(pet_daylength::AbstractArray{T},           
+@kernel function temp_stress_kernel!(photos_tstress::AbstractArray{T},            
+                                     pet_daylength::AbstractArray{T},           
                                      temp::AbstractArray{T},           
-                                     photos_tstress::AbstractArray{T},            
                                      PFT::PftParameters;
                                      photoparams::PhotoParams = photoparams
 ) where {T <: AbstractFloat}

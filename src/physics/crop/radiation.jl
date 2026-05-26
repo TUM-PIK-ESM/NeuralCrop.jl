@@ -1,3 +1,8 @@
+"""
+petpar!(pet, day, lat, temp, lwnet, swdown; dayseconds=86400)
+
+Compute daylength, PAR, and equilibrium evapotranspiration diagnostics.
+"""
 function petpar!(pet::PetPar,
                  day::Int64,
                  lat::AbstractArray{T},
@@ -12,13 +17,12 @@ function petpar!(pet::PetPar,
     u = Float32.(sin.(deg2rad.(lat)) * sin(delta))
     v = Float32.(cos.(deg2rad.(lat)) * cos(delta))
     
-    backend = KernelAbstractions.get_backend(lat)
-    
-    kernel = daylength_kernel!(backend)
-    
-    kernel(pet.daylength, u, v, ndrange=length(lat))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        daylength_kernel!,
+        pet.daylength,
+        u,
+        v,
+    )
     
     swnet = (1 .- pet.albedo) .* swdown
     
@@ -59,6 +63,11 @@ end
 end
 
 # for one cft
+"""
+apar_crop!(PFT, crop, pet)
+
+Compute absorbed PAR and fPAR for non-maize crops.
+"""
 function apar_crop!(PFT::PftParameters,
                     crop::Crop,
                     pet::PetPar
@@ -72,7 +81,13 @@ function apar_crop!(PFT::PftParameters,
     crop.apar .= pet.par * (1 - albedo_leaf) * alphaa .* crop.fpar
 
 end 
+# Radiation and daylength preprocessing for canopy photosynthesis.
 
+"""
+apar_crop_maize!(PFT, crop, pet)
+
+Compute absorbed PAR and maize-specific fPAR parameterization.
+"""
 function apar_crop_maize!(PFT::PftParameters,
                           crop::Crop,
                           pet::PetPar

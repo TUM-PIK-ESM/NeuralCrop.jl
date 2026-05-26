@@ -1,4 +1,9 @@
 # using CUDA
+"""
+photosynthesis_C3!(PFT, photos, crop, pet, co2, temp)
+
+Compute C3 photosynthesis rates and related diagnostic variables.
+"""
 function photosynthesis_C3!(PFT::PftParameters,
                             photos::Photos,
                             apar::AbstractArray{T},
@@ -80,6 +85,11 @@ function photosynthesis_C3!(PFT::PftParameters,
 end
 
 
+"""
+photosynthesis_C4!(PFT, photos, crop, pet, co2, temp)
+
+Compute C4 photosynthesis rates and related diagnostic variables.
+"""
 function photosynthesis_C4!(PFT::PftParameters,
                             photos::Photos,
                             apar::AbstractArray{T},

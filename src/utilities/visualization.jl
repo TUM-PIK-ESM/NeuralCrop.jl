@@ -1,3 +1,8 @@
+"""
+plot_loss_curve(epoch, train_loss, valid_loss, save_path)
+
+Plot and optionally save training/validation loss history.
+"""
 function plot_loss_curve(epoch::AbstractArray{S},
                          train_loss::AbstractArray{T},
                          val_loss::AbstractArray{T},

@@ -1,3 +1,9 @@
+"""
+root_distribution(beta_root)
+
+Compute normalized root fractions across the default five soil layers from
+the LPJmL-style exponential root profile parameter `beta_root`.
+"""
 function root_distribution(beta_root::AbstractFloat)
 
     layerbound = Float32.([200.0, 500.0, 1000.0, 2000.0, 3000.0])
@@ -14,6 +20,13 @@ function root_distribution(beta_root::AbstractFloat)
 end
 
 
+"""
+init_structs!(PFT, InitialData, cell_size, device; lpjmlparams=lpjmlparams)
+
+Initialize and populate all runtime state structs from static parameters and
+input data for one simulation domain.
+Returns `(climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output)`.
+"""
 function init_structs!(PFT::PftParameters,
                        InitialData::NamedTuple,
                        cell_size::Int,

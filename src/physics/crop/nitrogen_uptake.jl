@@ -1,43 +1,43 @@
+"""
+nuptake_crop!(crop, PFT, soil)
+
+Compute root uptake of mineral nitrogen from soil NH4/NO3 pools.
+"""
 function nuptake_crop!(crop::Crop,
                        PFT::PftParameters,
                        soil::Soil
 )
 
-    backend = KernelAbstractions.get_backend(crop.nitrogen)
-
-    kernel = nuptake_crop_kernel!(backend)
-    
-    kernel(PFT,
-           crop.leafn,
-           crop.leafc,
-           crop.rootn,
-           crop.rootc,
-           crop.ndemand_leaf,
-           crop.ndemand_tot,
-           crop.nitrogen,
-           crop.vscal,
-           crop.rootdist,
-           crop.isgrowing,
-           soil.w,
-           soil.wsat,
-           soil.NO3,
-           soil.NH4,
-           soil.layer_depth,
-           soil.temp,
-           ndrange=length(crop.nitrogen))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(
+        nuptake_crop_kernel!,
+        crop.nitrogen,
+        crop.leafn,
+        crop.leafc,
+        crop.rootn,
+        crop.rootc,
+        crop.ndemand_leaf,
+        crop.ndemand_tot,
+        crop.vscal,
+        crop.rootdist,
+        crop.isgrowing,
+        soil.w,
+        soil.wsat,
+        soil.NO3,
+        soil.NH4,
+        soil.layer_depth,
+        soil.temp,
+        PFT
+    )
   
 end
 
-@kernel function nuptake_crop_kernel!(PFT::PftParameters,
+@kernel function nuptake_crop_kernel!(crop_nitrogen::AbstractArray{T},
                                       crop_leafn::AbstractArray{T},
                                       crop_leafc::AbstractArray{T},
                                       crop_rootn::AbstractArray{T},
                                       crop_rootc::AbstractArray{T},
                                       crop_ndemand_leaf::AbstractArray{T},
                                       crop_ndemand_tot::AbstractArray{T},
-                                      crop_nitrogen::AbstractArray{T},
                                       crop_vscal::AbstractArray{T},
                                       crop_rootdist::AbstractArray{T},
                                       crop_isgrowing::AbstractArray{S},
@@ -46,7 +46,8 @@ end
                                       soil_NO3::AbstractArray{M},
                                       soil_NH4::AbstractArray{M},
                                       soil_layer_depth::AbstractArray{T},
-                                      soil_temp::AbstractArray{M};
+                                      soil_temp::AbstractArray{M},
+                                      PFT::PftParameters;
                                       lpjmlparams::LPJmLParams = lpjmlparams,
                                       soil_layers = 5, # Priestley-Taylor coefficient
                                       AUTO_FERTILIZER = true

@@ -1,4 +1,9 @@
 ### crop carbon allocation with Neural ODE
+"""
+crop_carbon_hybrid!(nn_model, ps, st, PFT, photos, crop, pet, soil, temp, co2; node=true)
+
+Hybrid daily crop-carbon update combining process equations and neural components.
+"""
 function crop_carbon_hybrid!(nn_model,
                              ps,
                              st,
@@ -63,80 +68,36 @@ function crop_carbon_hybrid!(nn_model,
     end
 end
 
-# ### crop carbon allocation with hybrid Neural stoc
-# function crop_carbon_hybrid!(nn_model,
-#                              ps,
-#                              st,
-#                              photos::Photos,
-#                              crop::Crop,
-#                              PFT::PftParameters,
-#                              temp::AbstractArray{T},
-#                              temp_n::AbstractArray{T};
-#                              node = true
-# ) where {T <: AbstractFloat}
-
-#     # compute crop respiration
-#     Zygote.ignore() do
-#         respiration!(crop, PFT, temp, photos.agd - photos.rd)
-#     end
-
-#     # compute crop root and leaf carbon allocation
-#     Zygote.ignore() do
-#         carbon_allocation_root_leaf!(PFT, crop, photos)
-#     end
-
-#     input = vcat(reshape(crop.npp/20, (1, :)), reshape(crop.fphu, (1, :)), reshape(temp_n, (1, :)), reshape(crop.wdf/100, (1, :))) .* reshape(crop.isgrowing, (1, :))
-#     if node
-#         crop.stoc = neural_stoc(nn_model, reshape(crop.stoc, (1, :)), ps, st, input)
-#     else
-#         crop.stoc = neural_stoc(nn_model, ps, st, input) .* crop.biomass
-#     end
-
-#     # compute crop rest carbon allocation
-#     Zygote.ignore() do
-#         carbon_allocation_pool!(crop)
-#     end
-
-#     crop.vegc = vcat(reshape(crop.rootc, (1, :)), reshape(crop.leafc, (1, :)), reshape(crop.stoc, (1, :)), reshape(crop.poolc, (1, :)))
-
-# end
-
 function carbon_allocation_root_leaf!(PFT::PftParameters,
                                       crop::Crop,
                                       photos::Photos
 )
 
-    backend = KernelAbstractions.get_backend(crop.stoc)
-
-    kernel = carbon_allocation_leaf_root_kernel!(backend)
-    
-    kernel(PFT,
-           crop.isgrowing,
-           crop.growingdays,
-           crop.vscal_sum,
-           crop.vscal,
-           crop.ndf,
-           crop.wdf,
-           crop.fphu,
-           crop.senescence,
-           crop.biomass,
-           crop.resp,
-           photos.agd,
-           photos.rd,
-           crop.npp,
-           crop.lai,
-           crop.leafc,
-           crop.rootc,
-           crop.stoc,
-           crop.poolc,
-           crop.lai_nppdeficit;
-           ndrange=length(crop.stoc))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(carbon_allocation_leaf_root_kernel!,
+               crop.stoc,
+               crop.isgrowing,
+               crop.growingdays,
+               crop.vscal_sum,
+               crop.vscal,
+               crop.ndf,
+               crop.wdf,
+               crop.fphu,
+               crop.senescence,
+               crop.biomass,
+               crop.resp,
+               photos.agd,
+               photos.rd,
+               crop.npp,
+               crop.lai,
+               crop.leafc,
+               crop.rootc,
+               crop.poolc,
+               crop.lai_nppdeficit,
+               PFT,)
 
 end
 
-@kernel function carbon_allocation_leaf_root_kernel!(PFT::PftParameters,
+@kernel function carbon_allocation_leaf_root_kernel!(crop_stoc::AbstractArray{T},
                                                      crop_isgrowing::AbstractArray{S},
                                                      crop_growingdays::AbstractArray{S},
                                                      crop_vscal_sum::AbstractArray{T},
@@ -153,9 +114,9 @@ end
                                                      crop_lai::AbstractArray{T},
                                                      crop_leafc::AbstractArray{T},
                                                      crop_rootc::AbstractArray{T},
-                                                     crop_stoc::AbstractArray{T},
                                                      crop_poolc::AbstractArray{T},
-                                                     crop_lai_nppdeficit::AbstractArray{T};
+                                                     crop_lai_nppdeficit::AbstractArray{T},
+                                                     PFT::PftParameters;
                                                      FROOTMAX = 0.4f0,
                                                      FROOTMIN = 0.3f0
 ) where {T <: AbstractFloat, B <: Bool, S <: Integer}
@@ -260,28 +221,22 @@ end
 
 function carbon_allocation_pool!(crop::Crop)
 
-    backend = KernelAbstractions.get_backend(crop.stoc)
-
-    kernel = carbon_allocation_pool_kernel!(backend)
-    
-    kernel(crop.isgrowing,
-           crop.senescence,
-           crop.biomass,
-           crop.leafc,
-           crop.rootc,
-           crop.stoc,
-           crop.poolc;
-           ndrange=length(crop.stoc))
-    
-    KernelAbstractions.synchronize(backend)
+    launch_1d!(carbon_allocation_pool_kernel!,
+               crop.stoc,
+               crop.isgrowing,
+               crop.senescence,
+               crop.biomass,
+               crop.leafc,
+               crop.rootc,
+               crop.poolc)
 end
 
-@kernel function carbon_allocation_pool_kernel!(crop_isgrowing::AbstractArray{S},
+@kernel function carbon_allocation_pool_kernel!(crop_stoc::AbstractArray{T},
+                                                crop_isgrowing::AbstractArray{S},
                                                 crop_senescence::AbstractArray{B},
                                                 crop_biomass::AbstractArray{T},
                                                 crop_leafc::AbstractArray{T},
                                                 crop_rootc::AbstractArray{T},
-                                                crop_stoc::AbstractArray{T},
                                                 crop_poolc::AbstractArray{T}
 ) where {T <: AbstractFloat, B <: Bool, S <: Integer}
 

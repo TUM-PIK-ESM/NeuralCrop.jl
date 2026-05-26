@@ -1,3 +1,8 @@
+"""
+output_training!(output, photos, crop, soil, μ, σ)
+
+Append normalized training diagnostics to `output` buffers.
+"""
 function output_training!(output::Output,
                           photos::Photos,
                           crop::Crop,
@@ -21,6 +26,11 @@ function output_training!(output::Output,
     output.swc = vcat(output.swc, reshape((soil.swc .- μ.swc) ./ (σ.swc .- μ.swc), (1, :)))
 end
 
+"""
+output_finetune!(output, photos, crop, soil, μ, σ)
+
+Append normalized fine-tuning diagnostics to `output` buffers.
+"""
 function output_finetune!(output::Output,
                           photos::Photos,
                           crop::Crop,

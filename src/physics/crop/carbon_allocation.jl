@@ -1,39 +1,38 @@
+"""
+carbon_allocation!(PFT, crop, photos)
+
+Partition crop biomass among leaf/root/storage/pool carbon compartments.
+"""
 function carbon_allocation!(PFT::PftParameters,
                             crop::Crop,
                             photos::Photos
 )
-
-    backend = KernelAbstractions.get_backend(crop.stoc)
-
-    kernel = carbon_allocation_kernel!(backend)
-    
-    kernel(PFT,
-           crop.isgrowing,
-           crop.growingdays,
-           crop.vscal_sum,
-           crop.vscal,
-           crop.ndf,
-           crop.wdf,
-           crop.fphu,
-           crop.senescence,
-           crop.biomass,
-           crop.resp,
-           photos.agd,
-           photos.rd,
-           crop.npp,
-           crop.lai,
-           crop.leafc,
-           crop.rootc,
-           crop.stoc,
-           crop.poolc,
-           crop.lai_nppdeficit;
-           ndrange=length(crop.stoc))
-    
-    KernelAbstractions.synchronize(backend)
+    # 1D cell-wise allocation; crop.stoc provides launch length and kernel arg #1.
+    launch_1d!(carbon_allocation_kernel!,
+               crop.stoc,
+               crop.isgrowing,
+               crop.growingdays,
+               crop.vscal_sum,
+               crop.vscal,
+               crop.ndf,
+               crop.wdf,
+               crop.fphu,
+               crop.senescence,
+               crop.biomass,
+               crop.resp,
+               photos.agd,
+               photos.rd,
+               crop.npp,
+               crop.lai,
+               crop.leafc,
+               crop.rootc,
+               crop.poolc,
+               crop.lai_nppdeficit,
+               PFT)
 
 end
 
-@kernel function carbon_allocation_kernel!(PFT::PftParameters,
+@kernel function carbon_allocation_kernel!(crop_stoc::AbstractArray{T},
                                            crop_isgrowing::AbstractArray{S},
                                            crop_growingdays::AbstractArray{S},
                                            crop_vscal_sum::AbstractArray{T},
@@ -50,9 +49,9 @@ end
                                            crop_lai::AbstractArray{T},
                                            crop_leafc::AbstractArray{T},
                                            crop_rootc::AbstractArray{T},
-                                           crop_stoc::AbstractArray{T},
                                            crop_poolc::AbstractArray{T},
-                                           crop_lai_nppdeficit::AbstractArray{T};
+                                           crop_lai_nppdeficit::AbstractArray{T},
+                                           PFT::PftParameters;
                                            FROOTMAX = 0.4f0,
                                            FROOTMIN = 0.3f0
 ) where {T <: AbstractFloat, B <: Bool, S <: Integer}
@@ -62,7 +61,9 @@ end
     @unpack sla, hiopt, himin = PFT
 
     if crop_isgrowing[cell] == 1
+        # Undo LAI deficit correction from previous step before current-day allocation.
         crop_lai[cell] = crop_lai[cell] - crop_lai_nppdeficit[cell]
+        # NPP = gross daytime photosynthesis - dark respiration - growth respiration bookkeeping.
         crop_npp[cell] = (photos_agd[cell] - photos_rd[cell] - crop_resp[cell])
         if ((crop_biomass[cell] + crop_npp[cell]) <= 0.0001) || ((crop_lai[cell] <= 0.0) && (!crop_senescence[cell]))
             crop_poolc[cell] += crop_npp[cell]
@@ -76,12 +77,12 @@ end
                 crop_ndf[cell] = T(100)
             end
 
-            # root carbon
+            # Root carbon follows SWAT-style stress-scaled partitioning.
             df = min(crop_wdf[cell], crop_ndf[cell])
             froot = FROOTMAX - (FROOTMIN * crop_fphu[cell]) * df / (df + exp(T(6.13) - T(0.0883) * df))
             crop_rootc[cell] = froot * crop_biomass[cell]
 
-            # leaf carbon
+            # Leaf carbon is constrained by LAI and SLA; in senescence it is mass-balanced.
             if !crop_senescence[cell]
                 if (crop_biomass[cell] - crop_rootc[cell]) >= (crop_lai[cell] / sla)
                     crop_leafc[cell] = crop_lai[cell] / sla
@@ -99,7 +100,7 @@ end
                 end
             end
 
-            # storage carbon
+            # Storage carbon (harvest index branch) is computed after leaf/root partitioning.
             fhiopt = 100 * crop_fphu[cell] / (100 * crop_fphu[cell] + exp(T(11.1) - T(10.0) * crop_fphu[cell]))
             hi = hiopt > 1.0 ? fhiopt * (hiopt - one(T)) + one(T) : fhiopt * hiopt
             himind = himin > 1.0 ? fhiopt * (himin - one(T)) + one(T) : fhiopt * himin
@@ -121,7 +122,7 @@ end
                 crop_stoc[cell] = zero(T)
             end
 
-            # pool carbon
+            # Pool carbon closes biomass balance and is clipped during senescence if negative.
             crop_poolc[cell] = crop_biomass[cell] - crop_leafc[cell] - crop_rootc[cell] - crop_stoc[cell]
             # pool can become negative during senescence
             if crop_senescence[cell] && crop_poolc[cell] < 0.0
