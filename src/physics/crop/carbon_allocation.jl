@@ -8,7 +8,7 @@ function carbon_allocation!(PFT::PftParameters,
                             photos::Photos
 )
     # 1D cell-wise allocation; crop.stoc provides launch length and kernel arg #1.
-    launch_1d!(carbon_allocation_kernel!,
+    launch_1D!(carbon_allocation_kernel!,
                crop.stoc,
                crop.isgrowing,
                crop.growingdays,

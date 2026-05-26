@@ -74,7 +74,7 @@ function update_lit_winter_wheat!(soil::Soil,
     hdate_callback = copy(crop_cal_hcallback)
 
     Zygote.ignore() do
-        launch_1d!(update_lit_winter_wheat_kernel!,
+        launch_1D!(update_lit_winter_wheat_kernel!,
                    hdate_callback,
                    crop_wtype,
                    hdate,

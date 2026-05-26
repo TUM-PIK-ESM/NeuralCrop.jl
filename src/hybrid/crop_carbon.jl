@@ -73,7 +73,7 @@ function carbon_allocation_root_leaf!(PFT::PftParameters,
                                       photos::Photos
 )
 
-    launch_1d!(carbon_allocation_leaf_root_kernel!,
+    launch_1D!(carbon_allocation_leaf_root_kernel!,
                crop.stoc,
                crop.isgrowing,
                crop.growingdays,
@@ -221,7 +221,7 @@ end
 
 function carbon_allocation_pool!(crop::Crop)
 
-    launch_1d!(carbon_allocation_pool_kernel!,
+    launch_1D!(carbon_allocation_pool_kernel!,
                crop.stoc,
                crop.isgrowing,
                crop.senescence,

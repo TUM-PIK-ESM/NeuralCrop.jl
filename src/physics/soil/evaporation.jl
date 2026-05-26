@@ -9,7 +9,7 @@ function evaporation!(pet_eeq::AbstractArray{T},
     
 ) where {T <: AbstractFloat}
 
-    launch_1d!(evaporation_kernel!,
+    launch_1D!(evaporation_kernel!,
                pet_eeq,
                crop.fpar,
                crop.trans_layer,

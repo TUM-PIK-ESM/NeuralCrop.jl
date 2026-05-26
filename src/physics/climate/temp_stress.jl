@@ -9,7 +9,7 @@ function temp_stress(PFT::PftParameters,
                      temp::AbstractArray{T}
 ) where {T <: AbstractFloat}
 
-    launch_1d!(
+    launch_1D!(
         temp_stress_kernel!,
         photos.tstress,
         pet.daylength,

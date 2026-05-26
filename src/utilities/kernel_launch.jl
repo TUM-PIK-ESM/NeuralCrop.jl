@@ -3,7 +3,7 @@ Standardize KernelAbstractions launches.
 These wrappers keep backend/ndrange/synchronize logic in one place.
 """
 
-function launch_1d!(kernelfun, ref_array, args...)
+function launch_1D!(kernelfun, ref_array, args...)
     # Convention: ref_array is both the launch reference and kernel arg #1.
     # This keeps call sites concise while preserving explicit launch shape.
     backend = KernelAbstractions.get_backend(ref_array)
@@ -13,7 +13,7 @@ function launch_1d!(kernelfun, ref_array, args...)
     return nothing
 end
 
-function launch_2d!(kernelfun, ref_array, args...)
+function launch_2D!(kernelfun, ref_array, args...)
     # 2D launch assumes ref_array uses (dim1, dim2) layout consistent with @index(..., NTuple).
     backend = KernelAbstractions.get_backend(ref_array)
     kernel = kernelfun(backend)

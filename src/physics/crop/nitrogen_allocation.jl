@@ -15,7 +15,7 @@ function crop_nitrogen!(crop::Crop,
     ndemand_crop!(crop, PFT, photos_vmax, pet_daylength, temp)
     nuptake_crop!(crop, PFT, soil)
 
-    launch_1d!(crop_nitrogen_kernel!,
+    launch_1D!(crop_nitrogen_kernel!,
                crop.nitrogen,
                crop.isgrowing,
                crop.leafc,
@@ -115,7 +115,7 @@ function crop_nitrogen_old!(crop::Crop,
     ndemand_crop!(crop, PFT, photos_vmax, pet_daylength, temp)
     nuptake_crop!(crop, PFT, soil)
 
-    launch_1d!(crop_nitrogen_old_kernel!,
+    launch_1D!(crop_nitrogen_old_kernel!,
                crop.nitrogen,
                crop.isgrowing,
                crop.leafc,

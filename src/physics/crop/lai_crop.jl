@@ -7,7 +7,7 @@ function lai_crop!(crop::Crop,
                    PFT::PftParameters
 )
 
-    launch_1d!(
+    launch_1D!(
         lai_crop_kernel!,
         crop.lai,
         crop.senescence, 
@@ -71,7 +71,7 @@ function lai_deficit!(crop::Crop,
                       PFT::PftParameters
 )
 
-    launch_1d!(
+    launch_1D!(
         lai_deficit_kernel!,
         crop.lai,
         crop.senescence,

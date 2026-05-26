@@ -8,7 +8,7 @@ function nuptake_crop!(crop::Crop,
                        soil::Soil
 )
 
-    launch_1d!(
+    launch_1D!(
         nuptake_crop_kernel!,
         crop.nitrogen,
         crop.leafn,

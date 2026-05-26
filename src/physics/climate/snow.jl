@@ -7,7 +7,7 @@ and precipitation forcing.
 function snow!(soil::Soil,
                dailyWeather::DailyWeather
 )
-    launch_1d!(
+    launch_1D!(
         snow_kernel!,
         dailyWeather.temp,
         dailyWeather.prec,

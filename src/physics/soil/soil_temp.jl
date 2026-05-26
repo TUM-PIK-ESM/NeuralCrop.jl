@@ -15,7 +15,7 @@ function soiltemp_lag!(soil::Soil,
     soil_diffus = (soil.tdiff_15 - soil.tdiff_0) ./ 0.15f0 * 0.03f0 + soil.tdiff_0
     soil_alag = DEPTH ./ sqrt.(soil_diffus * DIFFUS_CONV ./ HALF_OMEGA)
 
-    launch_1d!(soiltemp_lag_kernel!,
+    launch_1D!(soiltemp_lag_kernel!,
                climbuf.atemp_mean,
                climbuf.temp,
                soil_alag,
@@ -32,7 +32,7 @@ end
                                       soil_w::AbstractArray{M},
                                       soil_temp::AbstractArray{M},
                                       a::AbstractArray{T},
-                                      b::AbstractArray{T},
+                                      b::AbstractArray{T};
                                       NDAYS = 31 # NDAYS
 ) where {T <: AbstractFloat, M <: AbstractFloat}
     
@@ -66,7 +66,7 @@ function linreg(climbuf_temp::AbstractArray{M},
     a = device(zeros(Float32, size(climbuf_temp, 2)))
     b = device(zeros(Float32, size(climbuf_temp, 2)))
 
-    launch_1d!(linreg_kernel!, a, b, climbuf_temp)
+    launch_1D!(linreg_kernel!, a, b, climbuf_temp)
 
     return a, b
 
@@ -75,7 +75,7 @@ end
 
 @kernel function linreg_kernel!(a::AbstractArray{T},
                                 b::AbstractArray{T},
-                                climbuf_temp::AbstractArray{M},
+                                climbuf_temp::AbstractArray{M};
                                 NDAYS = 31 # NDAYS
 ) where {T <: AbstractFloat, M <: AbstractFloat}
     

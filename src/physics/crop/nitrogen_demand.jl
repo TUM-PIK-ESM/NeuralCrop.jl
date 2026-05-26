@@ -10,7 +10,7 @@ function ndemand_crop!(crop::Crop,
                        temp::AbstractArray{T}
 ) where {T <: AbstractFloat}
 
-    launch_1d!(
+    launch_1D!(
         ndemand_crop_kernel!,
         crop.ndemand_tot,
         crop.lai, 

@@ -16,7 +16,7 @@ function phenology_crop!(crop::Crop,
     crop.harvesting0 .= crop.harvesting
 
     # 1D launch over cells; climbuf_V_req is used as launch reference and kernel arg #1.
-    launch_1d!(
+    launch_1D!(
         phenology_kernel!,
         climbuf_V_req,
         crop.phu, 

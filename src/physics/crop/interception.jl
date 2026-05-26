@@ -9,7 +9,7 @@ function interception!(crop::Crop,
                        rain::AbstractArray{T}
 ) where {T <: AbstractFloat}
 
-    launch_1d!(
+    launch_1D!(
         interception_kernel!,
         crop.intercep,
         crop.canopy_wet,

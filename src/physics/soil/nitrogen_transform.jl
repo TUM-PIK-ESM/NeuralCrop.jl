@@ -26,7 +26,7 @@ function nitrogen_transform!(soil::Soil,
     # decom_sum_lit* are reduced to 1D cell vectors for 1D kernel launch.
     decom_sum_litc = vec(sum(soil.decom_litc, dims = 1))
     decom_sum_litn = vec(sum(soil.decom_litn, dims = 1))
-    launch_1d!(immobilize_kernel!,
+    launch_1D!(immobilize_kernel!,
                 decom_sum_litc, 
                 decom_sum_litn,
                 soil.NH4,
@@ -37,7 +37,7 @@ function nitrogen_transform!(soil::Soil,
                 soil.layer_depth)
 
     # Nitrification converts NH4 to NO3 with soil moisture/temperature modifiers.
-    launch_1d!(nitrify_kernel!,
+    launch_1D!(nitrify_kernel!,
                 soil.ph,
                 soil.NH4,
                 soil.NO3,
@@ -108,6 +108,7 @@ end
                                  soil_wsats::AbstractArray{M},
                                  soil_temp::AbstractArray{M};
                                  lpjmlparams::LPJmLParams = lpjmlparams,
+                                 soil_layers = 5,
                                  a_nit = 0.45f0,
                                  b_nit = 1.27f0,
                                  c_nit = 0.0012f0,

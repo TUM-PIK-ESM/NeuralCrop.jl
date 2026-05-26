@@ -23,7 +23,7 @@ function annual_climbuf!(daily_temp::AbstractArray{T},
     monthlytemp!(daily_temp, climbuf.mtemp, device)
     
     # 20-year moving monthly climatology (month, cell).
-    launch_2d!(
+    launch_2D!(
         climbuf_mtemp20_kernel!,
         climbuf.mtemp20,
         climbuf.mtemp,
@@ -35,7 +35,7 @@ function annual_climbuf!(daily_temp::AbstractArray{T},
     # Keep n coldest months per grid cell for vernalization requirement diagnostics.
     climbuf.min_temp .= sort(climbuf.mtemp20, dims=1)[1:n, :]
     
-    launch_1d!(
+    launch_1D!(
         climbuf_V_req_a_kernel!,
         climbuf.V_req_a,
         climbuf.min_temp,
@@ -51,7 +51,7 @@ function annual_climbuf!(daily_temp::AbstractArray{T},
     #     end
     # end
     
-    launch_1d!(
+    launch_1D!(
         climbuf_V_req_kernel!,
         climbuf.V_req,
         climbuf.V_req_a,
@@ -170,7 +170,7 @@ function monthlytemp!(daily_temp::AbstractArray{T},
 #         start_idx = end_idx + 1  # Update start index for the next month
 #     end
     
-    launch_2d!(
+    launch_2D!(
         monthlytemp_kernel!,
         climbuf_mtemp,
         daily_temp,
@@ -212,7 +212,7 @@ function daily_climbuf!(temp::AbstractArray{T},
                         climbuf_temp::AbstractArray{T}
 ) where {T <: AbstractFloat}
 
-    launch_1d!(
+    launch_1D!(
         daily_climbuf_kernel!,
         temp,
         climbuf_temp,

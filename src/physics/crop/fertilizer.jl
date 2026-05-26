@@ -10,7 +10,7 @@ function fertilizer!(crop_cal::Calendar,
                      day
 )
 
-    launch_1d!(
+    launch_1D!(
         fertilizer_kernel!,
         crop.nfertilizer,
         crop_cal.sdate,

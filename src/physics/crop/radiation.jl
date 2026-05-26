@@ -17,7 +17,7 @@ function petpar!(pet::PetPar,
     u = Float32.(sin.(deg2rad.(lat)) * sin(delta))
     v = Float32.(cos.(deg2rad.(lat)) * cos(delta))
     
-    launch_1d!(
+    launch_1D!(
         daylength_kernel!,
         pet.daylength,
         u,

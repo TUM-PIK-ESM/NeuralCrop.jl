@@ -7,7 +7,7 @@ function infil_perc!(soil::Soil;
                     lpjmlparams::LPJmLParams = lpjmlparams
 )
     # One-cell kernel launch; each thread updates the full vertical soil column for that cell.
-    launch_1d!(infil_perc_kernel!,
+    launch_1D!(infil_perc_kernel!,
                soil.infil,
                soil.w,
                soil.whcs,
