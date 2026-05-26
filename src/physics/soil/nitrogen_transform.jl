@@ -95,7 +95,7 @@ end
                                  a_nit = 0.45f0,
                                  b_nit = 1.27f0,
                                  c_nit = 0.0012f0,
-                                 d_nit = 2.84f0;
+                                 d_nit = 2.84f0,
                                  soil_layers = 5
 ) where {T <: AbstractFloat, M <: AbstractFloat}
     
