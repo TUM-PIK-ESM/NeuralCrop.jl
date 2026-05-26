@@ -29,7 +29,7 @@ function train_loop_rollout!(daily_crop, rollout, nn_model, ps, st, parameters, 
             @unpack cft, lpjmlparams  = parameters
             @unpack climate = data_batch
 
-            InitialData = InitilDataLoader(data_batch, data_index, device)
+            InitialData = InitialDataLoader(data_batch, data_index, device)
             climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(cft, InitialData, length(data_index), device)
             # climbuf, crop, crop_cal, photos, pet, soil, managed_land, output = init_structs!(lpjmlparams, cft, lpjml.crop.phu, lpjml.crop.sdate, lpjml.crop.manure, lpjml.crop.fertilizer, lpjml.c_shift_fast, lpjml.c_shift_slow, lpjml.u0, soilparams, length(data_index), device)
             
@@ -65,7 +65,7 @@ function train_loop_rollout!(daily_crop, rollout, nn_model, ps, st, parameters, 
             @unpack cft, lpjmlparams  = parameters
             @unpack climate = data_batch
 
-            InitialData = InitilDataLoader(data_batch, data_index, device)
+            InitialData = InitialDataLoader(data_batch, data_index, device)
             climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(cft, InitialData, length(data_index), device)
             # climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(lpjmlparams, cft, lpjml.crop.phu, lpjml.crop.sdate, lpjml.crop.manure, lpjml.crop.fertilizer, lpjml.c_shift_fast, lpjml.c_shift_slow, lpjml.u0, soilparams, length(data_index), device)
             
@@ -144,7 +144,7 @@ function train_loop_winter_wheat_rollout!(daily_crop, rollout, nn_model, ps, st,
             @unpack cft, lpjmlparams  = parameters
             @unpack climate = data_batch
 
-            InitialData = InitilDataLoader(data_batch, data_index, device)
+            InitialData = InitialDataLoader(data_batch, data_index, device)
             climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(cft, InitialData, length(data_index), device)
             # climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(lpjmlparams, cft, lpjml.crop.phu, lpjml.crop.sdate, lpjml.crop.manure, lpjml.crop.fertilizer, lpjml.c_shift_fast, lpjml.c_shift_slow, lpjml.u0, soilparams, length(data_index), device)
 
@@ -180,7 +180,7 @@ function train_loop_winter_wheat_rollout!(daily_crop, rollout, nn_model, ps, st,
             @unpack cft, lpjmlparams  = parameters
             @unpack climate = data_batch
 
-            InitialData = InitilDataLoader(data_batch, data_index, device)
+            InitialData = InitialDataLoader(data_batch, data_index, device)
             climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(cft, InitialData, length(data_index), device)
             # climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(lpjmlparams, cft, lpjml.crop.phu, lpjml.crop.sdate, lpjml.crop.manure, lpjml.crop.fertilizer, lpjml.c_shift_fast, lpjml.c_shift_slow, lpjml.u0, soilparams, length(data_index), device)
             spin_up_climbuf!(cft, climate.temp_spinup, climbuf, 1, device)
@@ -258,7 +258,7 @@ function train_loop_rollout!(daily_crop, rollout, nn_model, ps, st, parameters, 
             @unpack cft, lpjmlparams  = parameters
             @unpack climate = data_batch
 
-            InitialData = InitilDataLoader(data_batch, data_index, device)
+            InitialData = InitialDataLoader(data_batch, data_index, device)
             climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(cft, InitialData, length(data_index), device)
             # climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(lpjmlparams, cft, lpjml.crop.phu, lpjml.crop.sdate, lpjml.crop.manure, lpjml.crop.fertilizer, lpjml.c_shift_fast, lpjml.c_shift_slow, lpjml.u0, soilparams, length(data_index), device)
             spin_up_climbuf!(cft, climate.temp_spinup, climbuf, 1, device)
@@ -293,7 +293,7 @@ function train_loop_rollout!(daily_crop, rollout, nn_model, ps, st, parameters, 
             @unpack cft, lpjmlparams  = parameters
             @unpack climate = data_batch
 
-            InitialData = InitilDataLoader(data_batch, data_index, device)
+            InitialData = InitialDataLoader(data_batch, data_index, device)
             climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(cft, InitialData, length(data_index), device)
             # climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(lpjmlparams, cft, lpjml.crop.phu, lpjml.crop.sdate, lpjml.crop.manure, lpjml.crop.fertilizer, lpjml.c_shift_fast, lpjml.c_shift_slow, lpjml.u0, soilparams, length(data_index), device)
 
@@ -373,7 +373,7 @@ function train_loop_winter_wheat_rollout!(daily_crop, rollout, nn_model, ps, st,
             @unpack cft, lpjmlparams  = parameters
             @unpack climate = data_batch
             
-            InitialData = InitilDataLoader(data_batch, data_index, device)
+            InitialData = InitialDataLoader(data_batch, data_index, device)
             climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(cft, InitialData, length(data_index), device)
             # climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(lpjmlparams, cft, lpjml.crop.phu, lpjml.crop.sdate, lpjml.crop.manure, lpjml.crop.fertilizer, lpjml.c_shift_fast, lpjml.c_shift_slow, lpjml.u0, soilparams, length(data_index), device)
 
@@ -409,7 +409,7 @@ function train_loop_winter_wheat_rollout!(daily_crop, rollout, nn_model, ps, st,
             @unpack cft, lpjmlparams  = parameters
             @unpack climate, lpjml, soilparams = data_batch
             
-            InitialData = InitilDataLoader(data_batch, data_index, device)
+            InitialData = InitialDataLoader(data_batch, data_index, device)
             climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(cft, InitialData, length(data_index), device)
             # climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_structs!(lpjmlparams, cft, lpjml.crop.phu, lpjml.crop.sdate, lpjml.crop.manure, lpjml.crop.fertilizer, lpjml.c_shift_fast, lpjml.c_shift_slow, lpjml.u0, soilparams, length(data_index), device)
             

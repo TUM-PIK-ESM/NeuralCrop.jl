@@ -19,7 +19,7 @@ Use these to configure crop functional types, physical parameters, and model sta
 Use these to build model-ready batches and allocate in-memory state on CPU/GPU backends.
 
 - `init_structs!`, `init_climbuf`, `init_crop`, `init_pet`, `init_soil`, `init_data_norm`, `init_output`
-- `InitilDataLoader`, `ClimateDataLoader`, `DataLoader`, `DataLoader_winter_wheat`
+- `InitialDataLoader`, `ClimateDataLoader`, `DataLoader`, `DataLoader_winter_wheat`
 - Detailed section: [Variables and initialization](#variables-and-initialization)
 
 ### Climate, crop, and soil processes
@@ -59,7 +59,7 @@ Key symbols:
 - `LPJmLParams`, `PftParameters`, `PhotoParams`, `SoilParams`, `SnowParams`
 - `Photos`, `PetPar`, `DailyWeather`, `ClimBuf`, `CO2`, `Crop`, `Calendar`, `Managed_land`, `Soil`, `Output`
 - `init_structs!`, `init_climbuf`, `init_crop`, `init_pet`, `init_soil`, `init_data_norm`, `init_output`
-- `InitilDataLoader`, `ClimateDataLoader`, `DataLoader`, `DataLoader_winter_wheat`
+- `InitialDataLoader`, `ClimateDataLoader`, `DataLoader`, `DataLoader_winter_wheat`
 
 
 ### Climate and crop processes

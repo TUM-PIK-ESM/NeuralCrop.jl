@@ -18,4 +18,4 @@ Initialization functions accept a `device` function. Use `Array` for CPU arrays.
 
 ## Typical order
 
-A simulation usually loads data, builds an `InitialData` batch with `InitilDataLoader`, initializes state with `init_structs!`, spins up climate buffers with `spin_up_climbuf!`, and then calls a daily simulation driver.
+A simulation usually loads data, builds an `InitialData` batch with `InitialDataLoader`, initializes state with `init_structs!`, spins up climate buffers with `spin_up_climbuf!`, and then calls a daily simulation driver.

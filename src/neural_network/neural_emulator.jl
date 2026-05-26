@@ -105,17 +105,6 @@ end
 
 
 # soil water pools
-function neural_moisture(n::NODE, u0, ps, st, input, soildepth, perc, transp; dt = 1.0f0)
-    
-    st_model = Lux.StatefulLuxLayer{true}(n.model, ps, st)
-
-    rhs(u, p, t) = perc - transp + st_model(vcat(u./soildepth, input), p) 
-    
-    prob = ODEProblem{false}(ODEFunction{false}(rhs), u0, n.tspan, ps)
-    
-    return solve(prob, n.solver; dt = dt)
-end
-
 function neural_moisture(n::NODE, u0, ps, st, input, soildepth, perc, transp, evapor; dt = 1.0f0)
     
     st_model = Lux.StatefulLuxLayer{true}(n.model, ps, st)

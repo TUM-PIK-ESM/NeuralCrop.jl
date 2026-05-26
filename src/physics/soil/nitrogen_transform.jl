@@ -13,20 +13,22 @@ function nitrogen_transform!(soil::Soil,
     soil.NO3 .+= F_Nmineral * k_l
 
     # NO3 and N2O from mineralization of soil organic matter
-    F_Nmineral = soil.decom_fastn + fsoil.decom_slown
+    F_Nmineral = soil.decom_fastn + soil.decom_slown
     soil.NH4 .+= F_Nmineral * (1 - k_l)
     soil.NO3 .+= F_Nmineral * k_l
 
     # immobilization of N
+    decom_sum_litc = vec(sum(soil.decom_litc, dims = 1))
+    decom_sum_litn = vec(sum(soil.decom_litn, dims = 1))
     backend = KernelAbstractions.get_backend(soil.NH4)
     kernel = immobilize_kernel!(backend)
-    kernel(soil.NH4, soil.NO3, c_shift_fast, c_shift_slow, soil.layer_depth, lpjmlparams, ndrange=size(soil.NH4, 1))
+    kernel(soil.NH4, soil.NO3, soil.slown, decom_sum_litc, decom_sum_litn, c_shift_fast, c_shift_slow, soil.layer_depth, lpjmlparams, ndrange=size(soil.NH4, 2))
     KernelAbstractions.synchronize(backend)
 
     # NO3 and N2O from nitrification
     backend = KernelAbstractions.get_backend(soil.NH4)
     kernel = nitrify_kernel!(backend)
-    kernel(soil.NH4, soil.NO3, soil.swc, soil.wsats, soil.temp, soil.ph, lpjmlparams, ndrange=size(soil.NH4, 1))
+    kernel(soil.NH4, soil.NO3, soil.swc, soil.wsats, soil.temp, soil.ph, lpjmlparams, ndrange=size(soil.NH4, 2))
     KernelAbstractions.synchronize(backend)
 
 end
@@ -35,6 +37,9 @@ end
 
 @kernel function immobilize_kernel!(soil_NH4::AbstractArray{M},           
                                     soil_NO3::AbstractArray{M},
+                                    soil_slown::AbstractArray{M},
+                                    decom_sum_litc::AbstractArray{T},
+                                    decom_sum_litn::AbstractArray{T},
                                     c_shift_fast::AbstractArray{T},
                                     c_shift_slow::AbstractArray{T},
                                     soil_layer_depth::AbstractArray{T}, 
@@ -90,7 +95,8 @@ end
                                  a_nit = 0.45f0,
                                  b_nit = 1.27f0,
                                  c_nit = 0.0012f0,
-                                 d_nit = 2.84f0
+                                 d_nit = 2.84f0;
+                                 soil_layers = 5
 ) where {T <: AbstractFloat, M <: AbstractFloat}
     
     cell = @index(Global)
