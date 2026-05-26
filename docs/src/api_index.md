@@ -1,101 +1,166 @@
 # API index
 
-This page provides a compact, module-oriented API map in the style of modern Julia model documentation. The goal is to help users locate interfaces quickly without reading a long, function-by-function manual.
+This page is generated from source docstrings and organized by module area.
 
-## Exported API overview
+Quick jump:
+- [Variables and initialization](#variables-and-initialization)
+- [Climate processes](#climate-processes)
+- [Crop processes](#crop-processes)
+- [Soil processes](#soil-processes)
+- [Hybrid processes](#hybrid-processes)
+- [Neural networks and training](#neural-networks-and-training)
+- [Simulation drivers](#simulation-drivers)
+- [Utilities](#utilities)
 
-This section lists the main exported symbols even when some of them do not yet have full docstrings.
+## Variables and initialization
 
-### Types and parameter presets
-Use these to configure crop functional types, physical parameters, and model state containers before running simulations.
+Core model state types, parameter presets, and initialization/data-loading entry points.
 
-- `LPJmLParams`, `PftParameters`, `PhotoParams`, `SoilParams`, `SnowParams`
-- `Photos`, `PetPar`, `DailyWeather`, `ClimBuf`, `CO2`, `Crop`, `Calendar`, `Managed_land`, `Soil`, `Output`
-- `lpjmlparams`, `photoparams`, `soilparams`, `snowparams`
-- `cft1`, `cft2`, `cft3`, `cft4`
-- Detailed section: [Variables and initialization](#variables-and-initialization)
+```@autodocs
+Modules = [NeuralCrop]
+Pages = [
+    "physics/variables/default_param.jl",
+    "physics/variables/pft.jl",
+    "physics/variables/define_structs.jl",
+    "physics/variables/init_var.jl",
+    "physics/variables/init_struct.jl",
+    "physics/variables/output.jl",
+    "physics/variables/DataLoader.jl",
+    "utilities/data_loader.jl",
+    "utilities/data_norm.jl",
+]
+Order = [:constant, :type, :function]
+Private = false
+```
 
-### Initialization and data
-Use these to build model-ready batches and allocate in-memory state on CPU/GPU backends.
+## Climate processes
 
-- `init_structs!`, `init_climbuf`, `init_crop`, `init_pet`, `init_soil`, `init_data_norm`, `init_output`
-- `InitialDataLoader`, `ClimateDataLoader`, `DataLoader`, `DataLoader_winter_wheat`
-- Detailed section: [Variables and initialization](#variables-and-initialization)
+Climate forcing preparation and temperature/snow process updates.
 
-### Climate, crop, and soil processes
-Use these process kernels to update daily forcing, crop growth, soil water, and soil biogeochemistry.
+```@autodocs
+Modules = [NeuralCrop]
+Pages = [
+    "physics/climate/readclimate.jl",
+    "physics/climate/climbuf.jl",
+    "physics/climate/spinup_climbuf.jl",
+    "physics/climate/snow.jl",
+    "physics/climate/temp_stress.jl",
+]
+Order = [:function, :type]
+Private = false
+```
 
-- Climate: `annual_climbuf!`, `daily_climbuf!`, `infil_perc!`, `spin_up_climbuf!`, `update_climbuf!`, `readclimate!`, `snow!`
-- Crop radiation and water: `albedo!`, `petpar!`, `apar_crop!`, `apar_crop_maize!`, `transpiration!`, `interception!`
-- Crop physiology: `photosynthesis_C3!`, `photosynthesis_C4!`, `carbon_allocation!`, `respiration!`, `phenology_crop!`, `lai_crop!`, `lai_deficit!`, `cultivate!`, `harvest_crop!`, `fertilizer!`
-- Crop nutrients: `crop_nitrogen!`, `crop_nitrogen_old!`, `ndemand_crop!`, `nuptake_crop!`
-- Soil processes: `soiltemp_lag!`, `pedotransfer!`, `update_lit_tillage!`, `update_lit_winter_wheat!`, `soil_carbon!`, `evaporation!`, `soil_water!`, `nitrogen_transform!`, `soil_nitrogen!`, `update_litc_tillage!`, `update_litn_tillage!`
-- Shared helpers: `root_distribution`, `temp_stress`
-- Detailed sections: [Climate and crop processes](#climate-and-crop-processes), [Soil processes](#soil-processes), and [Hybrid processes](#hybrid-processes)
+## Crop processes
 
-### Hybrid, neural, and training
-Use these interfaces to embed neural emulators in process updates and train parameters with rollout objectives.
+Crop biophysics, allocation, phenology, management, and N cycling operators.
 
-- Hybrid crop/soil: `crop_carbon_hybrid!`, `hybrid_photos_C3!`, `hybrid_photos_C4!`, `hybrid_litc`, `hybrid_soilc`, `hybrid_litn`, `hybrid_soiln`
-- Neural model wrappers and solvers: `NODE`, `MLP`, `solve`, `SciMLEuler`, `SciMLEuler_litc`, `SciMLEuler_soilc`
-- Neural emulators: `neural_gpp`, `neural_lambda`, `neural_vmax`, `neural_stoc`, `neural_allocation`, `neural_moisture`, `get_mlp`, `get_node`
-- Training loop and loss: `train_loop_winter_wheat_rollout!`, `train_loop_rollout!`, `loss_crop_rollout!`, `daily_crop_C3_training!`
-- Detailed section: [Neural and simulation drivers](#neural-and-simulation-drivers)
+```@autodocs
+Modules = [NeuralCrop]
+Pages = [
+    "physics/crop/albedo.jl",
+    "physics/crop/radiation.jl",
+    "physics/crop/photosynthesis.jl",
+    "physics/crop/respiration.jl",
+    "physics/crop/interception.jl",
+    "physics/crop/transpiration.jl",
+    "physics/crop/phenology.jl",
+    "physics/crop/cultivate.jl",
+    "physics/crop/harvesting.jl",
+    "physics/crop/carbon_allocation.jl",
+    "physics/crop/crop_carbon.jl",
+    "physics/crop/lai_crop.jl",
+    "physics/crop/fertilizer.jl",
+    "physics/crop/nitrogen_demand.jl",
+    "physics/crop/nitrogen_uptake.jl",
+    "physics/crop/nitrogen_allocation.jl",
+]
+Order = [:function, :type]
+Private = false
+```
 
-### Simulation outputs and utilities
-Use these helpers for daily simulation entry points, output extraction, normalization, and plotting.
+## Soil processes
 
-- Daily simulation drivers: `daily_crop_C3!`, `daily_crop_C4!`
-- Output aggregation: `output_training!`, `output_finetune!`
-- Units and normalization: `deg2rad`, `ppm2Pa`, `ppm2bar`, `hour2day`, `hour2sec`, `degCtoK`, `min_max_norm`, `z_score_norm`, `apply_z_score`
-- Plot/data helpers: `load_nc_file_one_dimension`, `load_nc_file_dimensions`, `plot_loss_curve`
-- Detailed section: [Neural and simulation drivers](#neural-and-simulation-drivers)
+Soil water/temperature, pedotransfer, carbon, and nitrogen process kernels.
 
-## API by modules
+```@autodocs
+Modules = [NeuralCrop]
+Pages = [
+    "physics/soil/pedotransfer.jl",
+    "physics/soil/infil_perc.jl",
+    "physics/soil/evaporation.jl",
+    "physics/soil/soil_water.jl",
+    "physics/soil/soil_temp.jl",
+    "physics/soil/soil_carbon.jl",
+    "physics/soil/nitrogen_transform.jl",
+    "physics/soil/soil_nitrogen.jl",
+    "physics/variables/callback.jl",
+]
+Order = [:function, :type]
+Private = false
+```
 
-### Variables and initialization
-Key symbols:
+## Hybrid processes
 
-- `LPJmLParams`, `PftParameters`, `PhotoParams`, `SoilParams`, `SnowParams`
-- `Photos`, `PetPar`, `DailyWeather`, `ClimBuf`, `CO2`, `Crop`, `Calendar`, `Managed_land`, `Soil`, `Output`
-- `init_structs!`, `init_climbuf`, `init_crop`, `init_pet`, `init_soil`, `init_data_norm`, `init_output`
-- `InitialDataLoader`, `ClimateDataLoader`, `DataLoader`, `DataLoader_winter_wheat`
+Hybrid physics-neural couplers for crop carbon/photosynthesis and soil processes.
 
+```@autodocs
+Modules = [NeuralCrop]
+Pages = [
+    "hybrid/crop_carbon.jl",
+    "hybrid/photosynthesis.jl",
+    "hybrid/soil_carbon.jl",
+    "hybrid/soil_nitrogen.jl",
+    "hybrid/soil_water.jl",
+]
+Order = [:function, :type]
+Private = false
+```
 
-### Climate and crop processes
-Key symbols:
+## Neural networks and training
 
-- Climate: `annual_climbuf!`, `daily_climbuf!`, `infil_perc!`, `spin_up_climbuf!`, `update_climbuf!`, `readclimate!`, `snow!`
-- Radiation and energy: `albedo!`, `petpar!`, `apar_crop!`, `apar_crop_maize!`, `temp_stress`
-- Crop growth: `photosynthesis_C3!`, `photosynthesis_C4!`, `phenology_crop!`, `lai_crop!`, `lai_deficit!`, `crop_carbon!`, `carbon_allocation!`, `respiration!`
-- Management and water: `cultivate!`, `harvest_crop!`, `fertilizer!`, `interception!`, `transpiration!`
-- Crop nitrogen: `crop_nitrogen!`, `crop_nitrogen_old!`, `ndemand_crop!`, `nuptake_crop!`, `root_distribution`
+Neural emulator blocks, solver wrappers, losses, and training loops.
 
+```@autodocs
+Modules = [NeuralCrop]
+Pages = [
+    "neural_network/define_net_struct.jl",
+    "neural_network/init_net.jl",
+    "neural_network/neural_emulator.jl",
+    "neural_network/solver.jl",
+    "neural_network/loss.jl",
+    "neural_network/training_loop.jl",
+    "training/daily_crop_C3_training.jl",
+]
+Order = [:function, :type]
+Private = false
+```
 
-### Soil processes
-Key symbols:
+## Simulation drivers
 
-- Soil core: `soiltemp_lag!`, `pedotransfer!`, `evaporation!`, `soil_water!`, `infil_perc!`
-- Soil carbon and nitrogen: `soil_carbon!`, `soil_nitrogen!`, `nitrogen_transform!`, `update_lit_tillage!`, `update_lit_winter_wheat!`, `update_litc_tillage!`, `update_litn_tillage!`
+Daily end-to-end drivers for C3/C4 simulations.
 
+```@autodocs
+Modules = [NeuralCrop]
+Pages = [
+    "simulations/daily_crop_C3.jl",
+    "simulations/daily_crop_C4.jl",
+]
+Order = [:function]
+Private = false
+```
 
-### Hybrid processes
-Key symbols:
+## Utilities
 
-- Hybrid replacements: `crop_carbon_hybrid!`, `hybrid_photos_C3!`, `hybrid_photos_C4!`, `hybrid_litc`, `hybrid_soilc`, `hybrid_litn`, `hybrid_soiln`
+Shared kernels, unit conversions, data helpers, and visualization tools.
 
-
-### Neural and simulation drivers
-Key symbols:
-
-- Neural wrappers: `NODE`, `MLP`, `SciMLEuler`, `SciMLEuler_litc`, `SciMLEuler_soilc`, `solve`
-- Neural emulators: `neural_gpp`, `neural_lambda`, `neural_vmax`, `neural_stoc`, `neural_allocation`, `neural_moisture`, `get_mlp`, `get_node`
-- Training: `train_loop_rollout!`, `train_loop_winter_wheat_rollout!`, `loss_crop_rollout!`, `daily_crop_C3_training!`
-- Simulations: `daily_crop_C3!`, `daily_crop_C4!`
-
-
-## Notes
-
-- Some symbols may not render detailed entries yet if the corresponding source code has no docstring.
-- For workflow-level guidance, start from the Introduction, Running, Models, and Processes sections rather than this API page.
+```@autodocs
+Modules = [NeuralCrop]
+Pages = [
+    "utilities/kernel_launch.jl",
+    "physics/variables/units.jl",
+    "utilities/utils.jl",
+    "utilities/visualization.jl",
+]
+Order = [:function, :constant, :type]
+Private = false
 ```
