@@ -18,7 +18,7 @@ function nitrogen_transform!(soil::Soil,
     soil.NO3 .+= F_Nmineral * k_l
 
     # NO3 and N2O from mineralization of soil organic matter
-    F_Nmineral = soil.decom_fastn + fsoil.decom_slown
+    F_Nmineral = soil.decom_fastn + soil.decom_slown
     soil.NH4 .+= F_Nmineral * (1 - k_l)
     soil.NO3 .+= F_Nmineral * k_l
 
@@ -57,7 +57,7 @@ end
                                     c_shift_fast::AbstractArray{T},
                                     c_shift_slow::AbstractArray{T},
                                     soil_layer_depth::AbstractArray{T};
-                                    parm::LPJmLParams,
+                                    lpjmlparams::LPJmLParams = lpjmlparams,
                                     cn_ratio = 15,
                                     soil_layers = 5,
                                     k_N = 5f-3
@@ -65,7 +65,7 @@ end
     
     cell = @index(Global)
 
-    @unpack fastfrac, atmfrac, k_soil10 = parm
+    @unpack fastfrac, atmfrac, k_soil10 = lpjmlparams
 
     # Each thread updates all soil layers for one cell.
     for l in 1:soil_layers
@@ -107,7 +107,7 @@ end
                                  soil_swc::AbstractArray{M},
                                  soil_wsats::AbstractArray{M},
                                  soil_temp::AbstractArray{M};
-                                 parm::LPJmLParams,
+                                 lpjmlparams::LPJmLParams = lpjmlparams,
                                  a_nit = 0.45f0,
                                  b_nit = 1.27f0,
                                  c_nit = 0.0012f0,
@@ -116,7 +116,7 @@ end
     
     cell = @index(Global)
 
-    @unpack k_max, k_2 = parm
+    @unpack k_max, k_2 = lpjmlparams
 
     # Potential nitrification rate is shaped by water-filled pore space and temperature response.
     for l in 1:soil_layers
