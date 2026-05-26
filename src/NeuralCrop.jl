@@ -61,7 +61,7 @@ export deg2rad, ppm2Pa, ppm2bar, hour2day, hour2sec, degCtoK
 export min_max_norm, z_score_norm, apply_z_score
 
 # DATA
-export InitilDataLoader, ClimateDataLoader, DataLoader, DataLoader_winter_wheat
+export InitialDataLoader, ClimateDataLoader, DataLoader, DataLoader_winter_wheat
 
 # NEURAL NETWORK
 export NODE, MLP, solve, SciMLEuler, SciMLEuler_litc, SciMLEuler_soilc, neural_gpp, neural_lambda, neural_vmax, neural_stoc, neural_allocation, hybrid_litc, hybrid_soilc, hybrid_litn, hybrid_soiln,

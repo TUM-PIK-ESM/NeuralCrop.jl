@@ -1,4 +1,4 @@
-function InitilDataLoader(data::NamedTuple, 
+function InitialDataLoader(data::NamedTuple, 
                           data_index::Vector{Int},
                           device;
                           training = false,
