@@ -119,6 +119,7 @@ Private = false
 ## Neural networks and training
 
 Neural emulator blocks, solver wrappers, losses, and training loops.
+This section includes unified execution helpers (`run_mlp`, `run_node`, `run_hybrid_decay`) that reduce repeated ODE wrapper code in high-level emulators such as `neural_stoc`, `neural_moisture`, and hybrid soil/litter updates.
 
 ```@autodocs
 Modules = [NeuralCrop]
