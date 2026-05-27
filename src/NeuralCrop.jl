@@ -44,7 +44,7 @@ export albedo!, petpar!, apar_crop!, apar_crop_maize!
 export photosynthesis_C3!, photosynthesis_C4!, carbon_allocation!, respiration!
 export phenology_crop!, lai_crop!, lai_deficit!, cultivate!, harvest_crop!, fertilizer!
 export transpiration!, interception!
-export crop_nitrogen!, crop_nitrogen_old!, ndemand_crop!, nuptake_crop!
+export crop_nitrogen!, ndemand_crop!, nuptake_crop!
 export root_distribution, temp_stress
 export crop_carbon!, crop_carbon_hybrid!, hybrid_photos_C3!, hybrid_photos_C4!
 
