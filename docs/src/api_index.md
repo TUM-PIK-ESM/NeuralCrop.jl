@@ -161,6 +161,7 @@ Pages = [
     "physics/variables/units.jl",
     "utilities/utils.jl",
     "utilities/visualization.jl",
+    "utilities/lonlat_split.jl"
 ]
 Order = [:function, :constant, :type]
 Private = false
