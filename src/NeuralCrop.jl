@@ -60,6 +60,7 @@ export output_training!, output_finetune!
 # UNITS
 export deg2rad, ppm2Pa, ppm2bar, hour2day, hour2sec, degCtoK
 export min_max_norm, z_score_norm, apply_z_score
+export spatial_group_split
 
 # DATA
 export InitialDataLoader, ClimateDataLoader, DataLoader, DataLoader_winter_wheat
@@ -148,6 +149,7 @@ include("utilities/data_loader.jl")
 include("utilities/data_norm.jl")
 include("utilities/utils.jl")
 include("utilities/visualization.jl")
+include("utilities/lonlat_split.jl")
 
 ### Simulations
 include("simulations/daily_crop_C3.jl")
