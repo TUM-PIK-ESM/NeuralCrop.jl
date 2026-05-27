@@ -1,34 +1,6 @@
 using Lux, CUDA, LuxCUDA
 const gdev = gpu_device()
 
-# Function to load one point data
-function OnePoint_one_dimension(file_path::String, 
-                                variable::String, 
-                                lonlatidx)
-    ds = NCDataset(file_path, "r")
-    
-    i, j = lonlatidx
-    
-    dataset = Float32.(ds[variable][i, j, :])
-    close(ds)
-    
-    return dataset
-end
-
-function OnePoint_dimensions(file_path::String, 
-                             variable::String, 
-                             lonlatidx)
-    ds = NCDataset(file_path, "r")
-    
-    i, j = lonlatidx
-    
-    dataset = Float32.(ds[variable][i, j, :, :])
-    close(ds)
-    
-    return dataset
-end
-
-
 """
 load_nc_file_one_dimension(file_path, variable)
 
