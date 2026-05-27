@@ -15,7 +15,6 @@ function output_training!(output::Output,
     output.lambda = vcat(output.lambda, reshape((photos.lambda .- μ.lambda) ./ (σ.lambda .- μ.lambda), (1, :)))
     output.vmax = vcat(output.vmax, reshape((photos.vmax .- μ.vmax) ./ (σ.vmax .- μ.vmax), (1, :)))
     output.vegc = vcat(output.vegc, reshape((crop.vegc .- μ.vegc) ./ (σ.vegc .- μ.vegc) , (1, :)))
-    output.carbon_sum = vcat(output.carbon_sum, reshape(crop.carbon_sum, (1, :)))
     output.biomass = vcat(output.biomass, reshape(crop.biomass, (1, :)))
     output.growing_mask = vcat(output.growing_mask, reshape(crop.isgrowing, (1, :)))
 

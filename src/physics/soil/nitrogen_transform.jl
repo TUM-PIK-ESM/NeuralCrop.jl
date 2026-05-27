@@ -48,7 +48,6 @@ function nitrogen_transform!(soil::Soil,
 end
 
 
-
 @kernel inbounds = true function immobilize_kernel!(decom_sum_litc::AbstractArray{T},
                                     decom_sum_litn::AbstractArray{T},
                                     soil_NH4::AbstractArray{M},           

@@ -30,7 +30,6 @@ function init_crop(cell_size::Int,
         device(zeros(Float32, cell_size)),      # poolc: 11.9886196f0
         device(zeros(Float32, cell_size)),      # stoc: 0.0f0
         device(zeros(Float32, (carbon_pools, cell_size))),  # vegc: 0.0f0
-        device(zeros(Float32, cell_size)),      # carbon_sum
         device(zeros(Float32, cell_size)),      # nitrogen
         device(zeros(Float32, cell_size)),      # leafn: 0.0f0
         device(zeros(Float32, cell_size)),      # rootn: 0.0f0
