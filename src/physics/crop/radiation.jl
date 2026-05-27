@@ -45,7 +45,7 @@ function petpar!(pet::PetPar,
 
 end
 
-@kernel function daylength_kernel!(pet_daylength::AbstractArray{T},
+@kernel inbounds = true function daylength_kernel!(pet_daylength::AbstractArray{T},
                                    u::AbstractArray{T},
                                    v::AbstractArray{T}
 ) where {T <: AbstractFloat}

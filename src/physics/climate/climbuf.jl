@@ -64,7 +64,7 @@ function annual_climbuf!(daily_temp::AbstractArray{T},
 end
 
 
-@kernel function climbuf_mtemp20_kernel!(climbuf_mtemp20::AbstractArray{T},
+@kernel inbounds = true function climbuf_mtemp20_kernel!(climbuf_mtemp20::AbstractArray{T},
                                          climbuf_mtemp::AbstractArray{T},
                                          kk
 ) where {T <: AbstractFloat}
@@ -80,7 +80,7 @@ end
 end
 
 
-@kernel function climbuf_V_req_a_kernel!(climbuf_V_req_a::AbstractArray{T},
+@kernel inbounds = true function climbuf_V_req_a_kernel!(climbuf_V_req_a::AbstractArray{T},
                                          climbuf_min_temp::AbstractArray{T},
                                          PFT::PftParameters,
                                          n
@@ -105,7 +105,7 @@ end
 end
 
 
-@kernel function climbuf_V_req_kernel!(climbuf_V_req::AbstractArray{T},
+@kernel inbounds = true function climbuf_V_req_kernel!(climbuf_V_req::AbstractArray{T},
                                        climbuf_V_req_a::AbstractArray{T},
                                        kk
 ) where {T <: AbstractFloat}
@@ -181,7 +181,7 @@ function monthlytemp!(daily_temp::AbstractArray{T},
 end
 
 
-@kernel function monthlytemp_kernel!(climbuf_mtemp::AbstractArray{T}, 
+@kernel inbounds = true function monthlytemp_kernel!(climbuf_mtemp::AbstractArray{T}, 
                                      daily_temp::AbstractArray{T},
                                      ndaymonth::AbstractArray{S},  
                                      start_indices::AbstractArray{S}
@@ -221,7 +221,7 @@ function daily_climbuf!(temp::AbstractArray{T},
 end
 
 
-@kernel function daily_climbuf_kernel!(temp::AbstractArray{T},
+@kernel inbounds = true function daily_climbuf_kernel!(temp::AbstractArray{T},
                                        climbuf_temp::AbstractArray{T};
                                        NDAYS = 31
 ) where {T <: AbstractFloat}

@@ -26,7 +26,7 @@ function fertilizer!(crop_cal::Calendar,
 end
 
 
-@kernel function fertilizer_kernel!(crop_nfertilizer::AbstractArray{T},
+@kernel inbounds = true function fertilizer_kernel!(crop_nfertilizer::AbstractArray{T},
                                     crop_cal_sdate::AbstractArray{S},
                                     ml_manure::AbstractArray{T},
                                     ml_fertilizer::AbstractArray{T},

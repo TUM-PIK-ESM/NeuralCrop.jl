@@ -32,3 +32,19 @@ function soil_carbon!(crop_cal::Calendar,
     soil.rh = vec(sum(soil.decom_litc, dims = 1) * atmfrac .+ sum(soil.decom_fastc, dims = 1) .+ sum(soil.decom_slowc, dims = 1))
     
 end
+
+
+"""
+update_litc_tillage!(soil, crop_cal)
+
+Apply tillage/harvest crop carbon to litter carbon pools.
+"""
+function update_litc_tillage!(soil::Soil,
+                              crop_cal::Calendar
+)
+
+    soil.litc = soil.litc .* (1 .- reshape(crop_cal.scallback, (1, :))) .* (1 .- reshape(crop_cal.hcallback, (1, :))) + 
+                soil.tillage_frac * soil.litc .* reshape(crop_cal.scallback, (1, :)) +
+                (soil.tillage_frac * (soil.litc .+ soil.c_input)) .* reshape(crop_cal.hcallback, (1, :)) 
+end
+

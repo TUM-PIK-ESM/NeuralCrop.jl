@@ -28,7 +28,7 @@ function ndemand_crop!(crop::Crop,
   
 end
 
-@kernel function ndemand_crop_kernel!(crop_ndemand_tot::AbstractArray{T},
+@kernel inbounds = true function ndemand_crop_kernel!(crop_ndemand_tot::AbstractArray{T},
                                       crop_lai::AbstractArray{T},
                                       crop_leafc::AbstractArray{T},
                                       crop_rootc::AbstractArray{T},

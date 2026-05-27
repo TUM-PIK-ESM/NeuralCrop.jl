@@ -31,7 +31,7 @@ function nuptake_crop!(crop::Crop,
   
 end
 
-@kernel function nuptake_crop_kernel!(crop_nitrogen::AbstractArray{T},
+@kernel inbounds = true function nuptake_crop_kernel!(crop_nitrogen::AbstractArray{T},
                                       crop_leafn::AbstractArray{T},
                                       crop_leafc::AbstractArray{T},
                                       crop_rootn::AbstractArray{T},

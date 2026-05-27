@@ -31,7 +31,7 @@ function infil_perc!(soil::Soil;
 
 end
 
-@kernel function infil_perc_kernel!(infil::AbstractArray{T},           
+@kernel inbounds = true function infil_perc_kernel!(infil::AbstractArray{T},           
                                     soil_w::AbstractArray{M},       
                                     soil_whcs::AbstractArray{M},       
                                     soil_w_fw::AbstractArray{M},

@@ -43,7 +43,7 @@ function phenology_crop!(crop::Crop,
 end
 
 
-@kernel function phenology_kernel!(climbuf_V_req::AbstractArray{T},
+@kernel inbounds = true function phenology_kernel!(climbuf_V_req::AbstractArray{T},
                                 crop_phu::AbstractArray{T},           
                                    crop_vdsum::AbstractArray{T},           
                                    crop_husum::AbstractArray{T},            

@@ -97,7 +97,7 @@ function carbon_allocation_root_leaf!(PFT::PftParameters,
 
 end
 
-@kernel function carbon_allocation_leaf_root_kernel!(crop_stoc::AbstractArray{T},
+@kernel inbounds = true function carbon_allocation_leaf_root_kernel!(crop_stoc::AbstractArray{T},
                                                      crop_isgrowing::AbstractArray{S},
                                                      crop_growingdays::AbstractArray{S},
                                                      crop_vscal_sum::AbstractArray{T},
@@ -231,7 +231,7 @@ function carbon_allocation_pool!(crop::Crop)
                crop.poolc)
 end
 
-@kernel function carbon_allocation_pool_kernel!(crop_stoc::AbstractArray{T},
+@kernel inbounds = true function carbon_allocation_pool_kernel!(crop_stoc::AbstractArray{T},
                                                 crop_isgrowing::AbstractArray{S},
                                                 crop_senescence::AbstractArray{B},
                                                 crop_biomass::AbstractArray{T},

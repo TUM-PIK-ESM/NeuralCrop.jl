@@ -20,7 +20,7 @@ end
 
 
 
-@kernel function snow_kernel!(temp::AbstractArray{T},
+@kernel inbounds = true function snow_kernel!(temp::AbstractArray{T},
                               prec::AbstractArray{T},
                               soil_snowpack::AbstractArray{T},
                               soil_snowheight::AbstractArray{T},

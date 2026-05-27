@@ -31,7 +31,7 @@ function crop_nitrogen!(crop::Crop,
 end
 
 
-@kernel function crop_nitrogen_kernel!(crop_nitrogen::AbstractArray{T},
+@kernel inbounds = true function crop_nitrogen_kernel!(crop_nitrogen::AbstractArray{T},
                                        crop_isgrowing::AbstractArray{S},
                                        crop_leafc::AbstractArray{T},
                                        crop_rootc::AbstractArray{T},

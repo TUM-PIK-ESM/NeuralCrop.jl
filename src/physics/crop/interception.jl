@@ -22,7 +22,7 @@ function interception!(crop::Crop,
   
 end
 
-@kernel function interception_kernel!(crop_intercep::AbstractArray{T},
+@kernel inbounds = true function interception_kernel!(crop_intercep::AbstractArray{T},
                                       crop_canopy_wet::AbstractArray{T},
                                       crop_lai::AbstractArray{T},
                                       crop_isgrowing::AbstractArray{S},

@@ -49,7 +49,7 @@ end
 
 
 
-@kernel function immobilize_kernel!(decom_sum_litc::AbstractArray{T},
+@kernel inbounds = true function immobilize_kernel!(decom_sum_litc::AbstractArray{T},
                                     decom_sum_litn::AbstractArray{T},
                                     soil_NH4::AbstractArray{M},           
                                     soil_NO3::AbstractArray{M},
@@ -101,7 +101,7 @@ end
 end
 
 
-@kernel function nitrify_kernel!(soil_ph::AbstractArray{T},
+@kernel inbounds = true function nitrify_kernel!(soil_ph::AbstractArray{T},
                                  soil_NH4::AbstractArray{M},           
                                  soil_NO3::AbstractArray{M},
                                  soil_swc::AbstractArray{M},

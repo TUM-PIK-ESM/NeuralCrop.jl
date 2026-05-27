@@ -42,7 +42,7 @@ function transpiration!(photos_adtmm::AbstractArray{T},
 
 end
 
-@kernel function water_demand_supply_kernel!(crop_gp::AbstractArray{T},
+@kernel inbounds = true function water_demand_supply_kernel!(crop_gp::AbstractArray{T},
                                              crop_trans_layer::AbstractArray{T},
                                              crop_w_demandsum::AbstractArray{T},
                                              crop_w_supplysum::AbstractArray{T},

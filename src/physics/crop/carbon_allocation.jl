@@ -32,7 +32,7 @@ function carbon_allocation!(PFT::PftParameters,
 
 end
 
-@kernel function carbon_allocation_kernel!(crop_stoc::AbstractArray{T},
+@kernel inbounds = true function carbon_allocation_kernel!(crop_stoc::AbstractArray{T},
                                            crop_isgrowing::AbstractArray{S},
                                            crop_growingdays::AbstractArray{S},
                                            crop_vscal_sum::AbstractArray{T},

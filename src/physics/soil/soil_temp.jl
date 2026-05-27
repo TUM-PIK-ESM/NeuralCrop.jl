@@ -26,7 +26,7 @@ function soiltemp_lag!(soil::Soil,
 
 end
 
-@kernel function soiltemp_lag_kernel!(climbuf_atemp_mean::AbstractArray{T},
+@kernel inbounds = true function soiltemp_lag_kernel!(climbuf_atemp_mean::AbstractArray{T},
                                       climbuf_temp::AbstractArray{M},
                                       soil_alag::AbstractArray{T},
                                       soil_w::AbstractArray{M},
@@ -73,7 +73,7 @@ function linreg(climbuf_temp::AbstractArray{M},
 end
 
 
-@kernel function linreg_kernel!(a::AbstractArray{T},
+@kernel inbounds = true function linreg_kernel!(a::AbstractArray{T},
                                 b::AbstractArray{T},
                                 climbuf_temp::AbstractArray{M};
                                 NDAYS = 31 # NDAYS

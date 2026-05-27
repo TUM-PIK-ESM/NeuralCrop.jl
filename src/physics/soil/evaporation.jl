@@ -23,7 +23,7 @@ function evaporation!(pet_eeq::AbstractArray{T},
 
 end
 
-@kernel function evaporation_kernel!(pet_eeq::AbstractArray{T},
+@kernel inbounds = true function evaporation_kernel!(pet_eeq::AbstractArray{T},
                                      crop_fpar::AbstractArray{T},
                                      crop_trans_layer::AbstractArray{M},
                                      crop_canopy_wet::AbstractArray{T},

@@ -26,3 +26,20 @@ function soil_nitrogen!(crop_cal::Calendar,
     soil.decom_slown = (1.0f0 .- exp.(-soil.respose_slown .* response / 10)) .* soil.slown
     soil.slown = soil.slown + soil.n_shift_slow .* sum(soil.decom_litn, dims = 1) - soil.decom_slown
 end
+
+
+"""
+update_litn_tillage!(soil, crop_cal)
+
+Apply tillage/harvest crop nitrogen to litter nitrogen pools.
+"""
+function update_litn_tillage!(soil::Soil,
+                              crop_cal::Calendar
+)
+
+    soil.litn = soil.litn .* (1 .- reshape(crop_cal.scallback, (1, :))) .* (1 .- reshape(crop_cal.hcallback, (1, :))) + 
+                soil.tillage_frac * soil.litn .* reshape(crop_cal.scallback, (1, :)) +
+                (soil.tillage_frac * (soil.litn .+ soil.c_input)) .* reshape(crop_cal.hcallback, (1, :)) 
+
+end
+

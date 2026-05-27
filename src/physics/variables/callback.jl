@@ -1,62 +1,3 @@
-# update crop variables for today
-# function callback_crop!(crop::Crop,
-#                         photos::Photos
-# )
-
-#     # crop.lai .*= crop.isgrowing
-#     # crop.lai_nppdeficit .*= crop_cal.isgrowing
-#     crop.rootc .*= crop.isgrowing
-#     crop.leafc .*= crop.isgrowing
-#     crop.stoc .*= crop.isgrowing
-#     crop.poolc .*= crop.isgrowing
-#     # crop.biomass .= crop.leafc .+ crop.rootc .+ crop.poolc .+ crop.stoc
-
-#     # crop.npp .*= crop.isgrowing
-#     crop.carbon_sum .+= (crop.leafc .+ crop.rootc .+ crop.poolc .+ crop.stoc)
-#     crop.carbon_sum .*= crop.isgrowing
-#     crop.biomass .+= crop.npp
-#     crop.biomass .*= crop.isgrowing
-#     # crop.phen .*= crop.isgrowing
-#     # crop.albedo .*= crop.isgrowing
-#     # crop.fpar .*= crop.isgrowing
-#     # crop.apar .*= crop.isgrowing
-    
-#     photos.adt .*= crop.isgrowing
-#     photos.adtmm .*= crop.isgrowing
-#     photos.rd .*= crop.isgrowing
-
-# end
-
-"""
-update_litc_tillage!(soil, crop_cal)
-
-Apply tillage/harvest callbacks to litter carbon pools.
-"""
-function update_litc_tillage!(soil::Soil,
-                              crop_cal::Calendar
-)
-
-    soil.litc = soil.litc .* (1 .- reshape(crop_cal.scallback, (1, :))) .* (1 .- reshape(crop_cal.hcallback, (1, :))) + 
-                soil.tillage_frac * soil.litc .* reshape(crop_cal.scallback, (1, :)) +
-                (soil.tillage_frac * (soil.litc .+ soil.c_input)) .* reshape(crop_cal.hcallback, (1, :)) 
-end
-
-"""
-update_litn_tillage!(soil, crop_cal)
-
-Apply tillage/harvest callbacks to litter nitrogen pools.
-"""
-function update_litn_tillage!(soil::Soil,
-                              crop_cal::Calendar
-)
-
-    soil.litn = soil.litn .* (1 .- reshape(crop_cal.scallback, (1, :))) .* (1 .- reshape(crop_cal.hcallback, (1, :))) + 
-                soil.tillage_frac * soil.litn .* reshape(crop_cal.scallback, (1, :)) +
-                (soil.tillage_frac * (soil.litn .+ soil.c_input)) .* reshape(crop_cal.hcallback, (1, :)) 
-
-end
-
-
 """
 update_lit_winter_wheat!(soil, litch, litnh, crop_wtype, hdate, crop_cal_hcallback, day)
 
@@ -87,7 +28,7 @@ function update_lit_winter_wheat!(soil::Soil,
 end
 
 
-@kernel function update_lit_winter_wheat_kernel!(hdate_callback::AbstractArray{S},
+@kernel inbounds = true function update_lit_winter_wheat_kernel!(hdate_callback::AbstractArray{S},
                                                  crop_wtype::AbstractArray{B},
                                                  hdate::AbstractArray{S},
                                                  day::Int
