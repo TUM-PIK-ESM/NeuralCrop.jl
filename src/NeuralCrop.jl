@@ -31,16 +31,16 @@ export LPJmLParams, PftParameters, PhotoParams, SoilParams, SnowParams, Photos, 
 export lpjmlparams, photoparams, soilparams, snowparams, cft1, cft2, cft3, cft4
 
 # INITIALIZATION
-export init_structs!, init_climbuf, init_crop, init_pet, init_soil, init_data_norm, init_output
+export init_states!, init_climbuf, init_crop, init_pet, init_soil, init_data_norm, init_output
 
 # CLIMATE
 export annual_climbuf!, daily_climbuf!, infil_perc!, spin_up_climbuf!, update_climbuf!, readclimate!, snow!         
 
 # PHYSICS FUNCTIONS
-### RADIATION
+# RADIATION
 export albedo!, petpar!, apar_crop!, apar_crop_maize!
 
-### CROP
+# CROP
 export photosynthesis_C3!, photosynthesis_C4!, carbon_allocation!, respiration!
 export phenology_crop!, lai_crop!, lai_deficit!, cultivate!, harvest_crop!, fertilizer!
 export transpiration!, interception!
@@ -48,7 +48,7 @@ export crop_nitrogen!, ndemand_crop!, nuptake_crop!
 export root_distribution, temp_stress
 export crop_carbon!, crop_carbon_hybrid!, hybrid_photos_C3!, hybrid_photos_C4!
 
-### SOIL
+# SOIL
 export soiltemp_lag!
 export pedotransfer!, update_lit_tillage!, update_lit_winter_wheat!,  soil_carbon!
 export evaporation!, soil_water!
@@ -79,79 +79,84 @@ export daily_crop_C3!, daily_crop_C4!
 
 
 # process-based crop model
-### Variables
-include("physics/variables/define_structs.jl")
-include("physics/variables/default_param.jl")
-include("physics/variables/pft.jl")
-include("physics/variables/units.jl")
-include("physics/variables/init_var.jl")
-include("physics/variables/init_struct.jl")
-include("physics/variables/callback.jl")
-include("physics/variables/output.jl")
-include("physics/variables/DataLoader.jl")
+# Parameters
+include("parameters/default_params.jl")
+include("parameters/pft.jl")
 
-### Climate
-include("physics/climate/climbuf.jl")
-include("physics/climate/temp_stress.jl")
-include("physics/climate/spinup_climbuf.jl")
-include("physics/climate/readclimate.jl")
-include("physics/climate/snow.jl")
+# Initialization
+include("processes/initialization/define_structs.jl")
+include("processes/initialization/init_states.jl")
+include("processes/initialization/init_structs.jl")
 
-### Crop
-include("physics/crop/cultivate.jl")
-include("physics/crop/phenology.jl")
-include("physics/crop/photosynthesis.jl")
-include("physics/crop/carbon_allocation.jl")
-include("physics/crop/crop_carbon.jl")
-include("physics/crop/lai_crop.jl")
-include("physics/crop/radiation.jl")
-include("physics/crop/albedo.jl")
-include("physics/crop/respiration.jl")
-include("physics/crop/interception.jl")
-include("physics/crop/transpiration.jl")
-include("physics/crop/nitrogen_allocation.jl")
-include("physics/crop/nitrogen_demand.jl")
-include("physics/crop/nitrogen_uptake.jl")
-include("physics/crop/fertilizer.jl")
-include("physics/crop/harvesting.jl")
+# Climate
+include("processes/climate/climbuf.jl")
+include("processes/climate/temp_stress.jl")
+include("processes/climate/spinup_climbuf.jl")
+include("processes/climate/readclimate.jl")
+include("processes/climate/snow.jl")
 
-### Soil
-include("physics/soil/pedotransfer.jl")
-include("physics/soil/evaporation.jl")
-include("physics/soil/soil_temp.jl")
-include("physics/soil/nitrogen_transform.jl")
-include("physics/soil/infil_perc.jl")
-include("physics/soil/soil_water.jl")
-include("physics/soil/soil_carbon.jl")
-include("physics/soil/soil_nitrogen.jl")
+# Crop
+include("processes/crop/cultivate.jl")
+include("processes/crop/phenology.jl")
+include("processes/crop/photosynthesis.jl")
+include("processes/crop/carbon_allocation.jl")
+include("processes/crop/crop_carbon.jl")
+include("processes/crop/lai_crop.jl")
+include("processes/crop/radiation.jl")
+include("processes/crop/albedo.jl")
+include("processes/crop/respiration.jl")
+include("processes/crop/interception.jl")
+include("processes/crop/transpiration.jl")
+include("processes/crop/nitrogen_allocation.jl")
+include("processes/crop/nitrogen_demand.jl")
+include("processes/crop/nitrogen_uptake.jl")
+include("processes/crop/fertilizer.jl")
+include("processes/crop/harvesting.jl")
 
-### Hybrid
-include("hybrid/crop_carbon.jl")
-include("hybrid/photosynthesis.jl")
-include("hybrid/soil_carbon.jl")
-include("hybrid/soil_nitrogen.jl")
-include("hybrid/soil_water.jl")
+# Soil
+include("processes/soil/pedotransfer.jl")
+include("processes/soil/evaporation.jl")
+include("processes/soil/soil_temp.jl")
+include("processes/soil/nitrogen_transform.jl")
+include("processes/soil/infil_perc.jl")
+include("processes/soil/soil_water.jl")
+include("processes/soil/soil_carbon.jl")
+include("processes/soil/soil_nitrogen.jl")
 
-### Neural network
+
+# Hybrid
+include("hybrid_processes/crop_carbon.jl")
+include("hybrid_processes/photosynthesis.jl")
+include("hybrid_processes/soil_carbon.jl")
+include("hybrid_processes/soil_nitrogen.jl")
+include("hybrid_processes/soil_water.jl")
+
+# Neural network
 include("neural_network/define_net_struct.jl")
 include("neural_network/init_net.jl")
 include("neural_network/neural_emulator.jl")
 include("neural_network/solver.jl")
-include("neural_network/loss.jl")
-include("neural_network/training_loop.jl")
 
-### Training
+# Input and output
+include("input_output/load_nc.jl")
+include("input_output/data_loader.jl")
+include("input_output/output.jl")
+
+# Training
+include("training/loss_function.jl")
+include("training/training_loop.jl")
 include("training/daily_crop_C3_training.jl")
 
-### Utilities
-include("utilities/kernel_launch.jl")
-include("utilities/data_loader.jl")
-include("utilities/data_norm.jl")
-include("utilities/utils.jl")
-include("utilities/visualization.jl")
-include("utilities/lonlat_split.jl")
+# Utilities
+include("utils/kernel_launch.jl")
+include("utils/normalization.jl")
+include("utils/visualization.jl")
+include("utils/lonlat_split.jl")
+include("utils/conversions.jl")
+include("utils/callback.jl")
+include("utils/tools.jl")
 
-### Simulations
+# Simulations
 include("simulations/daily_crop_C3.jl")
 include("simulations/daily_crop_C4.jl")
 

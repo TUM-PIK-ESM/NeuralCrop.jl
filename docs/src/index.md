@@ -48,7 +48,7 @@ using NeuralCrop
 #
 # 3. For scripted runs, use the exported pipeline:
 # - load forcing and initial-condition data
-# - initialize states with init_structs!
+# - initialize states with init_states!
 # - run daily_crop_C3! or daily_crop_C4!
 # - inspect output fields (yield, lai, gpp, swc, litc, ...)
 ```

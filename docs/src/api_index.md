@@ -19,15 +19,14 @@ Core model state types, parameter presets, and initialization/data-loading entry
 ```@autodocs
 Modules = [NeuralCrop]
 Pages = [
-    "physics/variables/default_param.jl",
-    "physics/variables/pft.jl",
-    "physics/variables/define_structs.jl",
-    "physics/variables/init_var.jl",
-    "physics/variables/init_struct.jl",
-    "physics/variables/output.jl",
-    "physics/variables/DataLoader.jl",
-    "utilities/data_loader.jl",
-    "utilities/data_norm.jl",
+    "parameters/default_params.jl",
+    "parameters/pft.jl",
+    "processes/initialization/define_structs.jl",
+    "processes/initialization/init_states.jl",
+    "processes/initialization/init_structs.jl",
+    "input_output/output.jl",
+    "input_output/data_loader.jl",
+    "input_output/load_nc.jl",
 ]
 Order = [:constant, :type, :function]
 Private = false
@@ -40,11 +39,11 @@ Climate forcing preparation and temperature/snow process updates.
 ```@autodocs
 Modules = [NeuralCrop]
 Pages = [
-    "physics/climate/readclimate.jl",
-    "physics/climate/climbuf.jl",
-    "physics/climate/spinup_climbuf.jl",
-    "physics/climate/snow.jl",
-    "physics/climate/temp_stress.jl",
+    "processes/climate/readclimate.jl",
+    "processes/climate/climbuf.jl",
+    "processes/climate/spinup_climbuf.jl",
+    "processes/climate/snow.jl",
+    "processes/climate/temp_stress.jl",
 ]
 Order = [:function, :type]
 Private = false
@@ -57,22 +56,22 @@ Crop biophysics, allocation, phenology, management, and N cycling operators.
 ```@autodocs
 Modules = [NeuralCrop]
 Pages = [
-    "physics/crop/albedo.jl",
-    "physics/crop/radiation.jl",
-    "physics/crop/photosynthesis.jl",
-    "physics/crop/respiration.jl",
-    "physics/crop/interception.jl",
-    "physics/crop/transpiration.jl",
-    "physics/crop/phenology.jl",
-    "physics/crop/cultivate.jl",
-    "physics/crop/harvesting.jl",
-    "physics/crop/carbon_allocation.jl",
-    "physics/crop/crop_carbon.jl",
-    "physics/crop/lai_crop.jl",
-    "physics/crop/fertilizer.jl",
-    "physics/crop/nitrogen_demand.jl",
-    "physics/crop/nitrogen_uptake.jl",
-    "physics/crop/nitrogen_allocation.jl",
+    "processes/crop/albedo.jl",
+    "processes/crop/radiation.jl",
+    "processes/crop/photosynthesis.jl",
+    "processes/crop/respiration.jl",
+    "processes/crop/interception.jl",
+    "processes/crop/transpiration.jl",
+    "processes/crop/phenology.jl",
+    "processes/crop/cultivate.jl",
+    "processes/crop/harvesting.jl",
+    "processes/crop/carbon_allocation.jl",
+    "processes/crop/crop_carbon.jl",
+    "processes/crop/lai_crop.jl",
+    "processes/crop/fertilizer.jl",
+    "processes/crop/nitrogen_demand.jl",
+    "processes/crop/nitrogen_uptake.jl",
+    "processes/crop/nitrogen_allocation.jl",
 ]
 Order = [:function, :type]
 Private = false
@@ -85,15 +84,15 @@ Soil water/temperature, pedotransfer, carbon, and nitrogen process kernels.
 ```@autodocs
 Modules = [NeuralCrop]
 Pages = [
-    "physics/soil/pedotransfer.jl",
-    "physics/soil/infil_perc.jl",
-    "physics/soil/evaporation.jl",
-    "physics/soil/soil_water.jl",
-    "physics/soil/soil_temp.jl",
-    "physics/soil/soil_carbon.jl",
-    "physics/soil/nitrogen_transform.jl",
-    "physics/soil/soil_nitrogen.jl",
-    "physics/variables/callback.jl",
+    "processes/soil/pedotransfer.jl",
+    "processes/soil/infil_perc.jl",
+    "processes/soil/evaporation.jl",
+    "processes/soil/soil_water.jl",
+    "processes/soil/soil_temp.jl",
+    "processes/soil/soil_carbon.jl",
+    "processes/soil/nitrogen_transform.jl",
+    "processes/soil/soil_nitrogen.jl",
+    "utils/callback.jl",
 ]
 Order = [:function, :type]
 Private = false
@@ -106,11 +105,11 @@ Hybrid physics-neural couplers for crop carbon/photosynthesis and soil processes
 ```@autodocs
 Modules = [NeuralCrop]
 Pages = [
-    "hybrid/crop_carbon.jl",
-    "hybrid/photosynthesis.jl",
-    "hybrid/soil_carbon.jl",
-    "hybrid/soil_nitrogen.jl",
-    "hybrid/soil_water.jl",
+    "hybrid_processes/crop_carbon.jl",
+    "hybrid_processes/photosynthesis.jl",
+    "hybrid_processes/soil_carbon.jl",
+    "hybrid_processes/soil_nitrogen.jl",
+    "hybrid_processes/soil_water.jl",
 ]
 Order = [:function, :type]
 Private = false
@@ -128,8 +127,8 @@ Pages = [
     "neural_network/init_net.jl",
     "neural_network/neural_emulator.jl",
     "neural_network/solver.jl",
-    "neural_network/loss.jl",
-    "neural_network/training_loop.jl",
+    "training/loss_function.jl",
+    "training/training_loop.jl",
     "training/daily_crop_C3_training.jl",
 ]
 Order = [:function, :type]
@@ -150,18 +149,18 @@ Order = [:function]
 Private = false
 ```
 
-## Utilities
+## Utils
 
 Shared kernels, unit conversions, data helpers, and visualization tools.
 
 ```@autodocs
 Modules = [NeuralCrop]
 Pages = [
-    "utilities/kernel_launch.jl",
-    "physics/variables/units.jl",
-    "utilities/utils.jl",
-    "utilities/visualization.jl",
-    "utilities/lonlat_split.jl"
+    "utils/kernel_launch.jl",
+    "utils/conversions.jl",
+    "utils/normalization.jl",
+    "utils/visualization.jl",
+    "utils/lonlat_split.jl"
 ]
 Order = [:function, :constant, :type]
 Private = false

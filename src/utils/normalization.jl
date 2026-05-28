@@ -1,17 +1,3 @@
-function z_score_one_dimension(x::AbstractArray{T}) where {T <: AbstractFloat}
-    μ = mean(x; dims = 1)
-    σ = std(x; dims = 1)
-    x_norm = similar(x)
-
-    if σ[1] == 0
-        x_norm .= 0.0f0
-    else
-        x_norm = (x .- μ) ./ σ
-    end
-    
-    return x_norm, μ, σ
-end
-
 """
 z_score_norm(x)
 

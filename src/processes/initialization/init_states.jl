@@ -21,13 +21,13 @@ end
 
 
 """
-init_structs!(PFT, InitialData, cell_size, device; lpjmlparams=lpjmlparams)
+init_states!(PFT, InitialData, cell_size, device; lpjmlparams=lpjmlparams)
 
 Initialize and populate all runtime state structs from static parameters and
 input data for one simulation domain.
 Returns `(climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output)`.
 """
-function init_structs!(PFT::PftParameters,
+function init_states!(PFT::PftParameters,
                        InitialData::NamedTuple,
                        cell_size::Int,
                        device;
