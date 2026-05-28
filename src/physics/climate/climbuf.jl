@@ -59,7 +59,7 @@ function annual_climbuf!(daily_temp::AbstractArray{T},
     )
     # climbuf.V_req .= ifelse.(climbuf.V_req .< -9998, climbuf.V_req_a, (1 - kk) * climbuf.V_req .+ kk .* climbuf.V_req_a)
 
-    climbuf.atemp_mean = vec(mean(daily_temp, dims = 1))
+    climbuf.atemp_mean .= vec(mean(daily_temp, dims = 1))
 
 end
 

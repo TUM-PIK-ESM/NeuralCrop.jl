@@ -15,7 +15,7 @@ function transpiration!(photos_adtmm::AbstractArray{T},
     @unpack LAMBDA_OPT = lpjmlparams
 
     # Potential canopy conductance from photosynthesis and atmospheric CO2.
-    crop.gp = (1.6f0 * photos_adtmm ./ (ppm2bar(co2) * (1 - LAMBDA_OPT) .* hour2sec(pet.daylength))) .+ crop.fpar
+    crop.gp .= (1.6f0 * photos_adtmm ./ (ppm2bar(co2) * (1 - LAMBDA_OPT) .* hour2sec(pet.daylength))) .+ crop.fpar
 
     # Root-zone weighted soil water availability per cell.
     wr = sum(soil.w .* crop.rootdist, dims = 1)

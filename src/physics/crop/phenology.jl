@@ -38,7 +38,7 @@ function phenology_crop!(crop::Crop,
     lai_crop!(crop, PFT)
     
     # Normalize current LAI by potential max LAI to obtain phenological progress proxy.
-    crop.phen = crop.lai / laimax
+    crop.phen .= crop.lai / laimax
   
 end
 
