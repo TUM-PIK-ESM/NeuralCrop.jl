@@ -5,8 +5,13 @@ Update snowpack, snow height, and snow cover fraction from daily temperature
 and precipitation forcing.
 """
 function snow!(soil::Soil,
-               dailyWeather::DailyWeather
+               dailyWeather::DailyWeather;
+               snowparams::SnowParams = snowparams,
+               lpjmlparams::LPJmLParams = lpjmlparams
 )
+
+    kernel_params = (; snowparams, lpjmlparams)
+
     launch_1D!(
         snow_kernel!,
         dailyWeather.temp,
@@ -14,25 +19,26 @@ function snow!(soil::Soil,
         soil.snowpack,
         soil.snowheight,
         soil.snowfraction,
+        kernel_params
     )
 
 end
 
 
 
-@kernel inbounds = true function snow_kernel!(temp::AbstractArray{T},
+@kernel inbounds = true function snow_kernel!(
+                              temp::AbstractArray{T},
                               prec::AbstractArray{T},
                               soil_snowpack::AbstractArray{T},
                               soil_snowheight::AbstractArray{T},
-                              soil_snowfraction::AbstractArray{T};
-                              snowparams::SnowParams = snowparams,
-                              lpjmlparams::LPJmLParams = lpjmlparams,
+                              soil_snowfraction::AbstractArray{T},
+                              kernel_params
 ) where {T <: AbstractFloat}
     
     cell = @index(Global)
-
-    @unpack tsnow, snow_skin_depth, th_diff_snow, lambda_snow, c_water2ice, c_watertosnow, c_roughness= snowparams
-    @unpack maxsnowpack = lpjmlparams
+    
+    @unpack tsnow, snow_skin_depth, th_diff_snow, lambda_snow, c_water2ice, c_watertosnow, c_roughness= kernel_params.snowparams
+    @unpack maxsnowpack = kernel_params.lpjmlparams
 
     # precipitation falls as snow
     if temp[cell] < tsnow
