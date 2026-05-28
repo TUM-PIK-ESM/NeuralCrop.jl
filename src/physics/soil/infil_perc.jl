@@ -7,6 +7,8 @@ function infil_perc!(soil::Soil;
                     lpjmlparams::LPJmLParams = lpjmlparams
 )
     # One-cell kernel launch; each thread updates the full vertical soil column for that cell.
+    kernel_params = (lpjmlparams = lpjmlparams, soil_layers = 5, anion_excl = 0.3f0, NPERCO = 0.4f0)
+
     launch_1D!(infil_perc_kernel!,
                soil.infil,
                soil.w,
@@ -27,11 +29,12 @@ function infil_perc!(soil::Soil;
                soil.beta_soil,
                soil.NO3,
                soil.layer_depth,
-               lpjmlparams)
+               kernel_params)
 
 end
 
-@kernel inbounds = true function infil_perc_kernel!(infil::AbstractArray{T},           
+@kernel inbounds = true function infil_perc_kernel!(
+                                    infil::AbstractArray{T},           
                                     soil_w::AbstractArray{M},       
                                     soil_whcs::AbstractArray{M},       
                                     soil_w_fw::AbstractArray{M},
@@ -50,13 +53,12 @@ end
                                     soil_beta_soil::AbstractArray{M},
                                     soil_NO3::AbstractArray{M},
                                     soil_layer_depth::AbstractArray{T},
-                                    lpjmlparams::LPJmLParams;
-                                    soil_layers = 5,
-                                    anion_excl = 0.3,
-                                    NPERCO = 0.4
+                                    kernel_params
 ) where {T <: AbstractFloat, M <: AbstractFloat}
     
     cell = @index(Global)
+
+    @unpack lpjmlparams, soil_layers, anion_excl, NPERCO = kernel_params
 
     @unpack soil_infil, soil_infil_litter, percthres = lpjmlparams
 

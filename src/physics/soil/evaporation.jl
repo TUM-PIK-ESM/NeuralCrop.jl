@@ -5,9 +5,12 @@ Compute layer-wise bare-soil evaporation constrained by near-surface water.
 """
 function evaporation!(pet_eeq::AbstractArray{T},
                       crop::Crop,
-                      soil::Soil
+                      soil::Soil;
+                      lpjmlparams::LPJmLParams = lpjmlparams
     
 ) where {T <: AbstractFloat}
+
+    kernel_params = (lpjmlparams = lpjmlparams, soil_layers = 5)
 
     launch_1D!(evaporation_kernel!,
                pet_eeq,
@@ -19,11 +22,13 @@ function evaporation!(pet_eeq::AbstractArray{T},
                soil.whcs,
                soil.evap,
                soil.agtop_cover,
-               soil.layer_depth)
+               soil.layer_depth,
+               kernel_params)
 
 end
 
-@kernel inbounds = true function evaporation_kernel!(pet_eeq::AbstractArray{T},
+@kernel inbounds = true function evaporation_kernel!(
+                                     pet_eeq::AbstractArray{T},
                                      crop_fpar::AbstractArray{T},
                                      crop_trans_layer::AbstractArray{M},
                                      crop_canopy_wet::AbstractArray{T},
@@ -32,12 +37,13 @@ end
                                      soil_whcs::AbstractArray{M},
                                      soil_evap::AbstractArray{M},
                                      soil_agtop_cover::AbstractArray{T},
-                                     soil_layer_depth::AbstractArray{T};
-                                     soil_layers = 5,
-                                     lpjmlparams::LPJmLParams = lpjmlparams
+                                     soil_layer_depth::AbstractArray{T},
+                                     kernel_params
 ) where {T <: AbstractFloat, M <: AbstractFloat}
     
     cell = @index(Global)
+
+    @unpack lpjmlparams, soil_layers = kernel_params
 
     @unpack PRIESTLEY_TAYLOR = lpjmlparams  # Priestley-Taylor coefficient
     

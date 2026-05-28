@@ -23,6 +23,8 @@ function transpiration!(photos_adtmm::AbstractArray{T},
     # demand = ifelse.(crop.gp .> 0, (1 .- crop.canopy_wet) .* pet.eeq * ALPHAM ./ (1 .+ (GM * ALPHAM) ./ crop.gp), zero(T))
     # transp = ifelse.(wr .> 0, min.(supply, demand) ./ wr .* fpc, zero(T)) # here the crop.fpc = 1, so we just omit it in the kernel fucntion
 
+    kernel_params = (lpjmlparams = lpjmlparams, soil_layers = 5)
+
     launch_1D!(water_demand_supply_kernel!,
                crop.gp,
                crop.trans_layer,
@@ -38,11 +40,13 @@ function transpiration!(photos_adtmm::AbstractArray{T},
                soil.w,
                soil.whcs,
                wr,
-               PFT)
+               PFT,
+               kernel_params)
 
 end
 
-@kernel inbounds = true function water_demand_supply_kernel!(crop_gp::AbstractArray{T},
+@kernel inbounds = true function water_demand_supply_kernel!(
+                                             crop_gp::AbstractArray{T},
                                              crop_trans_layer::AbstractArray{T},
                                              crop_w_demandsum::AbstractArray{T},
                                              crop_w_supplysum::AbstractArray{T},
@@ -56,12 +60,13 @@ end
                                              soil_w::AbstractArray{M},
                                              soil_whcs::AbstractArray{M},
                                              wr::AbstractArray{T},
-                                             PFT::PftParameters;
-                                             lpjmlparams::LPJmLParams = lpjmlparams,
-                                             soil_layers = 5
+                                             PFT::PftParameters,
+                                             kernel_params
 ) where {T <: AbstractFloat, M <: AbstractFloat, S <: Integer}
     
     cell = @index(Global)
+
+    @unpack lpjmlparams, soil_layers = kernel_params
 
     @unpack ALPHAM, GM = lpjmlparams
     @unpack fpc, emax = PFT

@@ -4,17 +4,13 @@ crop_carbon_hybrid!(nn_model, ps, st, PFT, photos, crop, pet, soil, temp, co2; n
 
 Hybrid daily crop-carbon update combining process equations and neural components.
 """
-function crop_carbon_hybrid!(nn_model,
-                             ps,
-                             st,
+function crop_carbon_hybrid!(nn_model, ps, st,
                              photos::Photos,
                              crop::Crop,
                              PFT::PftParameters,
                              temp::AbstractArray{T},
                              temp_n::AbstractArray{T};
-                             hybrid = true,
-                             node = true,
-                             residual = false
+                             hybrid = true, node = true, residual = false
 ) where {T <: AbstractFloat}
 
     # compute crop respiration
@@ -73,6 +69,8 @@ function carbon_allocation_root_leaf!(PFT::PftParameters,
                                       photos::Photos
 )
 
+    kernel_params = (FROOTMAX = 0.4f0, FROOTMIN = 0.3f0)
+
     launch_1D!(carbon_allocation_leaf_root_kernel!,
                crop.stoc,
                crop.isgrowing,
@@ -93,11 +91,13 @@ function carbon_allocation_root_leaf!(PFT::PftParameters,
                crop.rootc,
                crop.poolc,
                crop.lai_nppdeficit,
-               PFT,)
+               PFT,
+               kernel_params)
 
 end
 
-@kernel inbounds = true function carbon_allocation_leaf_root_kernel!(crop_stoc::AbstractArray{T},
+@kernel inbounds = true function carbon_allocation_leaf_root_kernel!(
+                                                     crop_stoc::AbstractArray{T},
                                                      crop_isgrowing::AbstractArray{S},
                                                      crop_growingdays::AbstractArray{S},
                                                      crop_vscal_sum::AbstractArray{T},
@@ -116,20 +116,20 @@ end
                                                      crop_rootc::AbstractArray{T},
                                                      crop_poolc::AbstractArray{T},
                                                      crop_lai_nppdeficit::AbstractArray{T},
-                                                     PFT::PftParameters;
-                                                     FROOTMAX = 0.4f0,
-                                                     FROOTMIN = 0.3f0
+                                                     PFT::PftParameters,
+                                                     kernel_params
 ) where {T <: AbstractFloat, B <: Bool, S <: Integer}
 
     cell = @index(Global)
 
     @unpack sla = PFT
     # @unpack sla, hiopt, himin = PFT
+    @unpack FROOTMAX, FROOTMIN = kernel_params
 
     if crop_isgrowing[cell] == 1
         crop_lai[cell] = crop_lai[cell] - crop_lai_nppdeficit[cell]
         crop_npp[cell] = (photos_agd[cell] - photos_rd[cell] - crop_resp[cell])
-        if ((crop_biomass[cell] + crop_npp[cell]) <= 0.0001) || ((crop_lai[cell] <= 0.0) && (!crop_senescence[cell]))
+        if ((crop_biomass[cell] + crop_npp[cell]) <= T(0.0001)) || ((crop_lai[cell] <= zero(T)) && (!crop_senescence[cell]))
             crop_poolc[cell] += crop_npp[cell]
             crop_biomass[cell] += crop_npp[cell]
         else
@@ -159,7 +159,7 @@ end
                 if (crop_leafc[cell] + crop_rootc[cell] + crop_stoc[cell]) > crop_biomass[cell]
                     crop_leafc[cell] = crop_biomass[cell] - crop_rootc[cell] - crop_stoc[cell]
                 end
-                if crop_leafc[cell] < 0
+                if crop_leafc[cell] < zero(T)
                     crop_leafc[cell] = zero(T)
                 end
             end
@@ -189,11 +189,11 @@ end
             # # pool carbon
             # crop_poolc[cell] = crop_biomass[cell] - crop_leafc[cell] - crop_rootc[cell] - crop_stoc[cell]
             # # pool can become negative during senescence
-            # if crop_senescence[cell] && crop_poolc[cell] < 0.0
-            #     if (crop_stoc[cell] + crop_poolc[cell]) < 0.0
+            # if crop_senescence[cell] && crop_poolc[cell] < zero(T)
+            #     if (crop_stoc[cell] + crop_poolc[cell]) < zero(T)
             #         crop_poolc[cell] += crop_stoc[cell]
             #         crop_stoc[cell] = zero(T)
-            #         if (crop_rootc[cell] + crop_poolc[cell]) < 0.0
+            #         if (crop_rootc[cell] + crop_poolc[cell]) < zero(T)
             #             crop_poolc[cell] += crop_rootc[cell]
             #             crop_rootc[cell] = zero(T) # remainder negative pool must be compensated by leaves,
             #             crop_leafc[cell] += crop_poolc[cell]
@@ -231,7 +231,8 @@ function carbon_allocation_pool!(crop::Crop)
                crop.poolc)
 end
 
-@kernel inbounds = true function carbon_allocation_pool_kernel!(crop_stoc::AbstractArray{T},
+@kernel inbounds = true function carbon_allocation_pool_kernel!(
+                                                crop_stoc::AbstractArray{T},
                                                 crop_isgrowing::AbstractArray{S},
                                                 crop_senescence::AbstractArray{B},
                                                 crop_biomass::AbstractArray{T},
@@ -246,8 +247,8 @@ end
             # pool carbon
             crop_poolc[cell] = crop_biomass[cell] - crop_leafc[cell] - crop_rootc[cell] - crop_stoc[cell]
             # pool can become negative during senescence
-            if crop_senescence[cell] && crop_poolc[cell] < 0.0
-                if (crop_rootc[cell] + crop_poolc[cell]) < 0.0
+            if crop_senescence[cell] && crop_poolc[cell] < zero(T)
+                if (crop_rootc[cell] + crop_poolc[cell]) < zero(T)
                     crop_poolc[cell] += crop_rootc[cell]
                     crop_rootc[cell] = zero(T) # remainder negative pool must be compensated by leaves,
                     crop_leafc[cell] += crop_poolc[cell]

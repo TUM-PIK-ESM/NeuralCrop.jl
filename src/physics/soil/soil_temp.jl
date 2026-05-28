@@ -26,7 +26,8 @@ function soiltemp_lag!(soil::Soil,
 
 end
 
-@kernel inbounds = true function soiltemp_lag_kernel!(climbuf_atemp_mean::AbstractArray{T},
+@kernel inbounds = true function soiltemp_lag_kernel!(
+                                      climbuf_atemp_mean::AbstractArray{T},
                                       climbuf_temp::AbstractArray{M},
                                       soil_alag::AbstractArray{T},
                                       soil_w::AbstractArray{M},
@@ -66,21 +67,31 @@ function linreg(climbuf_temp::AbstractArray{M},
     a = device(zeros(Float32, size(climbuf_temp, 2)))
     b = device(zeros(Float32, size(climbuf_temp, 2)))
 
-    launch_1D!(linreg_kernel!, a, b, climbuf_temp)
+    kernel_params = (NDAYS = 31,)
+
+    launch_1D!(
+        linreg_kernel!, 
+        a, 
+        b, 
+        climbuf_temp,
+        kernel_params)
 
     return a, b
 
 end
 
 
-@kernel inbounds = true function linreg_kernel!(a::AbstractArray{T},
+@kernel inbounds = true function linreg_kernel!(
+                                a::AbstractArray{T},
                                 b::AbstractArray{T},
-                                climbuf_temp::AbstractArray{M};
-                                NDAYS = 31 # NDAYS
+                                climbuf_temp::AbstractArray{M},
+                                kernel_params
 ) where {T <: AbstractFloat, M <: AbstractFloat}
     
     cell = @index(Global)
     
+    @unpack NDAYS = kernel_params
+
     ∑x = NDAYS * (NDAYS + 1) / 2
     ∑x² = (NDAYS * (NDAYS + 1) * (2 * NDAYS + 1)) / 6
     ∑y = zero(T)

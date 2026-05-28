@@ -6,7 +6,8 @@ Update canopy wetness and interception evaporation for the current day.
 function interception!(crop::Crop,
                        PFT::PftParameters,
                        pet_eeq::AbstractArray{T},
-                       rain::AbstractArray{T}
+                       rain::AbstractArray{T};
+                       lpjmlparams::LPJmLParams = lpjmlparams
 ) where {T <: AbstractFloat}
 
     launch_1D!(
@@ -17,7 +18,8 @@ function interception!(crop::Crop,
         crop.isgrowing,
         pet_eeq,
         rain,
-        PFT
+        PFT,
+        lpjmlparams
     )
   
 end
@@ -28,8 +30,8 @@ end
                                       crop_isgrowing::AbstractArray{S},
                                       pet_eeq::AbstractArray{T},
                                       rain::AbstractArray{T},
-                                      PFT::PftParameters;
-                                      lpjmlparams::LPJmLParams = lpjmlparams
+                                      PFT::PftParameters,
+                                      lpjmlparams::LPJmLParams
 ) where {T <: AbstractFloat, S <: Integer}
     
     cell = @index(Global)

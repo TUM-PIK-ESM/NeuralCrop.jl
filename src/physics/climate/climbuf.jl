@@ -11,8 +11,8 @@ function annual_climbuf!(daily_temp::AbstractArray{T},
                          climbuf::ClimBuf,
                          PFT::PftParameters,
                          device;
-                         n = 5,
-                         kk = 0.05
+                         n::Int = 5,
+                         kk = T(0.05)
 ) where {T <: AbstractFloat}
     # Calculate the average temperature for each month.
     # update_monthly
@@ -64,7 +64,8 @@ function annual_climbuf!(daily_temp::AbstractArray{T},
 end
 
 
-@kernel inbounds = true function climbuf_mtemp20_kernel!(climbuf_mtemp20::AbstractArray{T},
+@kernel inbounds = true function climbuf_mtemp20_kernel!(
+                                         climbuf_mtemp20::AbstractArray{T},
                                          climbuf_mtemp::AbstractArray{T},
                                          kk
 ) where {T <: AbstractFloat}
@@ -80,7 +81,8 @@ end
 end
 
 
-@kernel inbounds = true function climbuf_V_req_a_kernel!(climbuf_V_req_a::AbstractArray{T},
+@kernel inbounds = true function climbuf_V_req_a_kernel!(
+                                         climbuf_V_req_a::AbstractArray{T},
                                          climbuf_min_temp::AbstractArray{T},
                                          PFT::PftParameters,
                                          n
@@ -105,7 +107,8 @@ end
 end
 
 
-@kernel inbounds = true function climbuf_V_req_kernel!(climbuf_V_req::AbstractArray{T},
+@kernel inbounds = true function climbuf_V_req_kernel!(
+                                       climbuf_V_req::AbstractArray{T},
                                        climbuf_V_req_a::AbstractArray{T},
                                        kk
 ) where {T <: AbstractFloat}
@@ -181,7 +184,8 @@ function monthlytemp!(daily_temp::AbstractArray{T},
 end
 
 
-@kernel inbounds = true function monthlytemp_kernel!(climbuf_mtemp::AbstractArray{T}, 
+@kernel inbounds = true function monthlytemp_kernel!(
+                                     climbuf_mtemp::AbstractArray{T}, 
                                      daily_temp::AbstractArray{T},
                                      ndaymonth::AbstractArray{S},  
                                      start_indices::AbstractArray{S}
@@ -212,21 +216,27 @@ function daily_climbuf!(temp::AbstractArray{T},
                         climbuf_temp::AbstractArray{T}
 ) where {T <: AbstractFloat}
 
+    kernel_params = (NDAYS = 31,)
+
     launch_1D!(
         daily_climbuf_kernel!,
         temp,
         climbuf_temp,
+        kernel_params
     )
 
 end
 
 
-@kernel inbounds = true function daily_climbuf_kernel!(temp::AbstractArray{T},
-                                       climbuf_temp::AbstractArray{T};
-                                       NDAYS = 31
+@kernel inbounds = true function daily_climbuf_kernel!(
+                                       temp::AbstractArray{T},
+                                       climbuf_temp::AbstractArray{T},
+                                       kernel_params
 ) where {T <: AbstractFloat}
 
     cell = @index(Global)
+
+    @unpack NDAYS = kernel_params
 
     # Shift the rolling daily climate buffer left and append today's temperature.
     for day in 2:NDAYS

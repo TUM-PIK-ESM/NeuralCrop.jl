@@ -3,9 +3,7 @@ hybrid_photos_C3!(nn_model, ps, st, PFT, photos, crop, pet, co2, temp)
 
 Run C3 photosynthesis with selected neural-emulator substitutions.
 """
-function hybrid_photos_C3!(nn_model,
-                           ps,
-                           st,
+function hybrid_photos_C3!(nn_model, ps, st,
                            PFT::PftParameters,
                            photos::Photos,
                            crop::Crop,
@@ -13,7 +11,7 @@ function hybrid_photos_C3!(nn_model,
                            soil_swc::AbstractArray{M},
                            temp_n::AbstractArray{T},
                            temp::AbstractArray{T},
-                           co2
+                           co2::AbstractArray{T}
 ) where {T <: AbstractFloat, M <: AbstractFloat}
 
     # compute photosynthesis variables: lambda and vcmax
@@ -37,9 +35,7 @@ hybrid_photos_C4!(nn_model, ps, st, PFT, photos, crop, pet, co2, temp)
 
 Run C4 photosynthesis with selected neural-emulator substitutions.
 """
-function hybrid_photos_C4!(nn_model,
-                           ps,
-                           st,
+function hybrid_photos_C4!(nn_model, ps, st,
                            PFT::PftParameters,
                            photos::Photos,
                            crop::Crop,

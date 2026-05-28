@@ -6,13 +6,15 @@ Update canopy albedo terms used by PET and radiation partitioning.
 """
 function albedo!(PFT::PftParameters,
                  crop::Crop,
-                 pet_albedo::AbstractArray{T};
+                 pet::PetPar;
                  soil_albedo = 0.3f0  # Albedo of bare soil (0-1). Should be soil and soil moisture dependent */
-) where {T <: AbstractFloat}
+)
+
+    @unpack fpc = PFT
 
     crop_albedo!(PFT, crop)
 
-    pet_albedo .= crop.albedo .+ (1 .- PFT.fpc * crop.isgrowing) * soil_albedo
+    pet.albedo .= crop.albedo .+ (1 .- fpc * crop.isgrowing) * soil_albedo
 
 end
 

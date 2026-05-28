@@ -6,7 +6,8 @@ Compute temperature stress scalar used by photosynthesis routines.
 function temp_stress(PFT::PftParameters,
                      pet::PetPar,
                      photos::Photos,
-                     temp::AbstractArray{T}
+                     temp::AbstractArray{T};
+                     photoparams::PhotoParams = photoparams
 ) where {T <: AbstractFloat}
 
     launch_1D!(
@@ -15,16 +16,18 @@ function temp_stress(PFT::PftParameters,
         pet.daylength,
         temp,
         PFT,
+        photoparams
     )
   
 end
 
 
-@kernel inbounds = true function temp_stress_kernel!(photos_tstress::AbstractArray{T},            
+@kernel inbounds = true function temp_stress_kernel!(
+                                     photos_tstress::AbstractArray{T},            
                                      pet_daylength::AbstractArray{T},           
                                      temp::AbstractArray{T},           
-                                     PFT::PftParameters;
-                                     photoparams::PhotoParams = photoparams
+                                     PFT::PftParameters,
+                                     photoparams::PhotoParams
 ) where {T <: AbstractFloat}
     
     cell = @index(Global)

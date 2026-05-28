@@ -43,7 +43,8 @@ function respiration!(crop::Crop,
 end
     
     
-@kernel inbounds = true function temp_response_kernel!(temp::AbstractArray{T},
+@kernel inbounds = true function temp_response_kernel!(
+                                       temp::AbstractArray{T},
                                        temp_response::T,
                                        e0::T,
                                        gtemp_response::AbstractArray{T}

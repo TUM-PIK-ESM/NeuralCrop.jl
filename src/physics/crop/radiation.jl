@@ -45,7 +45,8 @@ function petpar!(pet::PetPar,
 
 end
 
-@kernel inbounds = true function daylength_kernel!(pet_daylength::AbstractArray{T},
+@kernel inbounds = true function daylength_kernel!(
+                                   pet_daylength::AbstractArray{T},
                                    u::AbstractArray{T},
                                    v::AbstractArray{T}
 ) where {T <: AbstractFloat}
@@ -96,7 +97,7 @@ function apar_crop_maize!(PFT::PftParameters,
     @unpack name, lightextcoeff, albedo_leaf, alphaa  = PFT
     
     # crop.fpar = min.(1.0f0, max.(0.0f0, 0.2558f0 * max.(0.01f0, crop.lai .- crop.lai_nppdeficit) .- 0.0024f0))
-    crop.fpar = min.(1.0f0, max.(0.0f0, 0.2558f0 * max.(0.01f0, crop.lai) .- 0.0024f0))
+    crop.fpar .= min.(1.0f0, max.(0.0f0, 0.2558f0 * max.(0.01f0, crop.lai) .- 0.0024f0))
     
     crop.apar .= pet.par * (1 - albedo_leaf) * alphaa .* crop.fpar
 

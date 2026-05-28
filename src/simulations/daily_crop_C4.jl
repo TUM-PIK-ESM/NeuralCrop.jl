@@ -41,7 +41,7 @@ function daily_crop_C4!(day_start,
         cultivate!(crop, crop_cal, managed_land, soil, day_of_year, device)
 
         update_climbuf!(pftparameters, dailyWeather.temp, climbuf, day, device) # update climate buffer
-        albedo!(pftparameters, crop, pet.albedo)  # compute albedo
+        albedo!(pftparameters, crop, pet)  # compute albedo
         petpar!(pet, day_of_year, latitude, dailyWeather.temp, dailyWeather.lwr, dailyWeather.swr) # compute crop potential evapotraspiration variables
         soiltemp_lag!(soil, climbuf, device)  # compute soil temperature, using very siample linear method, now the five soil-layer temperature is same
 
@@ -123,7 +123,7 @@ function daily_crop_C4!(day_start,
         cultivate!(crop, crop_cal, managed_land, soil, day_of_year, device)
 
         update_climbuf!(pftparameters, dailyWeather.temp, climbuf, day, device) # update climate buffer
-        albedo!(pftparameters, crop, pet.albedo)  # compute albedo
+        albedo!(pftparameters, crop, pet)  # compute albedo
         petpar!(pet, day_of_year, latitude, dailyWeather.temp, dailyWeather.lwr, dailyWeather.swr) # compute crop potential evapotraspiration variables
         soiltemp_lag!(soil, climbuf, device)  # compute soil temperature, using very siample linear method, now the five soil-layer temperature is same
 

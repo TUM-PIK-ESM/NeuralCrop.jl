@@ -28,7 +28,8 @@ function update_lit_winter_wheat!(soil::Soil,
 end
 
 
-@kernel inbounds = true function update_lit_winter_wheat_kernel!(hdate_callback::AbstractArray{S},
+@kernel inbounds = true function update_lit_winter_wheat_kernel!(
+                                                 hdate_callback::AbstractArray{S},
                                                  crop_wtype::AbstractArray{B},
                                                  hdate::AbstractArray{S},
                                                  day::Int

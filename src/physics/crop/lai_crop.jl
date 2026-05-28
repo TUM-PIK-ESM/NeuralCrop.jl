@@ -22,7 +22,8 @@ function lai_crop!(crop::Crop,
   
 end
 
-@kernel inbounds = true function lai_crop_kernel!(crop_lai::AbstractArray{T},
+@kernel inbounds = true function lai_crop_kernel!(
+                                  crop_lai::AbstractArray{T},
                                   crop_senescence::AbstractArray{B}, 
                                   crop_senescence0::AbstractArray{B},           
                                   crop_wscal::AbstractArray{T},
@@ -85,7 +86,8 @@ function lai_deficit!(crop::Crop,
   
 end
 
-@kernel inbounds = true function lai_deficit_kernel!(crop_lai::AbstractArray{T},           
+@kernel inbounds = true function lai_deficit_kernel!(
+                                     crop_lai::AbstractArray{T},           
                                      crop_senescence::AbstractArray{B},           
                                      crop_biomass::AbstractArray{T},           
                                      crop_rootc::AbstractArray{T}, 

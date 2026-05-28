@@ -1,6 +1,4 @@
-function soil_carbon!(nn_model,
-                      ps,
-                      st,
+function soil_carbon!(nn_model, ps, st,
                       temp_n::AbstractArray{T},
                       sw_n::AbstractArray{T},
                       crop_cal::Calendar,

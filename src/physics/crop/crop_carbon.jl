@@ -6,8 +6,7 @@ Run the daily crop carbon process chain: respiration, allocation, and phenology 
 function crop_carbon!(photos::Photos,
                       crop::Crop,
                       PFT::PftParameters,
-                      temp::AbstractArray{T};
-                      lpjmlparams::LPJmLParams = lpjmlparams
+                      temp::AbstractArray{T}
 ) where {T <: AbstractFloat} # directly translated from LPJmL
 
     # compute crop respiration

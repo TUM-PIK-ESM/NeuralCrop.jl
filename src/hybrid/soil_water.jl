@@ -1,13 +1,10 @@
-function soil_water!(nn_model,
-                     ps,
-                     st,
+function soil_water!(nn_model, ps, st,
                      soil::Soil,
                      crop::Crop,
                      prec::AbstractArray{T},
                      sw_n::AbstractArray{T},
                      lw_n::AbstractArray{T};
-                     irrigation = false,
-                     lpjmlparams::LPJmLParams = lpjmlparams
+                     irrigation = false
 ) where {T <: AbstractFloat}
 
     Zygote.ignore() do

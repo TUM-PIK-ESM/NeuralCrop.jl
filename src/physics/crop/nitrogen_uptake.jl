@@ -5,8 +5,11 @@ Compute root uptake of mineral nitrogen from soil NH4/NO3 pools.
 """
 function nuptake_crop!(crop::Crop,
                        PFT::PftParameters,
-                       soil::Soil
+                       soil::Soil;
+                       lpjmlparams::LPJmLParams = lpjmlparams
 )
+
+    kernel_params = (lpjmlparams = lpjmlparams, soil_layers = 5, AUTO_FERTILIZER = true)
 
     launch_1D!(
         nuptake_crop_kernel!,
@@ -26,12 +29,14 @@ function nuptake_crop!(crop::Crop,
         soil.NH4,
         soil.layer_depth,
         soil.temp,
-        PFT
+        PFT,
+        kernel_params
     )
   
 end
 
-@kernel inbounds = true function nuptake_crop_kernel!(crop_nitrogen::AbstractArray{T},
+@kernel inbounds = true function nuptake_crop_kernel!(
+                                      crop_nitrogen::AbstractArray{T},
                                       crop_leafn::AbstractArray{T},
                                       crop_leafc::AbstractArray{T},
                                       crop_rootn::AbstractArray{T},
@@ -47,14 +52,14 @@ end
                                       soil_NH4::AbstractArray{M},
                                       soil_layer_depth::AbstractArray{T},
                                       soil_temp::AbstractArray{M},
-                                      PFT::PftParameters;
-                                      lpjmlparams::LPJmLParams = lpjmlparams,
-                                      soil_layers = 5, # Priestley-Taylor coefficient
-                                      AUTO_FERTILIZER = true
+                                      PFT::PftParameters,
+                                      kernel_params
 ) where {T <: AbstractFloat, M <: AbstractFloat, S <: Integer}
     
     cell = @index(Global)
     
+    @unpack lpjmlparams, soil_layers, AUTO_FERTILIZER = kernel_params
+
     @unpack T_0, T_m, T_r = lpjmlparams
     @unpack ncleaf, knstore, vmax_up, kNmin, KNmin = PFT
 
