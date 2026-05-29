@@ -50,7 +50,7 @@ cd NeuralCrop.jl
 Then, in the Julia REPL, activate the project and instantiate the dependencies:
 
 ```julia
-pkg> activate(".")
+pkg> activate .
 pkg> instantiate
 ```
 
