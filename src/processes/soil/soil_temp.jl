@@ -5,12 +5,11 @@ Compute lagged soil temperature profile from climate buffer and soil diffusivity
 """
 function soiltemp_lag!(soil::Soil,
                        climbuf::ClimBuf,
-                       device;
                        DEPTH = 0.25f0,
                        DIFFUS_CONV = 0.0864f0,
                        HALF_OMEGA = 0.008607f0)
 
-    a, b = linreg(climbuf.temp, device)
+    a, b = linreg(climbuf.temp)
 
     soil_diffus = (soil.tdiff_15 - soil.tdiff_0) ./ 0.15f0 * 0.03f0 + soil.tdiff_0
     soil_alag = DEPTH ./ sqrt.(soil_diffus * DIFFUS_CONV ./ HALF_OMEGA)
@@ -59,13 +58,14 @@ end
 end
 
 
-function linreg(climbuf_temp::AbstractArray{M},
-                device
-) where {M <: AbstractFloat}
+function linreg(climbuf_temp::AbstractArray{M}) where {M <: AbstractFloat}
 
+    n = size(climbuf_temp, 2)
+    a = similar(climbuf_temp, M, n)
+    b = similar(climbuf_temp, M, n)
 
-    a = device(zeros(Float32, size(climbuf_temp, 2)))
-    b = device(zeros(Float32, size(climbuf_temp, 2)))
+    # a = device(zeros(Float32, size(climbuf_temp, 2)))
+    # b = device(zeros(Float32, size(climbuf_temp, 2)))
 
     kernel_params = (NDAYS = 31,)
 

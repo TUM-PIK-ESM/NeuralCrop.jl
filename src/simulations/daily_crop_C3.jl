@@ -10,8 +10,7 @@ function daily_crop_C3!(start_day,
                         ps, 
                         st,
                         pftparameters,
-                        data_set,
-                        cell_size,
+                        climate,
                         climbuf, 
                         crop, 
                         crop_cal, 
@@ -20,12 +19,9 @@ function daily_crop_C3!(start_day,
                         soil, 
                         managed_land,
                         dailyWeather, 
-                        output,
-                        device;
+                        output;
                         irrigation = false
 )
-
-    @unpack latitude, climate, ModelState = data_set
 
     for day = start_day : end_day
 
@@ -37,17 +33,17 @@ function daily_crop_C3!(start_day,
         snow!(soil, dailyWeather)
 
         # initial crop variables in sowing day and fertilizer
-        cultivate!(crop, crop_cal, managed_land, soil, day_of_year, device)
+        cultivate!(crop, crop_cal, managed_land, soil, day_of_year)
 
-        update_climbuf!(pftparameters, dailyWeather.temp, climbuf, day, device) # update climate buffer
+        update_climbuf!(pftparameters, dailyWeather.temp, climbuf, day) # update climate buffer
         albedo!(pftparameters, crop, pet)  # compute albedo
-        petpar!(pet, day_of_year, latitude, dailyWeather.temp, dailyWeather.lwr, dailyWeather.swr) # compute crop potential evapotraspiration variables
-        soiltemp_lag!(soil, climbuf, device)  # compute soil temperature, using very siample linear method, now the five soil-layer temperature is same
+        petpar!(pet, day_of_year, managed_land.latitude, dailyWeather.temp, dailyWeather.lwr, dailyWeather.swr) # compute crop potential evapotraspiration variables
+        soiltemp_lag!(soil, climbuf)  # compute soil temperature, using very siample linear method, now the five soil-layer temperature is same
 
         # compute phenology variables
         phenology_crop!(crop, climbuf.V_req, pftparameters, dailyWeather.temp, pet.daylength)
         
-        harvest_crop!(crop_cal, crop, soil, output, ModelState.crop.residuefrac, device, cell_size, day_of_year) # crop harvesting
+        harvest_crop!(crop_cal, crop, soil, output, managed_land.residuefrac, day_of_year) # crop harvesting
         
         apar_crop!(pftparameters, crop, pet) # crop absorbed photosynthetic radiation
         temp_stress(pftparameters, pet, photos, dailyWeather.temp) # temperature stress function
@@ -81,13 +77,11 @@ function daily_crop_C3!(start_day,
 end
 
 
-
 ### Purely process-based modelling
 function daily_crop_C3!(start_day,
                         end_day,
                         pftparameters,
-                        data_set,
-                        cell_size,
+                        climate,
                         climbuf, 
                         crop, 
                         crop_cal, 
@@ -96,12 +90,11 @@ function daily_crop_C3!(start_day,
                         soil, 
                         managed_land, 
                         dailyWeather,
-                        output,
-                        device;
+                        output;
                         irrigation = false
 )
 
-    @unpack latitude, climate, ModelState = data_set
+    @unpack latitude, climate = data_set
 
     for day = start_day : end_day
 
@@ -113,17 +106,17 @@ function daily_crop_C3!(start_day,
         snow!(soil, dailyWeather)
 
         # initial crop variables in sowing day and fertilizer
-        cultivate!(crop, crop_cal, managed_land, soil, day_of_year, device)
+        cultivate!(crop, crop_cal, managed_land, soil, day_of_year)
 
-        update_climbuf!(pftparameters, dailyWeather.temp, climbuf, day, device) # update climate buffer
+        update_climbuf!(pftparameters, dailyWeather.temp, climbuf, day) # update climate buffer
         albedo!(pftparameters, crop, pet)  # compute albedo
-        petpar!(pet, day_of_year, latitude, dailyWeather.temp, dailyWeather.lwr, dailyWeather.swr) # compute crop potential evapotraspiration variables
-        soiltemp_lag!(soil, climbuf, device)  # compute soil temperature, using very siample linear method, now the five soil-layer temperature is same
+        petpar!(pet, day_of_year, managed_land.latitude, dailyWeather.temp, dailyWeather.lwr, dailyWeather.swr) # compute crop potential evapotraspiration variables
+        soiltemp_lag!(soil, climbuf)  # compute soil temperature, using very siample linear method, now the five soil-layer temperature is same
 
         # compute phenology variables
         phenology_crop!(crop, climbuf.V_req, pftparameters, dailyWeather.temp, pet.daylength)
         
-        harvest_crop!(crop_cal, crop, soil, output, ModelState.crop.residuefrac, device, cell_size, day_of_year) # crop harvesting
+        harvest_crop!(crop_cal, crop, soil, output, managed_land.residuefrac, day_of_year) # crop harvesting
         
         apar_crop!(pftparameters, crop, pet) # crop absorbed photosynthetic radiation
         temp_stress(pftparameters, pet, photos, dailyWeather.temp) # temperature stress function

@@ -9,8 +9,7 @@ monthly means and vernalization requirements.
 """
 function annual_climbuf!(daily_temp::AbstractArray{T},
                          climbuf::ClimBuf,
-                         PFT::PftParameters,
-                         device;
+                         PFT::PftParameters;
                          n::Int = 5,
                          kk = T(0.05)
 ) where {T <: AbstractFloat}
@@ -20,7 +19,7 @@ function annual_climbuf!(daily_temp::AbstractArray{T},
     # n = 5, the first n coldest months
     # kk is to rescale the 20-year average monthly temprerature
     
-    monthlytemp!(daily_temp, climbuf.mtemp, device)
+    monthlytemp!(daily_temp, climbuf.mtemp)
     
     # 20-year moving monthly climatology (month, cell).
     launch_2D!(
@@ -147,8 +146,7 @@ end
 # end
 
 function monthlytemp!(daily_temp::AbstractArray{T},
-                      climbuf_mtemp::AbstractArray{T},
-                      device
+                      climbuf_mtemp::AbstractArray{T}
 ) where {T <: AbstractFloat}
     """
     Calculate the average temperature for each month.
@@ -160,8 +158,8 @@ function monthlytemp!(daily_temp::AbstractArray{T},
         A vector of length 12 representing the average temperature for each month.
     """
     # Month metadata is copied to the active device to avoid host reads inside kernels.
-    ndaymonth = device([31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
-    start_indices = device([1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335])
+    # ndaymonth = device([31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
+    # start_indices = device([1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335])
     
     # start_indices = cumsum(vcat(1, ndaymonth[1:end-1]))
     # mtemp = similar(daily_temp, (12, cell_size))  # Store mean temperatures for each month
@@ -176,9 +174,7 @@ function monthlytemp!(daily_temp::AbstractArray{T},
     launch_2D!(
         monthlytemp_kernel!,
         climbuf_mtemp,
-        daily_temp,
-        ndaymonth,
-        start_indices,
+        daily_temp
     )
     
 end
@@ -186,13 +182,16 @@ end
 
 @kernel inbounds = true function monthlytemp_kernel!(
                                      climbuf_mtemp::AbstractArray{T}, 
-                                     daily_temp::AbstractArray{T},
-                                     ndaymonth::AbstractArray{S},  
-                                     start_indices::AbstractArray{S}
-) where {T <: AbstractFloat, S <: Integer}
+                                     daily_temp::AbstractArray{T}
+) where {T <: AbstractFloat}
     
-    # Launch layout is (month, cell).
+    # launch layout is (month, cell).
     month, cell = @index(Global, NTuple)
+
+    # compile-time constants
+    ndaymonth = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+    start_indices  = (1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+
     start_idx = start_indices[month]
     days = ndaymonth[month]
 

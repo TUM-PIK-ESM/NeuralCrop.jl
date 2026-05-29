@@ -8,8 +8,6 @@ function harvest_crop!(crop_cal::Calendar,
                        soil::Soil,
                        output::Output,
                        residue_frac::AbstractArray{T},
-                       device,
-                       cell_size,
                        day::Int
 ) where {T <: AbstractFloat}
 
@@ -21,8 +19,16 @@ function harvest_crop!(crop_cal::Calendar,
         # Update crop variables
         crop.yield .= ifelse.(((crop.harvesting0 .== false) .& (crop.harvesting .== true)), crop.stoc, crop.yield)
 
-        soil.c_input .= vcat(reshape((crop.leafc .+ crop.poolc) .* residue_frac, (1, :)), device(zeros(Float32, (1, cell_size))), reshape(crop.rootc, (1, :))) .* reshape(crop_cal.hcallback, (1, :))
-        soil.n_input .= vcat(reshape((crop.leafn .+ crop.pooln) .* residue_frac, (1, :)), device(zeros(Float32, (1, cell_size))), reshape(crop.rootn, (1, :))) .* reshape(crop_cal.hcallback, (1, :))
+        soil.c_input[1, :] .= ((crop.leafc .+ crop.poolc) .* residue_frac) .* crop_cal.hcallback
+        soil.c_input[2, :] .= zero(T)
+        soil.c_input[3, :] .= crop.rootc .* crop_cal.hcallback
+
+        soil.n_input[1, :] .= ((crop.leafn .+ crop.pooln) .* residue_frac) .* crop_cal.hcallback
+        soil.n_input[2, :] .= zero(T)
+        soil.n_input[3, :] .= crop.rootn .* crop_cal.hcallback
+
+        # soil.c_input .= vcat(reshape((crop.leafc .+ crop.poolc) .* residue_frac, (1, :)), device(zeros(Float32, (1, cell_size))), reshape(crop.rootc, (1, :))) .* reshape(crop_cal.hcallback, (1, :))
+        # soil.n_input .= vcat(reshape((crop.leafn .+ crop.pooln) .* residue_frac, (1, :)), device(zeros(Float32, (1, cell_size))), reshape(crop.rootn, (1, :))) .* reshape(crop_cal.hcallback, (1, :))
         # idx = ((crop.harvesting0 .== true) .& (crop.harvesting .== true)) .| ((crop.harvesting0 .== true) .& (crop.harvesting .== false)) .| ((crop.harvesting0 .== false) .& (crop.harvesting .== false))
         # crop_cal.hcallback[idx] .= 0
         # crop_cal.hcallback .= ifelse.(((crop.harvesting0 .== true) .& (crop.harvesting .== true)) .| ((crop.harvesting0 .== true) .& (crop.harvesting .== false)) .| ((crop.harvesting0 .== false) .& (crop.harvesting .== false)), 0, crop_cal.hcallback)
