@@ -9,6 +9,8 @@ function init_crop(cell_size::Int,
                    carbon_pools = 4,
                    soil_layers = 5
 )
+
+    init_vegc = [8.0f0, 0.0113804f0, 0.0f0, 11.9886196f0] # init_vegc: rootc, leafc, stoc, poolc
     crop = Crop(
         device(zeros(Float32, cell_size)),      # phu
         device(zeros(Float32, cell_size)),      # vdsum
@@ -29,6 +31,7 @@ function init_crop(cell_size::Int,
         device(zeros(Float32, cell_size)),      # rootc: 8.0f0
         device(zeros(Float32, cell_size)),      # poolc: 11.9886196f0
         device(zeros(Float32, cell_size)),      # stoc: 0.0f0
+        device(init_vegc),                      # init_vegc: [8.0f0, 0.0113804f0, 0.0f0, 11.9886196f0]
         device(zeros(Float32, (carbon_pools, cell_size))),  # vegc: 0.0f0
         device(zeros(Float32, cell_size)),      # nitrogen
         device(zeros(Float32, cell_size)),      # leafn: 0.0f0
@@ -73,6 +76,8 @@ function init_crop(cell_size::Int,
     managed_land = Managed_land(
         device(zeros(Float32, cell_size)),  # manure
         device(zeros(Float32, cell_size)),  # fertilizer
+        device(zeros(Float32, cell_size)),  # residuefrac
+        device(zeros(Float32, cell_size))   # latitude
     )
 
     photos = Photos(
@@ -238,35 +243,6 @@ function init_soil(cell_size::Int,
     )
     
     return soil
-
-end
-
-"""
-init_data_norm(cell_size, device; carbon_pools=4, litc_layers=3, soil_layers=5)
-
-Allocate normalization buffers for hybrid/neural training pipelines.
-"""
-function init_data_norm(cell_size::Int,
-                        device;
-                        carbon_pools = 4,
-                        litc_layers = 3,
-                        soil_layers = 5
-)
-
-    data_norm = DataNorm(
-        device(zeros(Float32, cell_size)),  # npp
-        device(zeros(Float32, cell_size)),  # leafc
-        device(zeros(Float32, cell_size)),  # rootc
-        device(zeros(Float32, cell_size)),  # poolc
-        device(zeros(Float32, cell_size)),  # soc
-        device(zeros(Float32, (carbon_pools, cell_size))), # vegc
-        device(zeros(Float32, (litc_layers, cell_size))),  # litc
-        device(zeros(Float32, (soil_layers, cell_size))),  # fastc
-        device(zeros(Float32, (soil_layers, cell_size))),  # slowc
-        device(zeros(Float32, (soil_layers, cell_size))),  # swc
-    )
-
-    return data_norm
 
 end
 

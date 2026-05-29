@@ -32,7 +32,8 @@ function train_loop!(climate_path, daily_crop, crop_name, irrigation, usingNODE,
             batch_i = i:min(i+batch_size-1, length(train_i))
             data_index = train_i[batch_i]
 
-            InitialData = InitialDataLoader(data, data_index, device; training = true, training_by_yield = true)
+            InitialData = InitialDataLoader(data.init, data_index, device)
+            TrainingData = TrainingDataLoader(data.training, data_index, device; training = true, training_by_yield = true)
             climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_states!(pftparameters, InitialData, length(data_index), device)
 
             loss_trian_rollout = []
@@ -54,14 +55,14 @@ function train_loop!(climate_path, daily_crop, crop_name, irrigation, usingNODE,
                 
                 ## climate spin-up
                 if chunk_i == 1
-                    spin_up_climbuf!(pftparameters, climate.temp_spinup, climbuf, 1, device)
+                    spin_up_climbuf!(pftparameters, climate.temp_spinup, climbuf; year_spinup = 1)
                 end
-                data_batch = (; latitude = InitialData.latitude, climate, ModelState = InitialData.ModelState)
+                data_batch = (; climate, TrainingData)
         
                 for day in start_day:rollout:end_day
                     day_start = day
                     day_end = min(day+rollout-1, end_day)
-                    loss_p(ps) = loss_func(chunk_i, daily_crop, irrigation, usingNODE, day_start, day_end, nn_model, ps, ps_frozen, st, pftparameters, data_batch, length(data_index), climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output, device)
+                    loss_p(ps) = loss_func(chunk_i, daily_crop, irrigation, usingNODE, day_start, day_end, nn_model, ps, ps_frozen, st, pftparameters, data_batch, climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output)
                     l, gs = Zygote.withgradient(loss_p, ps)
                     if !isnan(l) && !isinf(l)
                         push!(loss_trian_rollout, l)
@@ -90,7 +91,8 @@ function train_loop!(climate_path, daily_crop, crop_name, irrigation, usingNODE,
             batch_i = i:min(i+batch_size-1, length(valid_i))
             data_index = valid_i[batch_i]
 
-            InitialData = InitialDataLoader(data, data_index, device; training = true, training_by_yield = true)
+            InitialData = InitialDataLoader(data.init, data_index, device)
+            TrainingData = TrainingDataLoader(data.training, data_index, device; training = true, training_by_yield = true)
             climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output = init_states!(pftparameters, InitialData, length(data_index), device)
 
             loss_valid_rollout = []
@@ -112,14 +114,14 @@ function train_loop!(climate_path, daily_crop, crop_name, irrigation, usingNODE,
                 
                 ## climate spin-up
                 if chunk_i == 1
-                    spin_up_climbuf!(pftparameters, climate.temp_spinup, climbuf, 1, device)
+                    spin_up_climbuf!(pftparameters, climate.temp_spinup, climbuf; year_spinup = 1)
                 end
-                data_batch = (; latitude = InitialData.latitude, climate, ModelState = InitialData.ModelState)
+                data_batch = (; climate, TrainingData)
         
                 for day in start_day:rollout:end_day
                     day_start = day
                     day_end = min(day+rollout-1, end_day)
-                    l = loss_func(chunk_i, daily_crop, irrigation, usingNODE, day_start, day_end, nn_model, ps, ps_frozen, st, pftparameters, data_batch, length(data_index), climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output, device)
+                    l = loss_func(chunk_i, daily_crop, irrigation, usingNODE, day_start, day_end, nn_model, ps, ps_frozen, st, pftparameters, data_batch, climbuf, crop, crop_cal, photos, pet, soil, managed_land, dailyWeather, output)
                     if !isnan(l) && !isinf(l)
                         push!(loss_valid_rollout, l)
                     else

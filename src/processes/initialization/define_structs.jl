@@ -58,6 +58,7 @@ mutable struct Crop{T <: AbstractArray{ <: AbstractFloat}, B <: AbstractArray{ <
     rootc::T
     poolc::T
     stoc::T
+    init_vegc::T
     vegc::M
     nitrogen::T
     leafn::T 
@@ -102,6 +103,8 @@ end
 mutable struct Managed_land{T <: AbstractArray{ <: AbstractFloat}} 
     manure::T # reactive nitrogen fertilizer
     fertilizer::T # manure nitrogen fertilizer
+    residuefrac::T # fraction of crop residue left on the field after harvest
+    latitude::T # latitude of the grid cell, used for daylength calculation
 end
 
 
@@ -165,20 +168,6 @@ mutable struct Soil{T <: AbstractArray{ <: AbstractFloat}, M <: AbstractArray{ <
     snowpack::T
     snowheight::T
     snowfraction::T
-end
-
-
-mutable struct DataNorm{T <: AbstractArray{ <: AbstractFloat}, M <: AbstractArray{ <: AbstractFloat}} 
-    npp::T
-    leafc::T 
-    rootc::T
-    poolc::T
-    soc::T
-    vegc::M
-    litc::M    
-    fastc::M    
-    slowc::M
-    swc::M           
 end
 
 

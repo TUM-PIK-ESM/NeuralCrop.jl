@@ -4,6 +4,7 @@ This page is generated from source docstrings and organized by module area.
 
 Quick jump:
 - [Variables and initialization](#variables-and-initialization)
+- [Data loader](#variables-and-initialization)
 - [Climate processes](#climate-processes)
 - [Crop processes](#crop-processes)
 - [Soil processes](#soil-processes)
@@ -25,8 +26,21 @@ Pages = [
     "processes/initialization/init_states.jl",
     "processes/initialization/init_structs.jl",
     "input_output/output.jl",
-    "input_output/data_loader.jl",
-    "input_output/load_nc.jl",
+]
+Order = [:constant, :type, :function]
+Private = false
+```
+
+## Data loader
+
+Load initial conditons, climate data, and training data.
+
+```@autodocs
+Modules = [NeuralCrop]
+Pages = [
+    "input_output/climate_data_loader.jl",
+    "input_output/initial_data_loader.jl",
+    "input_output/training_data_loader.jl",
 ]
 Order = [:constant, :type, :function]
 Private = false
@@ -160,7 +174,8 @@ Pages = [
     "utils/conversions.jl",
     "utils/normalization.jl",
     "utils/visualization.jl",
-    "utils/lonlat_split.jl"
+    "utils/lonlat_split.jl",
+    "utils/load_nc.jl",
 ]
 Order = [:function, :constant, :type]
 Private = false

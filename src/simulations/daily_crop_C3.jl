@@ -94,8 +94,6 @@ function daily_crop_C3!(start_day,
                         irrigation = false
 )
 
-    @unpack latitude, climate = data_set
-
     for day = start_day : end_day
 
         day_of_year = day % 365 != 0 ? day % 365 : 365

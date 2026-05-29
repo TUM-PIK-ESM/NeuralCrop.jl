@@ -37,12 +37,13 @@ function init_states!(PFT::PftParameters,
     @unpack residue_frac, fastfrac, atmfrac, k_soil10 = lpjmlparams
     @unpack k_litter10, beta_root = PFT
 
-    @unpack ModelState, soilparams = InitialData
+    @unpack latitude, soilparams, ModelState = InitialData
 
     phu = ModelState.crop.phu
     sdate = ModelState.crop.sdate
     manure = ModelState.crop.manure
     fertilizer = ModelState.crop.fertilizer
+    residuefrac = ModelState.crop.residuefrac
     c_shift_fast = ModelState.c_shift_fast
     c_shift_slow = ModelState.c_shift_slow
     u0 = ModelState.u0
@@ -64,6 +65,8 @@ function init_states!(PFT::PftParameters,
     crop_cal.sdate = sdate
     managed_land.manure = manure
     managed_land.fertilizer = fertilizer
+    managed_land.residuefrac = residuefrac
+    managed_land.latitude = latitude
     pet = init_pet(cell_size, device)
     soil = init_soil(cell_size, soilparams.soildepth, device)
     soil.litc = copy(u0.litc)
