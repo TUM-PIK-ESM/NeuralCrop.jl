@@ -10,7 +10,7 @@ using SciMLBase
 
 # GPU PARALLEL
 # import KernelAbstractions: @kernel, @index, @inbounds # get_backend, synchronize
-using KernelAbstractions ##  GPU/CPU parallelization
+using KernelAbstractions # GPU/CPU parallelization
 using Lux, CUDA, LuxCUDA, Adapt
 
 # TRAINING
@@ -31,7 +31,7 @@ export LPJmLParams, PftParameters, PhotoParams, SoilParams, SnowParams, Photos, 
 export lpjmlparams, photoparams, soilparams, snowparams, cft1, cft2, cft3, cft4
 
 # INITIALIZATION
-export init_states!, init_climbuf, init_crop, init_pet, init_soil, init_data_norm, init_output
+export init_states!, init_climbuf, init_crop, init_pet, init_soil, init_output
 
 # CLIMATE
 export annual_climbuf!, daily_climbuf!, infil_perc!, spin_up_climbuf!, update_climbuf!, readclimate!, snow!         
@@ -63,7 +63,7 @@ export min_max_norm, z_score_norm, apply_z_score
 export spatial_group_split
 
 # DATA
-export InitialDataLoader, ClimateDataLoader, DataLoader, DataLoader_winter_wheat
+export InitialDataLoader, ClimateDataLoader, TrainingDataLoader, DataLoader, DataLoader_winter_wheat
 
 # NEURAL NETWORK
 export NODE, MLP, solve, SciMLEuler, SciMLEuler_litc, SciMLEuler_soilc, neural_gpp, neural_lambda, neural_vmax, neural_stoc, neural_allocation, hybrid_litc, hybrid_soilc, hybrid_litn, hybrid_soiln,
@@ -138,7 +138,9 @@ include("neural_network/neural_emulator.jl")
 include("neural_network/solver.jl")
 
 # Input and output
-include("input_output/load_nc.jl")
+include("input_output/climate_data_loader.jl")
+include("input_output/initial_data_loader.jl")
+include("input_output/training_data_loader.jl")
 include("input_output/data_loader.jl")
 include("input_output/output.jl")
 
@@ -153,6 +155,7 @@ include("utils/normalization.jl")
 include("utils/visualization.jl")
 include("utils/lonlat_split.jl")
 include("utils/conversions.jl")
+include("utils/load_nc.jl")
 include("utils/callback.jl")
 include("utils/tools.jl")
 
