@@ -61,7 +61,7 @@ This will resolve compatible package versions for your Julia installation. We re
 
 NeuralCrop does not provide the climate and management data required to drive the model, as these datasets originate from third-party sources. You can obtain the necessary input data from the [ISIMIP data repository](https://data.isimip.org/) (Inter-Sectoral Impact Model Intercomparison Project), and please cite the ISIMIP data appropriately when using it.
 
-For a quick start, we provide a simplified demo in the examples/ directory, including 20-year forcing data (2000-2019) covering 10 grid cells. You can run the model on Jupyter Notebook 🚀.
+For a quick start, we provide a simplified demo in the examples/ directory, including 20-year forcing data (2000-2019) covering 10 grid cells. If a GPU is available and [CUDA.jl](https://github.com/JuliaGPU/CUDA.jl) is installed, you can accelerate the simulation on GPU 🚀.
 
 
 ## Usage
