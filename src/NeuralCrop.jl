@@ -64,6 +64,7 @@ export spatial_group_split
 
 # DATA
 export InitialDataLoader, ClimateDataLoader, TrainingDataLoader, DataLoader, DataLoader_winter_wheat
+export write_output_nc
 
 # NEURAL NETWORK
 export NODE, MLP, solve, SciMLEuler, SciMLEuler_litc, SciMLEuler_soilc, neural_gpp, neural_lambda, neural_vmax, neural_stoc, neural_allocation, hybrid_litc, hybrid_soilc, hybrid_litn, hybrid_soiln,
@@ -143,6 +144,7 @@ include("input_output/initial_data_loader.jl")
 include("input_output/training_data_loader.jl")
 include("input_output/data_loader.jl")
 include("input_output/output.jl")
+include("input_output/write_output_nc.jl")
 
 # Training
 include("training/loss_function.jl")

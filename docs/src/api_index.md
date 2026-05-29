@@ -4,7 +4,7 @@ This page is generated from source docstrings and organized by module area.
 
 Quick jump:
 - [Variables and initialization](#variables-and-initialization)
-- [Data loader](#variables-and-initialization)
+- [Data loader](#data-input-and-output)
 - [Climate processes](#climate-processes)
 - [Crop processes](#crop-processes)
 - [Soil processes](#soil-processes)
@@ -31,9 +31,9 @@ Order = [:constant, :type, :function]
 Private = false
 ```
 
-## Data loader
+## Data input and output
 
-Load initial conditons, climate data, and training data.
+Load input data and write model outputs to NetCDF.
 
 ```@autodocs
 Modules = [NeuralCrop]
@@ -41,6 +41,7 @@ Pages = [
     "input_output/climate_data_loader.jl",
     "input_output/initial_data_loader.jl",
     "input_output/training_data_loader.jl",
+    "input_output/write_output_nc.jl"
 ]
 Order = [:constant, :type, :function]
 Private = false
