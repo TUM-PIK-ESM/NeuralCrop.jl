@@ -34,7 +34,7 @@ function soil_nitrogen!(crop_cal::Calendar,
     soil.decom_slown = (1.0f0 .- exp.(-soil.respose_slown .* response)) .* soil.slown
     soil.slown = soil.slown + soil.n_shift_slow .* sum(soil.decom_litn, dims = 1) - soil.decom_slown
 
-    # LPJmL-aligned nitrogen mineralization/immobilization/nitrification updates.
+    # Nitrogen mineralization/immobilization/nitrification updates.
     # TODO: we do not yet test it, so we close it for now.
     # nitrogen_transform!(soil; lpjmlparams = lpjmlparams)
     
