@@ -1,3 +1,8 @@
+"""
+soil_nitrogen!(nn_model, ps, st, temp_n, sw_n, crop_cal, soil; lpjmlparams = lpjmlparams)
+
+Run soil nitrogen with selected neural-emulator substitutions.
+"""
 function soil_nitrogen!(nn_model, ps, st,
                         temp_n::AbstractArray{T},
                         sw_n::AbstractArray{T},
@@ -18,4 +23,3 @@ function soil_nitrogen!(nn_model, ps, st,
     soil.fastn, soil.decom_fastn = hybrid_soiln(nn_model.soil, soil.fastn, ps.soild, st.soild, input, k_soil10.fast, soil.n_shift_fast, sum(soil.decom_litn, dims = 1))
     soil.slown, soil.decom_slown = hybrid_soiln(nn_model.soil, soil.slown, ps.soild, st.soild, input, k_soil10.slow, soil.n_shift_slow, sum(soil.decom_litn, dims = 1))
 end
-# Hybrid soil nitrogen dynamics.

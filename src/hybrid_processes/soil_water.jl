@@ -1,3 +1,8 @@
+"""
+soil_water!(nn_model, ps, st, soil, crop, sw_n, lw_n)
+
+Run soil water with selected neural-emulator substitutions.
+"""
 function soil_water!(nn_model, ps, st,
                      soil::Soil,
                      crop::Crop,
@@ -22,4 +27,3 @@ function soil_water!(nn_model, ps, st,
         # # soil.swc = neural_moisture(nn_model, soil.swc, ps, st, input, soil.layer_depth, soil.perc, crop.trans_layer)
     end
 end
-# Hybrid soil water process integration.
