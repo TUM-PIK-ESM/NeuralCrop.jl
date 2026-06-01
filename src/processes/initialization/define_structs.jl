@@ -156,14 +156,16 @@ mutable struct Soil{T <: AbstractArray{ <: AbstractFloat}, M <: AbstractArray{ <
     tillage_frac::M
     c_shift_fast::M
     c_shift_slow::M
-    respose_litc::T
-    respose_fastc::T
-    respose_slowc::T
+    response_litc::T
+    response_fastc::T
+    response_slowc::T
     n_shift_fast::M
     n_shift_slow::M
-    respose_litn::T
-    respose_fastn::T
-    respose_slown::T
+    response_litn::T
+    response_fastn::T
+    response_slown::T
+    decom_response::M
+    decom_lit_response::M
     rh::T
     snowpack::T
     snowheight::T

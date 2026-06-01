@@ -53,7 +53,7 @@ export soiltemp_lag!
 export pedotransfer!, soil_carbon!, update_litc_tillage!, update_lit_winter_wheat!
 export evaporation!, soil_water!
 export soil_nitrogen!, nitrogen_transform!, update_litn_tillage!
-export temp_response
+export soil_decomp_response!
 
 # OUTPUT
 export output_training!, output_finetune!
@@ -124,7 +124,7 @@ include("processes/soil/infil_perc.jl")
 include("processes/soil/soil_water.jl")
 include("processes/soil/soil_carbon.jl")
 include("processes/soil/soil_nitrogen.jl")
-include("processes/soil/temp_response.jl")
+include("processes/soil/soil_response.jl")
 
 # Hybrid
 include("hybrid_processes/crop_carbon.jl")

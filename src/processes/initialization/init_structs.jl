@@ -228,14 +228,16 @@ function init_soil(cell_size::Int,
         device(zeros(Float32, (litc_layers, litc_layers))), # tillage_frac
         device(zeros(Float32, (soil_layers, cell_size))),  # c_shift_fast
         device(zeros(Float32, (soil_layers, cell_size))),  # c_shift_slow
-        device(zeros(Float32, litc_layers)),               # respose_litc
-        device(zeros(Float32, soil_layers)),               # respose_fastc
-        device(zeros(Float32, soil_layers)),               # respose_fastc
+        device(zeros(Float32, litc_layers)),               # response_litc
+        device(zeros(Float32, soil_layers)),               # response_fastc
+        device(zeros(Float32, soil_layers)),               # response_fastc
         device(zeros(Float32, (soil_layers, cell_size))),  # n_shift_fast
         device(zeros(Float32, (soil_layers, cell_size))),  # n_shift_slow
-        device(zeros(Float32, litc_layers)),               # respose_litn
-        device(zeros(Float32, soil_layers)),               # respose_fastn
-        device(zeros(Float32, soil_layers)),               # respose_slown
+        device(zeros(Float32, litc_layers)),               # response_litn
+        device(zeros(Float32, soil_layers)),               # response_fastn
+        device(zeros(Float32, soil_layers)),               # response_slown
+        device(zeros(Float32, (soil_layers, cell_size))),  # decom_response
+        device(zeros(Float32, (1, cell_size))),            # decom_lit_response
         device(zeros(Float32, cell_size)),                 # rh
         device(zeros(Float32, cell_size)),                 # snowpack
         device(zeros(Float32, cell_size)),                 # snowheight

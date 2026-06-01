@@ -146,6 +146,9 @@ function daily_crop_C4!(day_start,
         transpiration!(photos.adtmm, pftparameters, crop, pet, soil, dailyWeather.annual_co2)
         evaporation!(pet.eeq, crop, soil)
 
+        # soil decomposition response
+        soil_decomp_response!(soil)
+
         # soil carbon cycle
         soil_carbon!(crop_cal, soil)
 

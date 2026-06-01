@@ -88,15 +88,15 @@ function init_states!(PFT::PftParameters,
     soil.tillage_frac = device([(1 - residue_frac) 0.0f0 0.0f0; residue_frac 1.0f0 0.0f0; 0.0f0 0.0f0 1.0f0])
     soil.c_shift_fast = device(c_shift_fast * fastfrac * (1.0f0 - atmfrac))
     soil.c_shift_slow = device(c_shift_slow * (1.0f0 - fastfrac) * (1.0f0 - atmfrac))
-    soil.respose_litc = device([k_litter10.leaf, k_litter10.leaf, k_litter10.root])
-    soil.respose_fastc = device(fill(k_soil10.fast, 5))
-    soil.respose_slowc = device(fill(k_soil10.slow, 5))
+    soil.response_litc = device([k_litter10.leaf, k_litter10.leaf, k_litter10.root])
+    soil.response_fastc = device(fill(k_soil10.fast, 5))
+    soil.response_slowc = device(fill(k_soil10.slow, 5))
 
     soil.n_shift_fast = device(c_shift_fast * fastfrac * (1.0f0 - atmfrac))
     soil.n_shift_slow = device(c_shift_slow * (1.0f0 - fastfrac) * (1.0f0 - atmfrac))
-    soil.respose_litn = device([k_litter10.leaf, k_litter10.leaf, k_litter10.root])
-    soil.respose_fastn = device(fill(k_soil10.fast, 5))
-    soil.respose_slown = device(fill(k_soil10.slow, 5))
+    soil.response_litn = device([k_litter10.leaf, k_litter10.leaf, k_litter10.root])
+    soil.response_fastn = device(fill(k_soil10.fast, 5))
+    soil.response_slown = device(fill(k_soil10.slow, 5))
     
     output = init_output(cell_size, device)
 
