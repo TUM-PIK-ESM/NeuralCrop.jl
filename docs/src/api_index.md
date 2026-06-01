@@ -107,6 +107,7 @@ Pages = [
     "processes/soil/soil_carbon.jl",
     "processes/soil/nitrogen_transform.jl",
     "processes/soil/soil_nitrogen.jl",
+    "processes/soil/temp_response.jl",
     "utils/callback.jl",
 ]
 Order = [:function, :type]

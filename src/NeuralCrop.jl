@@ -50,9 +50,10 @@ export crop_carbon!, crop_carbon_hybrid!, hybrid_photos_C3!, hybrid_photos_C4!
 
 # SOIL
 export soiltemp_lag!
-export pedotransfer!, update_lit_tillage!, update_lit_winter_wheat!,  soil_carbon!
+export pedotransfer!, soil_carbon!, update_litc_tillage!, update_lit_winter_wheat!
 export evaporation!, soil_water!
-export nitrogen_transform!, soil_nitrogen!, update_litc_tillage!, update_litn_tillage!
+export soil_nitrogen!, nitrogen_transform!, update_litn_tillage!
+export temp_response
 
 # OUTPUT
 export output_training!, output_finetune!
@@ -123,7 +124,7 @@ include("processes/soil/infil_perc.jl")
 include("processes/soil/soil_water.jl")
 include("processes/soil/soil_carbon.jl")
 include("processes/soil/soil_nitrogen.jl")
-
+include("processes/soil/temp_response.jl")
 
 # Hybrid
 include("hybrid_processes/crop_carbon.jl")

@@ -41,6 +41,10 @@ water, nitrogen, and management process coefficients.
     T_r::T = 15.0 # parameter in N uptake temperature function
     k_max::T = 0.10 # maximum fraction of soil->NH4 assumed to be nitrified
     k_2::T = 0.01 # fraction of nitrified N lost as N20 flux
+    CDN::T = 1.2 # shape factor for denitrification (LPJmL soil.h)
+    n2o_denit_frac::T = 0.11 # fraction of denitrified N emitted as N2O
+    volatil_wind::T = 1.5 # default wind speed (m/s) if no wind forcing is provided
+    volatil_length::T = 1.0 # characteristic length scale (m)
     soil_infil::T = 2.0 # default soil infiltration
     soil_infil_litter::T = 2.0 # soil infiltration intensification by litter cover
     percthres::T = 1.0
@@ -50,6 +54,13 @@ water, nitrogen, and management process coefficients.
     nfert_no3_frac::T = 0.5 # fraction of NO3 in fertilizer input
     maxsnowpack::T = 20000.0 # maximum snowpack (mm)
 end
+"""
+lpjmlparams
+
+Default `LPJmLParams{Float32}` singleton used across process routines.
+"""
+const lpjmlparams = LPJmLParams{Float32}()
+
 
 """
 PhotoParams{T}
@@ -70,6 +81,12 @@ Photosynthesis-specific constants used by C3/C4 process functions.
     tmc3::T = 45.0
     tmc4::T = 55.0
 end
+"""
+photoparams
+
+Default `PhotoParams{Float32}` singleton used in photosynthesis kernels.
+"""
+const photoparams = PhotoParams{Float32}()
 
 
 """
@@ -105,20 +122,6 @@ thermal diffusivity references.
 end
 
 """
-lpjmlparams
-
-Default `LPJmLParams{Float32}` singleton used across process routines.
-"""
-const lpjmlparams = LPJmLParams{Float32}()
-
-"""
-photoparams
-
-Default `PhotoParams{Float32}` singleton used in photosynthesis kernels.
-"""
-const photoparams = PhotoParams{Float32}()
-
-"""
 soilparams
 
 Default `SoilParams{Float32}` singleton for soil initialization.
@@ -140,10 +143,30 @@ Physical constants for snow accumulation, insulation, and melt processes.
     c_watertosnow::T = 6.70 # Conversion factor from water to snowdepth, i.e. 1 cm water equals 6.7 cm of snow
     c_roughness::T = 0.06 # height of vegetation below the canopy
 end
-
 """
 snowparams
 
 Default `SnowParams{Float32}` singleton used by `snow!`.
 """
 const snowparams = SnowParams{Float32}()
+
+
+"""
+SoilDecompParams
+
+Local LPJmL-style soil carbon and nitrogen decomposition response parameters used in this file.
+"""
+@kwdef struct SoilDecompParams{T <: AbstractFloat}
+    e0::T = 308.56
+    intercept::T = 0.04021601
+    moist3::T = -5.00505434
+    moist2::T = 4.26937932
+    moist1::T = 0.71890122
+    eps::T = 1e-7
+end
+"""
+soil_decomp_params
+
+Default `SoilDecompParams{Float32}` singleton used by soil decomposition routines.
+"""
+const soil_decomp_params = SoilDecompParams{Float32}()
