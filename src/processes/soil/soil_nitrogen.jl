@@ -9,6 +9,7 @@ function soil_nitrogen!(crop_cal::Calendar,
                         soil_decomp_params::SoilDecompParams = soil_decomp_params
 )
 
+    @unpack k_soil10 = lpjmlparams
     @unpack intercept, moist3, moist2, moist1, eps = soil_decomp_params
 
     # compute soil carbon: litter carbon and soil carbon
@@ -21,11 +22,11 @@ function soil_nitrogen!(crop_cal::Calendar,
     update_litn_tillage!(soil, crop_cal)
 
     # soil.decom_fastn = (1.0f0 .- exp.(-soil.response_fastn .* response / 50)) .* soil.fastn
-    soil.decom_fastn = (1.0f0 .- exp.(-soil.response_fastn .* soil.decom_response)) .* soil.fastn
+    soil.decom_fastn = (1.0f0 .- exp.(-k_soil10.fast .* soil.decom_response)) .* soil.fastn
     soil.fastn = soil.fastn + soil.n_shift_fast .* sum(soil.decom_litn, dims = 1) - soil.decom_fastn
  
     # soil.decom_slown = (1.0f0 .- exp.(-soil.response_slown .* response / 10)) .* soil.slown
-    soil.decom_slown = (1.0f0 .- exp.(-soil.response_slown .* soil.decom_response)) .* soil.slown
+    soil.decom_slown = (1.0f0 .- exp.(-k_soil10.slow .* soil.decom_response)) .* soil.slown
     soil.slown = soil.slown + soil.n_shift_slow .* sum(soil.decom_litn, dims = 1) - soil.decom_slown
 
     # Nitrogen mineralization/immobilization/nitrification updates.

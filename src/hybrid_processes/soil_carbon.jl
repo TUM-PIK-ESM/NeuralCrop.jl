@@ -6,7 +6,7 @@ function soil_carbon!(nn_model, ps, st,
                       lpjmlparams::LPJmLParams = lpjmlparams
 ) where {T <: AbstractFloat}
 
-    @unpack atmfrac = lpjmlparams
+    @unpack atmfrac, k_soil10 = lpjmlparams
 
     # compute soil carbon: litter carbon and soil carbon
     input = vcat(reshape((soil.swc./soil.layer_depth)[1, :], (1, :)), reshape(temp_n, (1, :)))
@@ -15,8 +15,8 @@ function soil_carbon!(nn_model, ps, st,
     update_litc_tillage!(soil, crop_cal)
 
     input = vcat(mean(soil.swc./soil.layer_depth, dims = 1), reshape(temp_n, (1, :)), reshape(sw_n, (1, :)))
-    soil.fastc, soil.decom_fastc = hybrid_soilc(nn_model.soil, soil.fastc, ps.soild, st.soild, input, soil.response_fastc, soil.c_shift_fast, sum(soil.decom_litc, dims = 1))
-    soil.slowc, soil.decom_slowc = hybrid_soilc(nn_model.soil, soil.slowc, ps.soild, st.soild, input, soil.response_slowc, soil.c_shift_slow, sum(soil.decom_litc, dims = 1))
+    soil.fastc, soil.decom_fastc = hybrid_soilc(nn_model.soil, soil.fastc, ps.soild, st.soild, input, k_soil10.fast, soil.c_shift_fast, sum(soil.decom_litc, dims = 1))
+    soil.slowc, soil.decom_slowc = hybrid_soilc(nn_model.soil, soil.slowc, ps.soild, st.soild, input, k_soil10.slow, soil.c_shift_slow, sum(soil.decom_litc, dims = 1))
     soil.rh = vec(sum(soil.decom_litc, dims = 1) * atmfrac .+ sum(soil.decom_fastc, dims = 1) .+ sum(soil.decom_slowc, dims = 1))
 end
 # Hybrid soil carbon update routines.

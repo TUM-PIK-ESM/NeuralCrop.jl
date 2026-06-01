@@ -89,14 +89,10 @@ function init_states!(PFT::PftParameters,
     soil.c_shift_fast = device(c_shift_fast * fastfrac * (1.0f0 - atmfrac))
     soil.c_shift_slow = device(c_shift_slow * (1.0f0 - fastfrac) * (1.0f0 - atmfrac))
     soil.response_litc = device([k_litter10.leaf, k_litter10.leaf, k_litter10.root])
-    soil.response_fastc = device(fill(k_soil10.fast, 5))
-    soil.response_slowc = device(fill(k_soil10.slow, 5))
 
     soil.n_shift_fast = device(c_shift_fast * fastfrac * (1.0f0 - atmfrac))
     soil.n_shift_slow = device(c_shift_slow * (1.0f0 - fastfrac) * (1.0f0 - atmfrac))
     soil.response_litn = device([k_litter10.leaf, k_litter10.leaf, k_litter10.root])
-    soil.response_fastn = device(fill(k_soil10.fast, 5))
-    soil.response_slown = device(fill(k_soil10.slow, 5))
     
     output = init_output(cell_size, device)
 

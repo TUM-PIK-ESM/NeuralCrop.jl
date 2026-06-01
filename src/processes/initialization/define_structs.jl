@@ -157,13 +157,9 @@ mutable struct Soil{T <: AbstractArray{ <: AbstractFloat}, M <: AbstractArray{ <
     c_shift_fast::M
     c_shift_slow::M
     response_litc::T
-    response_fastc::T
-    response_slowc::T
     n_shift_fast::M
     n_shift_slow::M
     response_litn::T
-    response_fastn::T
-    response_slown::T
     decom_response::M
     decom_lit_response::M
     rh::T

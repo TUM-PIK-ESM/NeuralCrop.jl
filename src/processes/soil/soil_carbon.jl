@@ -9,7 +9,7 @@ function soil_carbon!(crop_cal::Calendar,
                       soil_decomp_params::SoilDecompParams = soil_decomp_params
 )
 
-    @unpack atmfrac = lpjmlparams
+    @unpack atmfrac, k_soil10 = lpjmlparams
     @unpack e0, intercept, moist3, moist2, moist1, eps = soil_decomp_params
 
     # compute soil carbon: litter carbon and soil carbon
@@ -24,11 +24,11 @@ function soil_carbon!(crop_cal::Calendar,
     update_litc_tillage!(soil, crop_cal)
     
     # soil.decom_fastc = (1.0f0 .- exp.(-soil.response_fastc .* response / 50)) .* soil.fastc
-    soil.decom_fastc = (1.0f0 .- exp.(-soil.response_fastc .* soil.decom_response)) .* soil.fastc
+    soil.decom_fastc = (1.0f0 .- exp.(-k_soil10.fast .* soil.decom_response)) .* soil.fastc
     soil.fastc = soil.fastc + soil.c_shift_fast .* sum(soil.decom_litc, dims = 1) - soil.decom_fastc
     
     # soil.decom_slowc = (1.0f0 .- exp.(-soil.response_slowc .* response / 10)) .* soil.slowc
-     soil.decom_slowc = (1.0f0 .- exp.(-soil.response_slowc .* soil.decom_response)) .* soil.slowc
+     soil.decom_slowc = (1.0f0 .- exp.(-k_soil10.slow .* soil.decom_response)) .* soil.slowc
     soil.slowc = soil.slowc + soil.c_shift_slow .* sum(soil.decom_litc, dims = 1) - soil.decom_slowc
 
     soil.rh = vec(sum(soil.decom_litc, dims = 1) * atmfrac .+ sum(soil.decom_fastc, dims = 1) .+ sum(soil.decom_slowc, dims = 1))
