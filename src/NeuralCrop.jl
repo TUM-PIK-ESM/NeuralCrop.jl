@@ -17,7 +17,7 @@ using Lux, CUDA, LuxCUDA, Adapt
 using ComponentArrays, Zygote, Optimisers, Optimization
 
 # INPUT OUTPUT
-using DataFrames, NCDatasets, Random, Plots, XLSX, Dates, Printf,  ParameterSchedulers, ProgressMeter
+using DataFrames, NCDatasets, Random, Dates, Printf, ParameterSchedulers, ProgressMeter
 import JLD2: @load, @save
 
 # PARAMETER HANDLING

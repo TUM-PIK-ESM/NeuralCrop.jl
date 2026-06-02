@@ -1,3 +1,5 @@
+using Plots
+
 """
 plot_loss_curve(epoch, train_loss, valid_loss, save_path)
 

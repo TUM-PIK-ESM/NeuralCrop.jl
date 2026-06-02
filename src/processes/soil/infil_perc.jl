@@ -75,10 +75,8 @@ end
         soil_w_outflux[l, cell] = zero(T)
     end
 
-    soil_infil *= (1 + soil_agtop_cover[cell] * soil_infil_litter)
-    
+    soil_infil *= (one(T) + soil_agtop_cover[cell] * soil_infil_litter)
     influx = zero(T)
-    
     iter = 0
     # Iterative slug infiltration + redistribution; hard cap prevents non-convergent loops.
     while (infil[cell] > 1.0f-5 || freewater > 1.0f-5) && iter < 500
@@ -90,7 +88,7 @@ end
         infil[cell] -= slug
         
         # Calculate influx to first soil layer
-        if 1 - (soil_w[1, cell] * soil_whcs[1, cell] + soil_w_fw[1, cell]) / (soil_wsats[1, cell] - soil_wpwps[1, cell]) >= 0
+        if one(T) - (soil_w[1, cell] * soil_whcs[1, cell] + soil_w_fw[1, cell]) / (soil_wsats[1, cell] - soil_wpwps[1, cell]) >= 0
             influx = slug * ((1 - (soil_w[1, cell] * soil_whcs[1, cell] + soil_w_fw[1, cell]) / (soil_wsats[1, cell] - soil_wpwps[1, cell])) ^ (1 / soil_infil))
             soil_w_influx[1, cell] += influx
         else

@@ -1,6 +1,3 @@
-using Lux, CUDA, LuxCUDA
-const gdev = gpu_device()
-
 """
 load_nc_file_one_dimension(file_path, variable)
 
