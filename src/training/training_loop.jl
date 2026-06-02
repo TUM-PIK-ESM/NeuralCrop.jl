@@ -5,7 +5,7 @@ train_loop_rollout!(...)
 Run epoch-wise training for rollout-based objectives and checkpoint outputs.
 """
 # space validation
-function train_loop!(climate_path, daily_crop, crop_name, irrigation, usingNODE, rollout, nn_model, ps, ps_frozen, st, pftparameters, data, train_i, valid_i, loss_func, opt_state, η_schedule, device, save_path; batch_size=10, N_epochs=1, scheduler_offset::Int=0, save_mode::Symbol=:valid)
+function train_loop_rollout!(climate_path, daily_crop, crop_name, irrigation, usingNODE, rollout, nn_model, ps, ps_frozen, st, pftparameters, data, train_i, valid_i, loss_func, opt_state, η_schedule, device, save_path; batch_size=10, N_epochs=1, scheduler_offset::Int=0, save_mode::Symbol=:valid)
     
     @assert save_mode in [:valid, :train] "save_mode has to be :valid or :train"
     
