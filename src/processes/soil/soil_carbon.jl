@@ -28,7 +28,7 @@ function soil_carbon!(crop_cal::Calendar,
     soil.fastc = soil.fastc + soil.c_shift_fast .* sum(soil.decom_litc, dims = 1) - soil.decom_fastc
     
     # soil.decom_slowc = (1.0f0 .- exp.(-soil.response_slowc .* response / 10)) .* soil.slowc
-     soil.decom_slowc = (1.0f0 .- exp.(-k_soil10.slow .* soil.decom_response)) .* soil.slowc
+    soil.decom_slowc = (1.0f0 .- exp.(-k_soil10.slow .* soil.decom_response)) .* soil.slowc
     soil.slowc = soil.slowc + soil.c_shift_slow .* sum(soil.decom_litc, dims = 1) - soil.decom_slowc
 
     soil.rh = vec(sum(soil.decom_litc, dims = 1) * atmfrac .+ sum(soil.decom_fastc, dims = 1) .+ sum(soil.decom_slowc, dims = 1))
