@@ -26,6 +26,9 @@ jobs:
           version: "1.10"
 
       - uses: julia-actions/cache@v2
+        with:
+          cache-compiled: false
+          cache-scratchspaces: false
 
       - name: Install dependencies
         run: |
