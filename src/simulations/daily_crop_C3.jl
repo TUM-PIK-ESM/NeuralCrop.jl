@@ -4,19 +4,10 @@ daily_crop_C3!(...)
 
 Execute daily forward simulation for C3 crop configuration.
 """
-function daily_crop_C3!(start_day,
-                        end_day,
+function daily_crop_C3!(start_day, end_day,
                         pftparameters,
-                        climate,
-                        climbuf, 
-                        crop, 
-                        crop_cal, 
-                        photos, 
-                        pet, 
-                        soil, 
-                        managed_land, 
-                        dailyWeather,
-                        output;
+                        climate, climbuf, crop, crop_cal, photos, pet, soil, managed_land, 
+                        dailyWeather, output;
                         irrigation = false
 )
 
