@@ -34,7 +34,7 @@ function daily_crop_C3_training!(day_start,
 
         readclimate!(climate, dailyWeather, day)
 
-        # sonw
+        # snow
         Zygote.ignore() do
             snow!(soil, dailyWeather)
         end

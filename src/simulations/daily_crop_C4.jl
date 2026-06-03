@@ -18,7 +18,7 @@ function daily_crop_C4!(day_start, day_end,
 
         readclimate!(climate, dailyWeather, day)
 
-        # sonw
+        # snow
         snow!(soil, dailyWeather)
 
         # initial crop variables in sowing day and fertilizer
