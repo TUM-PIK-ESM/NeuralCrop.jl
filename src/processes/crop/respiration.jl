@@ -37,7 +37,6 @@ function respiration!(crop::Crop,
     # gresp = (assim .- rosoresp .- presp) * r_growth
     # gresp = ifelse.(gresp .< zero(T), zero(T), gresp)
 
-    
     crop.resp = (rosoresp .+ presp .+ gresp) .* crop.isgrowing
 
 end
