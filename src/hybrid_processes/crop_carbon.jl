@@ -25,7 +25,8 @@ function crop_carbon_hybrid!(nn_model, ps, st,
         end
 
         # compute crop storage carbon allocation
-        input = vcat(reshape(crop.npp / 20, (1, :)), reshape(crop.fphu, (1, :)), reshape(temp_n, (1, :)), reshape(crop.wdf / 100, (1, :))) .* reshape(crop.isgrowing, (1, :))
+        # input = vcat(reshape(crop.npp / 20, (1, :)), reshape(crop.fphu, (1, :)), reshape(temp_n, (1, :)), reshape(crop.wdf / 100, (1, :))) .* reshape(crop.isgrowing, (1, :))
+        input = vcat(reshape(crop.npp / 20, (1, :)), reshape(crop.lai / 5, (1, :)), reshape(crop.fphu, (1, :)), reshape(crop.wdf / 100, (1, :)))
         if node
             crop.stoc = neural_stoc(nn_model, reshape(crop.stoc, (1, :)), ps, st, input)
         else
