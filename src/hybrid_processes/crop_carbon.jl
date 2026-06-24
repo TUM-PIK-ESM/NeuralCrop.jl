@@ -213,6 +213,7 @@ end
     else
         crop_leafc[cell] = zero(T)
         crop_rootc[cell] = zero(T)
+        crop_npp[cell] = zero(T)
         crop_biomass[cell] = zero(T)
         crop_vscal_sum[cell] = zero(T)
         crop_ndf[cell] = zero(T)
