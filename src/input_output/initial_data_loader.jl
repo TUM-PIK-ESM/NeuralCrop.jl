@@ -45,10 +45,10 @@ function InitialDataLoader(data::NamedTuple,
     ) |> device
     
     model_state = (
-            crop = crop,
-            c_shift_fast = initialLPJmL.c_shift_fast[:, data_index],
-            c_shift_slow = initialLPJmL.c_shift_slow[:, data_index],
-            u0 = u0_set
+        crop = crop,
+        c_shift_fast = initialLPJmL.c_shift_fast[:, data_index],
+        c_shift_slow = initialLPJmL.c_shift_slow[:, data_index],
+        u0 = u0_set
     ) |> device
 
     InitialData = (
