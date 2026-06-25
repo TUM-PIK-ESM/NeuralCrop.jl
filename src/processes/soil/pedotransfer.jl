@@ -42,7 +42,7 @@ function pedotransfer!(soil::Soil;
 
     # idx = (soil.wsat - soil.wfc) .< 0.05
     # soil.wfc[idx] .= soil.wsat[idx] .- 0.05
-    soil.wfc .= ifelse.((soil.wsat - soil.wfc) .< 0.05, soil.wsat .- 0.05f0, soil.wfc)
+    soil.wfc .= ifelse.((soil.wsat - soil.wfc) .< 0.05f0, soil.wsat .- 0.05f0, soil.wfc)
 
     soil.beta_soil .= -2.655f0 ./ log10.(soil.wfc ./ soil.wsat)
     soil.whc .= soil.wfc - soil.wpwp
@@ -54,8 +54,8 @@ function pedotransfer!(soil::Soil;
     # idx = (soil.swc - soil.wpwps) <= 1.0e-10
     # soil.w[idx] .= zero(T)
     # soil.w_fw[idx] .= zero(T)
-    soil.w .= ifelse.((soil.swc - soil.wpwps) .> 1.0e-10, min.((soil.swc - soil.wpwps) ./ soil.whcs, 1.0f0), 0.0f0)
-    soil.w_fw .= ifelse.((soil.swc - soil.wpwps) .> 1.0e-10, min.(soil.swc - soil.wpwps - soil.w .* soil.whcs, soil.wsats - soil.wfc .* soil.layer_depth), 0.0f0)
+    soil.w .= ifelse.((soil.swc - soil.wpwps) .> 1.0f-10, min.((soil.swc - soil.wpwps) ./ soil.whcs, 1.0f0), 0.0f0)
+    soil.w_fw .= ifelse.((soil.swc - soil.wpwps) .> 1.0f-10, min.(soil.swc - soil.wpwps - soil.w .* soil.whcs, soil.wsats - soil.wfc .* soil.layer_depth), 0.0f0)
 
     # Calculation of Ks
     lambda = (log.(soil.wfc) - log.(soil.wpwp)) / (log(1500) - log(33))
