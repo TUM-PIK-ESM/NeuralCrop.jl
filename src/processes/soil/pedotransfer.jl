@@ -48,10 +48,10 @@ function pedotransfer!(soil::Soil;
     soil.whc .= soil.wfc - soil.wpwp
     soil.whcs .= soil.whc .* soil.layer_depth
 
-    # idx = (soil.swc - soil.wpwps) .> 1.0e-10
+    # idx = (soil.swc - soil.wpwps) .> 1.0f-10
     # soil.w[idx] .= min.((soil.swc[idx] - soil.wpwps[idx]) ./ soil.whcs[idx], one(T))
     # soil.w_fw[idx] .= min.(soil.swc[idx] - soil.wpwps[idx] - soil.w[idx] .* soil.whcs[idx], soil.wsats[idx] - soil.wfc[idx] .* soil.layer_depth)
-    # idx = (soil.swc - soil.wpwps) <= 1.0e-10
+    # idx = (soil.swc - soil.wpwps) <= 1.0f-10
     # soil.w[idx] .= zero(T)
     # soil.w_fw[idx] .= zero(T)
     soil.w .= ifelse.((soil.swc - soil.wpwps) .> 1.0f-10, min.((soil.swc - soil.wpwps) ./ soil.whcs, 1.0f0), 0.0f0)
