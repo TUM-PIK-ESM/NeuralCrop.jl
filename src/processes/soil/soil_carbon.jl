@@ -12,6 +12,9 @@ function soil_carbon!(crop_cal::Calendar,
     @unpack atmfrac, k_soil10 = lpjmlparams
     @unpack e0, intercept, moist3, moist2, moist1, eps = soil_decomp_params
 
+    # soil decomposition response
+    soil_decomp_response!(soil)
+
     # compute soil carbon: litter carbon and soil carbon
     # soil.decom_litc = (1.0f0 .- exp.(-soil.response_litc / 100)) .* soil.litc
 
