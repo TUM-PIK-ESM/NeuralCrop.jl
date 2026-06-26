@@ -25,10 +25,13 @@ import Parameters: @with_kw, @unpack
 import MuladdMacro: @muladd
 
 # STRUCTURES
-export LPJmLParams, PftParameters, PhotoParams, SoilParams, SnowParams, Photos, PetPar, DailyWeather, ClimBuf, CO2, Crop, Calendar, Managed_land, Soil, Output
+export LPJmLParams, PftParameters, PhotoParams, Photos, PetPar, Output
+export DailyWeather, ClimBuf, CO2
+export Crop, Calendar, Managed_land
+export SoilParams, SoilDecompParams, SnowParams, Soil
 
 # PARAMETERS (PFTs)
-export lpjmlparams, photoparams, soilparams, snowparams, cft1, cft2, cft3, cft4
+export lpjmlparams, photoparams, soilparams, soil_decomp_params, snowparams, cft1, cft2, cft3, cft4
 
 # INITIALIZATION
 export init_states!, init_climbuf, init_crop, init_pet, init_soil, init_output
