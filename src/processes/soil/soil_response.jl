@@ -11,7 +11,7 @@ function soil_decomp_response!(soil::Soil;
 )
     @unpack intercept, moist3, moist2, moist1, eps = soil_decomp_params
 
-    moist = (soil.w .* soil.whcs .+ soil.wpwps .+ soil.w_fw) ./ max.(soil.wsats .- soil.wpwps, eps)
+    moist = (soil.w .* soil.whcs .+ soil.wpwps .+ soil.w_fw) ./ max.(soil.wsats, eps) # soil.wsats .- soil.wpwps
     moist = clamp.(moist, eps, 1.0f0)
     gtemp_soil = temp_response(soil.temp; lpjmlparams = lpjmlparams)
 
