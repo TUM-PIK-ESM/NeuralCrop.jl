@@ -47,7 +47,7 @@ function update_litn_tillage!(soil::Soil,
 
     soil.litn = soil.litn .* (1 .- reshape(crop_cal.scallback, (1, :))) .* (1 .- reshape(crop_cal.hcallback, (1, :))) + 
                 soil.tillage_frac * soil.litn .* reshape(crop_cal.scallback, (1, :)) +
-                (soil.tillage_frac * (soil.litn .+ soil.c_input)) .* reshape(crop_cal.hcallback, (1, :)) 
+                (soil.tillage_frac * (soil.litn .+ max.(soil.n_input, 0.0f0))) .* reshape(crop_cal.hcallback, (1, :)) 
 
 end
 
