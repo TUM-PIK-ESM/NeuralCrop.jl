@@ -46,7 +46,7 @@ function daily_crop_C4!(day_start, day_end,
         photosynthesis_C4!(pftparameters, photos, crop.apar, pet.daylength, dailyWeather.temp; comp_vmax = true)
 
         # crop respiration and carbon allocation
-        crop_carbon!(photos, crop, pftparameters, dailyWeather.temp)
+        crop_carbon!(photos, crop, output, pftparameters, dailyWeather.temp)
 
         # crop nitrogen allocation
         crop_nitrogen!(crop, pftparameters, soil, photos.vmax, pet.daylength, dailyWeather.temp) # nitrogen cycle         
@@ -115,8 +115,8 @@ function daily_crop_C4!(day_start, day_end,
         photosynthesis_C4!(pftparameters, photos, crop.apar, pet.daylength, dailyWeather.temp; comp_vmax = true)
 
         # crop respiration and carbon allocation
-        crop_carbon!(photos, crop, pftparameters, dailyWeather.temp)
-        
+        crop_carbon!(photos, crop, output, pftparameters, dailyWeather.temp)
+         
         # crop nitrogen allocation
         crop_nitrogen!(crop, pftparameters, soil, photos.vmax, pet.daylength, dailyWeather.temp) # nitrogen cycle         
         
