@@ -38,6 +38,8 @@ function harvest_crop!(crop_cal::Calendar,
     output.growing_mask = vcat(output.growing_mask, reshape(crop.isgrowing, (1, :)))
     output.harvesting_mask = vcat(output.harvesting_mask, reshape(crop_cal.hcallback, (1, :)))
     output.stoc = vcat(output.stoc, reshape(crop.stoc, (1, :)))
+    output.scallback = vcat(output.scallback, reshape(crop_cal.scallback, (1, :)))
+    output.hcallback = vcat(output.hcallback, reshape(crop_cal.hcallback, (1, :)))
     # output.fphu = vcat(output.fphu, reshape(crop.fphu, (1, :)))
     if day == 365
         output.hdate = vcat(output.hdate, reshape(crop_cal.hdate, (1, :)))
