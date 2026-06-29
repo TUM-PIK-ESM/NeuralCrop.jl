@@ -50,6 +50,7 @@ export transpiration!, interception!
 export crop_nitrogen!, ndemand_crop!, nuptake_crop!
 export root_distribution, temp_stress
 export crop_carbon!, crop_carbon_hybrid!, hybrid_photos_C3!, hybrid_photos_C4!
+export waterlogging_stress!
 
 # SOIL
 export soiltemp_lag!
