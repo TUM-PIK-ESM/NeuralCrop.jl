@@ -258,6 +258,7 @@ function init_output(cell_size::Int,
 
     output = Output(
         device(zeros(Float32, (1, cell_size))),              # gpp
+        device(zeros(Float32, (1, cell_size))),              # npp
         device(zeros(Float32, (1, cell_size))),              # lambda
         device(zeros(Float32, (1, cell_size))),              # vmax
         device(zeros(Float32, (1, cell_size))),              # resp
@@ -281,10 +282,13 @@ function init_output(cell_size::Int,
         device(zeros(Float32, (1, cell_size))),              # prec
         device(zeros(Float32, (1, cell_size))),              # temp
         device(zeros(Float32, (1, cell_size))),              # fphu
+        device(zeros(Float32, (1, cell_size))),              # wdf
         device(zeros(Int32, (1, cell_size))),                # growing_mask
         device(zeros(Int32, (1, cell_size))),                # harvesting mask
         device(zeros(Int32, (1, cell_size))),                # harvesting year
-        device(zeros(Int32, (1, cell_size)))                 # hdate
+        device(zeros(Int32, (1, cell_size))),                # hdate
+        device(zeros(Int32, (1, cell_size))),                # scallback
+        device(zeros(Int32, (1, cell_size)))                 # hcallback
     )
 
     return output

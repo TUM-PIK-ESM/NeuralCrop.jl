@@ -171,6 +171,7 @@ end
 
 mutable struct Output{T <: AbstractArray{ <: AbstractFloat}, S <: AbstractArray{ <: Integer}, M <: AbstractArray{<: AbstractFloat}} 
     gpp::T
+    npp::T
     lambda::T
     vmax::T
     resp::T
@@ -194,8 +195,11 @@ mutable struct Output{T <: AbstractArray{ <: AbstractFloat}, S <: AbstractArray{
     prec::T
     temp::T
     fphu::T
+    wdf::T
     growing_mask::S
     harvesting_mask::S
     harvesting_year::S
     hdate::S
+    scallback::S
+    hcallback::S
 end
