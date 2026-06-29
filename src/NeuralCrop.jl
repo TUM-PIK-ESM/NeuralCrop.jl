@@ -118,6 +118,7 @@ include("processes/crop/nitrogen_demand.jl")
 include("processes/crop/nitrogen_uptake.jl")
 include("processes/crop/fertilizer.jl")
 include("processes/crop/harvesting.jl")
+include("processes/crop/waterlogging_stress.jl")
 
 # Soil
 include("processes/soil/pedotransfer.jl")
