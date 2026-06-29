@@ -90,6 +90,8 @@ mutable struct Crop{T <: AbstractArray{ <: AbstractFloat}, B <: AbstractArray{ <
     w_demandsum::T
     w_supplysum::T
     wscal::T
+    waterlogging_days::T
+    waterlogging_stress::T
 end
 
 mutable struct Calendar{S <: AbstractArray{ <: Integer}} 

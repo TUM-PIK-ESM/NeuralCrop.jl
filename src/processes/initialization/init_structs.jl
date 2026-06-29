@@ -62,7 +62,9 @@ function init_crop(cell_size::Int,
         device(zeros(Float32, cell_size)),      # ndemand_leaf
         device(zeros(Float32, cell_size)),      # w_demandsum
         device(zeros(Float32, cell_size)),      # w_supplysum
-        device(zeros(Float32, cell_size))       # wscal
+        device(zeros(Float32, cell_size)),       # wscal
+        device(zeros(Float32, cell_size)),       # waterlogging_days
+        device(zeros(Float32, cell_size))        # waterlogging_stress
     )
     
     crop_cal = Calendar(
