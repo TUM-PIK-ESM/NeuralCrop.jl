@@ -5,6 +5,7 @@ Run the daily crop carbon process chain: respiration, allocation, and phenology 
 """
 function crop_carbon!(photos::Photos,
                       crop::Crop,
+                      output::Output,
                       PFT::PftParameters,
                       temp::AbstractArray{T}
 ) where {T <: AbstractFloat} # directly translated from LPJmL
@@ -16,4 +17,9 @@ function crop_carbon!(photos::Photos,
     carbon_allocation!(PFT, crop, photos)
     crop.vegc = vcat(reshape(crop.rootc, (1, :)), reshape(crop.leafc, (1, :)), reshape(crop.stoc, (1, :)), reshape(crop.poolc, (1, :)))
 
+    output.npp = vcat(output.npp, reshape(crop.npp, (1, :)))
+    output.lai = vcat(output.lai, reshape(crop.lai, (1, :)))
+    output.fphu = vcat(output.fphu, reshape(crop.fphu, (1, :)))
+    output.wdf = vcat(output.wdf, reshape(crop.wdf, (1, :)))
+          
 end
