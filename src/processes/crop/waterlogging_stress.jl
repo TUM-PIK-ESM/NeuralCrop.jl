@@ -5,9 +5,10 @@ waterlogging_stress!(PFT, crop, pet)
 Calculate waterlogging stress.
 """
 function waterlogging_stress!(crop::Crop,
-                              soil::Soil
+                              soil::Soil,
+                              photos::Photos
 )
-
+ 
     # kernel function parameters
     kernel_params = (rootmoist_layers = 3, waterlogging_threshold = 0.25f0, waterlogging_recovery = 0.25f0,  waterlogging_tolerance = 3.0f0, waterlogging_maxdamage = 0.9f0, eps = 1f-7)
     
@@ -23,6 +24,9 @@ function waterlogging_stress!(crop::Crop,
         soil.w_fw,
         kernel_params
     )
+    
+    photos.agd .= photos.agd .* crop.waterlogging_stress
+    crop.wdf .= crop.wdf .* crop.waterlogging_stress
 
 end
     
