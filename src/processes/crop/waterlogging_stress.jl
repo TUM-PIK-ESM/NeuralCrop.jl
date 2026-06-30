@@ -17,6 +17,7 @@ function waterlogging_stress!(crop::Crop,
         crop.waterlogging_days,
         crop.waterlogging_stress,
         crop.rootdist,
+        crop.isgrowing,
         soil.wsats,
         soil.wpwps,
         soil.whcs,
@@ -34,13 +35,14 @@ end
                                        crop_waterlogging_days::AbstractArray{T},
                                        crop_waterlogging_stress::AbstractArray{T},
                                        crop_rootdist::AbstractArray{T},
+                                       crop_isgrowing::AbstractArray{S},
                                        soil_wsats::AbstractArray{M},
                                        soil_wpwps::AbstractArray{M},
                                        soil_whcs::AbstractArray{M},
                                        soil_w::AbstractArray{M},
                                        soil_w_fw::AbstractArray{M},
                                        kernel_params 
-) where {T <: AbstractFloat, M <: AbstractFloat}
+) where {T <: AbstractFloat, M <: AbstractFloat, S <: Integer}
     
     cell = @index(Global)
 
