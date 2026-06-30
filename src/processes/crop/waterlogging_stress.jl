@@ -24,10 +24,9 @@ function waterlogging_stress!(crop::Crop,
         soil.w_fw,
         kernel_params
     )
-    
+
     photos.agd .= photos.agd .* crop.waterlogging_stress
     crop.wdf .= crop.wdf .* crop.waterlogging_stress
-
 end
     
     
