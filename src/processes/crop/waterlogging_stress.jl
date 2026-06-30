@@ -5,8 +5,8 @@ waterlogging_stress!(PFT, crop, pet)
 Calculate waterlogging stress.
 """
 function waterlogging_stress!(crop::Crop,
-                              soil::Soil,
-                              photos::Photos
+                              photos::Photos,
+                              soil::Soil
 )
  
     # kernel function parameters
