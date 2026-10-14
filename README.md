@@ -2,7 +2,7 @@
 
 [![NeuralCrop](https://github.com/yunan-l/NeuralCrop.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/yunan-l/NeuralCrop.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![DOI](https://img.shields.io/badge/DOI-10.48550%2FarXiv.2512.20177-blue)](https://doi.org/10.48550/arXiv.2512.20177)
-[![License: EUPL-1.2](https://img.shields.io/badge/license-EUPL--1.2-blue)](LICENSE)
+[![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue)](LICENSE)
 
 NeuralCrop.jl is a differentiable hybrid crop-modelling framework that combines
 mechanistic crop and soil processes with trainable neural components. It can
@@ -91,4 +91,4 @@ the Horizon Europe ClimTip project (grant agreement 101137601).
 ## License
 
 NeuralCrop.jl is released under the
-[European Union Public Licence v1.2](https://eupl.eu/1.2/en).
+[GNU Affero General Public License v3.0 or later](LICENSE).
